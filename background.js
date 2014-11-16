@@ -4,23 +4,30 @@
 //
 
 var display_tab_id = null;
+var plugin_name  = "挖一下";
 
 // create context menu
-// "page","selection","editable","link","video","audio"
-var contexts = ["page", "image"];
-for (var i = 0; i < contexts.length; i++) {
-  var context= contexts[i];
-  var title  = "挖一下";
-  var id     = chrome.contextMenus.create({"title": title, "contexts":[context],  "onclick": function(info, tab) {}});
-  var single = chrome.contextMenus.create({"parentId": id, "title": "当前图片", "contexts":[context], "onclick": on_click_wa_single});
-  var all    = chrome.contextMenus.create({"parentId": id, "title": "所有图片", "contexts":[context], "onclick": on_click_wa_all});
-}
-
+var contexts = ["page", "image", "selection","editable","link","video","audio"];
+chrome.contextMenus.create({
+  "title": plugin_name, 
+  "contexts":contexts,  
+  "onclick": function(info, tab) { 
+    //console.log(info);
+    if(info.mediaType == 'image') {
+      // single
+      on_click_wa_single(info, tab); 
+    } else {
+      // all images
+      on_click_wa_all(info, tab);  
+    }
+  }
+});
 
 function on_click_wa_single(info, tab) {
-  chrome.tabs.sendRequest(tab.id, { type : "display-single-image", src: info.srcUrl}, function(res) {
-    create_display_page(tab.id, res); 
-  });
+  chrome.downloads.download({url: info.srcUrl}, function(id) {}); 
+  //chrome.tabs.sendRequest(tab.id, { type : "display-single-image", src: info.srcUrl}, function(res) {
+    // create_display_page(tab.id, res); 
+  //});
 }
 
 function on_click_wa_all(info, tab) {  

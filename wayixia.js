@@ -335,7 +335,7 @@ function initialize () {
       }
     }
 
-    console.log(accept_images);
+    //console.log(accept_images);
     wayixia_container.innerHTML = '';
     return function() {
       for(var src in accept_images) {
@@ -354,10 +354,6 @@ function initialize () {
     
   wayixia_container = Q.$('wayixia-list');
   wayixia_title_bar = Q.$('wayixia-title-bar');
-  //wayixia_title_bar.onmouseover=function() { this.style.background='#FF9900';}
-  //wayixia_title_bar.onmouseout=function() { this.style.background='#2d2d2d';}
-  //wayixia_title_bar.onmousedown=function() { this.style.background='#FF6600';}
-  //wayixia_title_bar.onclick=function(){ _this.deactive();  }
   Q.$('wayixia-select-all').onclick=function(){ 
     if("checked" == this.className) {
       this.className = "";
@@ -415,19 +411,19 @@ Q.Ready(function() {
   Q.$('wayixia-title-bar').onclick=function(){ deactive();  }
 });
 
-var tab_id = null;
+var source_tab_id = null;
 var request_data = {imgs: null, data: null};
 
 
 function back2page() {
-  if(tab_id) {
-    chrome.tabs.update(tab_id, {selected: true});
+  if(source_tab_id) {
+    chrome.tabs.update(source_tab_id, {selected: true});
   }
 }
 
 function displayValidImages(tab_id, packet) {
-  console.log('displayValidImages called');
-  console.log(packet);
+  console.log('displayValidImages called tab_id ->' + tab_id);
+  source_tab_id = tab_id;
   if(content_load_ok) {
     console.log('recv request, content is loaded')
     t.displayImages(packet.imgs, packet.data)();
