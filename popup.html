@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<style>
+<!--
+
+.btn {
+	background: #FFF;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	margin-left: 5px;
+	width: 80px;
+	font-size: 14px;
+	height: 30px;
+	line-height:30px;
+	padding: 0 30px;
+}
+
+#button-ok {
+	background: #FFF url(yes_icon.gif) 10px center no-repeat;
+}
+
+#button-cancel {
+  background: #FFF url(no_icon.gif) 10px center no-repeat;
+}
+
+#image-box {
+  margin: 0px; 
+}
+
+#action-bar {
+background: #FFF;
+width: 100%;
+position: fixed !important; 
+visibility: show; 
+display: block !important; 
+border: 0px !important;
+padding:10px 0;
+opacity: 0.8;
+z-Index:9999;
+}
+
+#login-area {
+display: block;
+padding-left: 20px; 
+text-align: left;
+}
+
+-->
+</style>
+<script src="qlib/Q.js">
+<!--
+import utils.stl;
+import utils.json2;
+import utils.ajax;
+import utils.xml;
+import utils.image;
+//-->
+</script>
+<script src="wayixia.js"></script>
+</head>
+<body style="background:#FFF;margin:0;padding:0;">
+<div style="height:20px;width:100%;background:#FFF;"></div>
+
+
+<div id="image-box" align="center">
+	<div>
+		<img id="image-area" af="thumb" valign="middle">
+		<div id="login-area">
+		    <h3> 用户登录 </h3>
+			用户名:<br><input type="text" id="login-name"/>
+			<br>密码:<br>
+			<input type="password" id="login-pwd"/>
+			<br/>(<a href="#" target="_blank" id="login-forgetpwd">忘记密码</a> | <a href="#" target="_blank" id="login-register">注册</a>)
+		</div>
+	</div>
+	<div id="action-bar" align="right">
+	<input type="button" id="button-ok" class="btn" value=" 确 定 " hidefocus/>
+    <input type="button" id="button-cancel" class="btn" value=" 取 消 " hidefocus />&nbsp;&nbsp;
+	</div>
+</div>
+</body>
+</html>
