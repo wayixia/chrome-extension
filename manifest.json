@@ -1,4 +1,9 @@
 {
+   "name": "挖一下",
+   "version": "0.7",
+   "manifest_version": 2,
+   "description": "图片批量下载插件",
+   "permissions": [ "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "background": {
       "scripts": [ "background.js" ]
    },
@@ -7,16 +12,16 @@
       "matches": [ "http://*/*", "https://*/*" ],
       "run_at": "document_end"
    } ],
-   "description": "图片批量下载插件",
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",
       "48": "icon48.png"
    },
-   "manifest_version": 2,
-   "name": "挖一下",
-   "permissions": [ "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "0.6",
-   "web_accessible_resources": [ "popup.html" ]
+   "version": "0.7",
+	 "browser_action" : {
+	   "default_title" : "挖一下",
+		 "default_icon"  : "icon16.png",
+	   "default_popup" : "popup.html"
+	 }
 }

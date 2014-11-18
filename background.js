@@ -36,6 +36,9 @@ function on_click_wa_all(info, tab) {
   });
 }
 
+function on_click_open_options() {
+  chrome.tabs.create({"url":chrome.extension.getURL("options.html"), "selected":true}, function(tab) {});
+} 
 
 function find_display_view(url) {
   // lookup views

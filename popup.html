@@ -1,82 +1,49 @@
 <!DOCTYPE html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link type="text/css" rel="stylesheet" href="Q.js/ui.css">
 <style>
-<!--
-
-.btn {
-	background: #FFF;
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	margin-left: 5px;
-	width: 80px;
-	font-size: 14px;
-	height: 30px;
-	line-height:30px;
-	padding: 0 30px;
+.wayixia-menu {
+	height:100px;
+	width:150px; 
+	border:0;
+  padding: 0px;
 }
 
-#button-ok {
-	background: #FFF url(yes_icon.gif) 10px center no-repeat;
+.wayixia-menu li {
+  background-color: transparent;
+	width: 150px; 
+	white-space: nowrap; 
+	height: 30px; 
+	padding: 0px; 
+	margin: 0px; 
+	display: block; 
+	cursor: default;
+ 	border: 0px solid blue;
 }
 
-#button-cancel {
-  background: #FFF url(no_icon.gif) 10px center no-repeat;
+.wayixia-menu li:hover, .wayixia-menu li:hover td {
+  background-color: #F90;
+  color: #FFF;
 }
 
-#image-box {
-  margin: 0px; 
+.wayixia-menu li:hover.seperator {
+  background-color:transparent
 }
 
-#action-bar {
-background: #FFF;
-width: 100%;
-position: fixed !important; 
-visibility: show; 
-display: block !important; 
-border: 0px !important;
-padding:10px 0;
-opacity: 0.8;
-z-Index:9999;
+.wayixia-menu li.seperator {
+  height: 10px;
 }
-
-#login-area {
-display: block;
-padding-left: 20px; 
-text-align: left;
-}
-
--->
 </style>
-<script src="qlib/Q.js">
-<!--
-import utils.stl;
-import utils.json2;
-import utils.ajax;
-import utils.xml;
-import utils.image;
-//-->
-</script>
-<script src="wayixia.js"></script>
+<script src="Q.js/Q.js"></script>
+<script src="popup.js"></script>
 </head>
-<body style="background:#FFF;margin:0;padding:0;">
-<div style="height:20px;width:100%;background:#FFF;"></div>
-
-
-<div id="image-box" align="center">
-	<div>
-		<img id="image-area" af="thumb" valign="middle">
-		<div id="login-area">
-		    <h3> 用户登录 </h3>
-			用户名:<br><input type="text" id="login-name"/>
-			<br>密码:<br>
-			<input type="password" id="login-pwd"/>
-			<br/>(<a href="#" target="_blank" id="login-forgetpwd">忘记密码</a> | <a href="#" target="_blank" id="login-register">注册</a>)
-		</div>
-	</div>
-	<div id="action-bar" align="right">
-	<input type="button" id="button-ok" class="btn" value=" 确 定 " hidefocus/>
-    <input type="button" id="button-cancel" class="btn" value=" 取 消 " hidefocus />&nbsp;&nbsp;
-	</div>
+<body style="margin:0;border:0;padding:0;width:150px;height:100px;visibility:hidden;">
+<div class="contextmenu wayixia-menu">
+	<li id="wayixia-all-images"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 30px; font-size: 14px;text-indent:30px;">采集所有图片</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
+	<li id="wayixia-options"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 30px; font-size: 14px;text-indent:30px;">选 项</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
+	<li class="seperator"><div style="float: left; display: block; width: 100%; height: 1px; line-height: 1px; margin: 3px 3px 3px 36px; padding: 0px; background: #CCC"></div></li>
+	<li id="wayixia-aboutus"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 24px; font-size: 14px;text-indent:30px;">关于插件</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
 </div>
 </body>
 </html>
