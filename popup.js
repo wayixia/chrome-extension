@@ -21,6 +21,7 @@ function init(){
 	
   Q.$('wayixia-aboutus').onclick = function() {
 		deactive();
+		extension.on_click_open_about();
 	}	
 
   extension = chrome.extension.getBackgroundPage();

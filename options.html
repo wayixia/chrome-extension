@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title> 选项 >> 挖一下 </title>
+<title> 挖一下 </title>
 <link href="wayixia.css" rel="stylesheet" type="text/css"/>
 <link href="Q.js/ui.css" rel="stylesheet" type="text/css"/>
 <script src="Q.js/Q.js"></script>
@@ -14,14 +14,18 @@
 <script src="options.js"></script>
 <style>
 
-#layer {
+#layer,#layer-about {
   margin: auto;
 	backgroundss: #F1f1f1;
 	line-height: 30px;
 	padding: 10px;
 	font-size: 16px;
+	visibility: hidden;
 }
 
+#layer-about {
+  line-height: 16px;
+}
 
 </style>
 </head>
@@ -33,6 +37,18 @@
 	<br>
 </div>
 
+
+<div id="layer-about">
+	<img src="icon128.png" style="float:left"> <p style="font-size: 22px;">挖一下 图片批量下载</p>
+	<p id="layer-about-version"></p> 
+	<p>开发人员  &nbsp;&nbsp;&nbsp;life.qm@gmail.com</p>
+	<p style="color: #666;">2014&copy;wayixia.com</p>
+	<div style="clear:both;"></div>
+	<br>
+	<br>
+	<br>
+	<br>
+</div>
 
 </body>
 </html>
