@@ -24,10 +24,11 @@ chrome.contextMenus.create({
 });
 
 function on_click_wa_single(info, tab) {
-  chrome.downloads.download({url: info.srcUrl}, function(id) {}); 
-  //chrome.tabs.sendRequest(tab.id, { type : "display-single-image", src: info.srcUrl}, function(res) {
-    // create_display_page(tab.id, res); 
-  //});
+	var options = {url: info.srcUrl};
+  var save_path = localStorage.getItem('save_path');
+  if(save_path) 
+    options.filename = save_path+'/'+options.url.replace(/^.*[\\\/]/, '');	    
+  chrome.downloads.download(options, function(id) {}); 
 }
 
 function on_click_wa_all(info, tab) {  

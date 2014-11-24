@@ -271,9 +271,14 @@ function initialize () {
   _this.download = function() {
     var className = "wayixia-box mouseselected";
     _this.each_item(function(item) {
-        if(item.className == className && item.style.display == '') {
-         chrome.downloads.download({url: item.getAttribute('data-url')}, function(id) {}); 
-        }
+       if(item.className == className && item.style.display == '') {
+	 var options = {url: item.getAttribute('data-url')};
+         var save_path = localStorage.getItem('save_path');
+         if(save_path) 
+           options.filename = save_path+'/'+options.url.replace(/^.*[\\\/]/, '');	    
+
+         chrome.downloads.download(options, function(id) {}); 
+       }
     });
   }
 
@@ -315,7 +320,7 @@ function initialize () {
         width  = (img_width*height)/(img_height*1.0);
       }
 
-      var image_item = Q.copy(data);        
+      var image_item = copy_data(data);        
       image_item['src'] = img.src;
       image_item['width'] = img.width;
       image_item['height'] = img.height;
@@ -419,6 +424,14 @@ function back2page() {
   if(source_tab_id) {
     chrome.tabs.update(source_tab_id, {selected: true});
   }
+}
+
+function copy_data(src_object) {
+  var target_object = {}; 
+  for(var name in src_object) {
+    target_object[name] = src_object[name];
+  }
+  return target_object;
 }
 
 function displayValidImages(tab_id, packet) {
