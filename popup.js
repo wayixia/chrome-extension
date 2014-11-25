@@ -14,6 +14,11 @@ function init(){
 	  deactive();
 	}
   
+  Q.$('wayixia-screenshot').onclick = function() {
+		deactive();
+		extension.on_click_screenshot();
+	}
+
   Q.$('wayixia-options').onclick = function() {
 		deactive();
 		extension.on_click_open_options();
@@ -29,6 +34,8 @@ function init(){
 };
 
 Q.Ready(function() {
+  document.body.ondragstart  =function() { return false; }
+  document.body.onselectstart=function() { return false; }
   init();
 });
 

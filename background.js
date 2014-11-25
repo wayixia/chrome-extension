@@ -24,11 +24,7 @@ chrome.contextMenus.create({
 });
 
 function on_click_wa_single(info, tab) {
-	var options = {url: info.srcUrl};
-  var save_path = localStorage.getItem('save_path');
-  if(save_path) 
-    options.filename = save_path+'/'+options.url.replace(/^.*[\\\/]/, '');	    
-  chrome.downloads.download(options, function(id) {}); 
+	download_image(info.srcUrl);
 }
 
 function on_click_wa_all(info, tab) {  
@@ -37,6 +33,12 @@ function on_click_wa_all(info, tab) {
   });
 }
 
+function on_click_screenshot() {
+  chrome.tabs.captureVisibleTab(function(screenshotUrl) {
+    console.log(screenshotUrl);
+  });
+}
+  
 function on_click_open_options() {
   chrome.tabs.create({"url":chrome.extension.getURL("options.html"), "selected":true}, function(tab) {});
 } 
@@ -63,6 +65,14 @@ function on_tab_created(tab) {
 function create_display_page(context_tab_id, res) {  
   var manager_url = chrome.extension.getURL("display.html");
   focus_or_create_tab(manager_url, context_tab_id, res);
+}
+
+function download_image(url) {
+	var options = {url: url};
+  var save_path = localStorage.getItem('save_path');
+  if(save_path) 
+    options.filename = save_path+'/'+options.url.replace(/^.*[\\\/]/, '');	    
+  chrome.downloads.download(options, function(id) {}); 
 }
 
 function focus_or_create_tab(url, context_tab_id, res) {

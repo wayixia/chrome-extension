@@ -269,15 +269,12 @@ function initialize () {
   }
 
   _this.download = function() {
+    var extension = chrome.extension.getBackgroundPage();
     var className = "wayixia-box mouseselected";
     _this.each_item(function(item) {
        if(item.className == className && item.style.display == '') {
-	 var options = {url: item.getAttribute('data-url')};
-         var save_path = localStorage.getItem('save_path');
-         if(save_path) 
-           options.filename = save_path+'/'+options.url.replace(/^.*[\\\/]/, '');	    
-
-         chrome.downloads.download(options, function(id) {}); 
+         var url = item.getAttribute('data-url');
+         extension.download_image(url);
        }
     });
   }

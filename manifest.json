@@ -3,7 +3,7 @@
    "version": "0.7",
    "manifest_version": 2,
    "description": "图片批量下载插件",
-   "permissions": [ "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
+   "permissions": ["activeTab", "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "background": {
       "scripts": [ "background.js" ]
    },
@@ -18,7 +18,7 @@
       "48": "icon48.png"
    },
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "0.7",
+   "version": "0.8",
 	 "browser_action" : {
 	   "default_title" : "挖一下",
 		 "default_icon"  : "icon16.png",
