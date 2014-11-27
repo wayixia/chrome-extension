@@ -33,10 +33,21 @@ function on_click_wa_all(info, tab) {
   });
 }
 
-function on_click_screenshot() {
-  chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-    console.log(screenshotUrl);
-  });
+function on_click_screenshot(tab) {
+  chrome.tabs.sendRequest(tab.id, { type : "capture-full-page"}, function(res) {
+    //create_display_page(tab.id, res);
+    capture_start(res.full_width, res.full_height);
+    chrome.tabs.sendRequest(tab.id, { type : "capture-next-page"}, function(res) {
+      var scroll_left = res.left;
+      var scroll_top  = res.top;
+      var page_width  = res.width;
+      var page_height = res.height;
+      capture_page(scroll_left, scroll_top, page_width, page_height);
+    });
+  }); 
+  //chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
+  //  console.log(screenshotUrl);
+  //});
 }
   
 function on_click_open_options() {
@@ -46,6 +57,18 @@ function on_click_open_options() {
 function on_click_open_about() {
   chrome.tabs.create({"url":chrome.extension.getURL("options.html#about"), "selected":true}, function(tab) {});
 } 
+
+function capture_start(full_width, full_height) {
+  console.log('capture start, full_width='+full_width +', full_height='+full_height);
+}
+
+function capture_page(scroll_left, scroll_top, width, height) {
+  console.log('capture page (x='+scroll_left+', y='+scroll_top+', width='+width+', height='+height+')');
+}
+
+function capture_stop() {
+  console.log('capture end');
+}
 
 function find_display_view(url) {
   // lookup views
@@ -59,7 +82,7 @@ function find_display_view(url) {
 }
 
 function on_tab_created(tab) {
- display_tab_id = tab.id;
+  display_tab_id = tab.id;
 }
 
 function create_display_page(context_tab_id, res) {  
