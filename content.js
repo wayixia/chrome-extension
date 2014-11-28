@@ -52,44 +52,18 @@ function capture_full_page_start() {
   document.body.scrollLeft= 0;
   g_page_width  = document.documentElement.clientWidth;
   g_page_height = document.documentElement.clientHeight;
+  
+  var cols = Math.ceil(document.body.scrollWidth*1.0 / g_page_width);
+  var rows = Math.ceil(document.body.scrollHeight*1.0 / g_page_height);
+  console.log("cols: " + cols + ", rows: " + rows);
+ 
+  return {rows: rows, cols: cols}; 
 }
 
 function capture_full_page_stop() {
-  document.body.style.overflow = g_overflow;
-  document.body.scrollTop = g_scroll_top;
-  document.body.scrollLeft= g_scroll_left;
-}
-
-function capture_full_page_next() {
-  var info = {need_continue: true; };
-  info.width = g_page_width;
-  info.height = g_page_height;
-  
-  // 横向最大
-  if(document.body.scrollWidth == g_page_width) { // no hr scrollbar
-    info.left = 0;
-    info.width = g_page_width;
-    info.height = g_page_height;
-    // 只处理纵向
-    if(document.body.scrollHeight <= g_page_height) {
-      info.need_continue = false;
-      info.top  = 0;
-    } else {
-      // 纵向滚动条
-      if(document.body.scrollTop + g_page_height > document.body.scrollHeight) {
-        //已经到底
-        info.top = document.body.scrollTop = document.body.scrollHeight - g_page_height;
-      } else {
-        info.top = document.body.scrollTop = document.body.scrollTop + g_page_height;
-      }
-    }
-  } else {
-    if((document.body.scrollLeft+g_page_width) > document.body.scrollWidth) {
-      document.body.scrollLeft = document.body.scrollWidth - g_page_width;
-    }  
-  }
-  
-  return info;
+  //document.body.style.overflow = g_overflow;
+  //document.body.scrollTop = g_scroll_top;
+  //document.body.scrollLeft= g_scroll_left;
 }
 
 // listener
@@ -103,13 +77,17 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
     sendResponse(generate_response([{src: request.src}]));    
     break; 
   case "capture-full-page":
-    sendResponse({full_width: document.body.scrollWidth, full_height: document.body.scrollHeight});
-    caputre_full_page_start();
+    sendResponse(capture_full_page_start());
     break; 
-  case "capture-next-page":
-    sendResponse({leftfull_width: document.body.scrollWidth, full_height: document.body.scrollHeight});
-    caputre_full_page_start();
+  case "capture-page":
+    document.body.scrollTop = request.rows*g_page_height;
+    document.body.scrollLeft = request.cols*g_page_width;
+    sendResponse({});
     break; 
+  case "capture-page-stop":
+    capture_full_page_stop();
+    sendResponse({});
+    break;
   default:
     sendResponse({});
     break;

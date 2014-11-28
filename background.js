@@ -35,15 +35,20 @@ function on_click_wa_all(info, tab) {
 
 function on_click_screenshot(tab) {
   chrome.tabs.sendRequest(tab.id, { type : "capture-full-page"}, function(res) {
+    console.log(res);
+
+    var current_pos = {rows: 0, cols: 0};
+    capture_page_task(tab, {rows: res.rows, cols:res.cols}, current_pos);
+    //setTimeout(function() {console.log('start capture');}, 3000);
     //create_display_page(tab.id, res);
-    capture_start(res.full_width, res.full_height);
-    chrome.tabs.sendRequest(tab.id, { type : "capture-next-page"}, function(res) {
-      var scroll_left = res.left;
-      var scroll_top  = res.top;
-      var page_width  = res.width;
-      var page_height = res.height;
-      capture_page(scroll_left, scroll_top, page_width, page_height);
-    });
+    //capture_start(res.full_width, res.full_height, res.page_width, res.page_height);
+    //chrome.tabs.sendRequest(tab.id, { type : "capture-next-page"}, function(res) {
+    //  var scroll_left = res.left;
+    //  var scroll_top  = res.top;
+    //  var page_width  = res.width;
+    //  var page_height = res.height;
+    //  capture_page(scroll_left, scroll_top, page_width, page_height);
+    //});
   }); 
   //chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
   //  console.log(screenshotUrl);
@@ -58,16 +63,33 @@ function on_click_open_about() {
   chrome.tabs.create({"url":chrome.extension.getURL("options.html#about"), "selected":true}, function(tab) {});
 } 
 
-function capture_start(full_width, full_height) {
-  console.log('capture start, full_width='+full_width +', full_height='+full_height);
+function capture_page_task(tab, max, pos) {
+  console.log('capture page (rows='+pos.rows+', cols='+pos.cols);
+  chrome.tabs.sendRequest(tab.id, { type : "capture-page", rows:pos.rows, cols:pos.cols}, function(res) {
+    // capture page
+    //chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
+      //console.log(screenshotUrl);
+      pos.cols++;
+      pos.cols = pos.cols % max.cols; 
+      if(pos.cols == 0) {
+        pos.rows++;
+        if(pos.rows % max.rows == 0) {
+          // stop capture
+          capture_stop(tab);
+          return;
+        }
+      }
+      setTimeout(function() { capture_page_task(tab, max, pos) }, 1000);
+    //});
+  }); 
 }
 
-function capture_page(scroll_left, scroll_top, width, height) {
-  console.log('capture page (x='+scroll_left+', y='+scroll_top+', width='+width+', height='+height+')');
-}
 
-function capture_stop() {
+function capture_stop(tab, imgs) {
   console.log('capture end');
+  chrome.tabs.sendRequest(tab.id, { type : "capture-page-stop"}, function(res) {
+    create_display_page(tab_id, imgs) {  
+  });
 }
 
 function find_display_view(url) {
