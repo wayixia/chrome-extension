@@ -88,7 +88,7 @@ function capture_page_task(tab, max, pos) {
 function capture_stop(tab, imgs) {
   console.log('capture end');
   chrome.tabs.sendRequest(tab.id, { type : "capture-page-stop"}, function(res) {
-    create_display_page(tab_id, imgs) {  
+    //create_display_page(tab_id, imgs) { } 
   });
 }
 
