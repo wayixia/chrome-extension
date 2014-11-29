@@ -1,4 +1,4 @@
-// Copyright (c) 2013 The Wayixia Authors. All rights reserved.
+// Copyright (c) 2014 The Wayixia Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -12,12 +12,9 @@ chrome.contextMenus.create({
   "title": plugin_name, 
   "contexts":contexts,  
   "onclick": function(info, tab) { 
-    //console.log(info);
     if(info.mediaType == 'image') {
-      // single
       on_click_wa_single(info, tab); 
     } else {
-      // all images
       on_click_wa_all(info, tab);  
     }
   }
@@ -33,28 +30,6 @@ function on_click_wa_all(info, tab) {
   });
 }
 
-function on_click_screenshot(tab) {
-  chrome.tabs.sendRequest(tab.id, { type : "capture-full-page"}, function(res) {
-    console.log(res);
-
-    var current_pos = {rows: 0, cols: 0};
-    capture_page_task(tab, {rows: res.rows, cols:res.cols}, current_pos);
-    //setTimeout(function() {console.log('start capture');}, 3000);
-    //create_display_page(tab.id, res);
-    //capture_start(res.full_width, res.full_height, res.page_width, res.page_height);
-    //chrome.tabs.sendRequest(tab.id, { type : "capture-next-page"}, function(res) {
-    //  var scroll_left = res.left;
-    //  var scroll_top  = res.top;
-    //  var page_width  = res.width;
-    //  var page_height = res.height;
-    //  capture_page(scroll_left, scroll_top, page_width, page_height);
-    //});
-  }); 
-  //chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
-  //  console.log(screenshotUrl);
-  //});
-}
-  
 function on_click_open_options() {
   chrome.tabs.create({"url":chrome.extension.getURL("options.html"), "selected":true}, function(tab) {});
 } 
@@ -63,37 +38,56 @@ function on_click_open_about() {
   chrome.tabs.create({"url":chrome.extension.getURL("options.html#about"), "selected":true}, function(tab) {});
 } 
 
-function capture_page_task(tab, max, pos) {
-  console.log('capture page (rows='+pos.rows+', cols='+pos.cols);
-  chrome.tabs.sendRequest(tab.id, { type : "capture-page", rows:pos.rows, cols:pos.cols}, function(res) {
-    // capture page
-    //chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
-      //console.log(screenshotUrl);
-      pos.cols++;
-      pos.cols = pos.cols % max.cols; 
-      if(pos.cols == 0) {
-        pos.rows++;
-        if(pos.rows % max.rows == 0) {
-          // stop capture
-          capture_stop(tab);
-          return;
+function on_click_screenshot(tab) {
+  chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
+    create_display_screenshot(tab.id, screenshotUrl); 
+  }); 
+}
+
+function on_click_full_screenshot(tab) {
+  chrome.tabs.sendRequest(tab.id, { type : "full-screenshot-begin"}, function(res) {
+    if(!res)
+      return;
+    console.log(res);
+    var cols = Math.ceil(res.full_width*1.0 / res.page_width);
+    var rows = Math.ceil(res.full_height*1.0 / res.page_height);
+    var max_pos     = { rows: rows, cols:cols };
+    var canvas      = { size: res, table: max_pos, screenshots: []};
+    var current_pos = { row: 0, col: 0 };
+    capture_page_task(tab, max_pos, current_pos, canvas);
+  }); 
+}
+  
+function capture_page_task(tab, max, pos, canvas) {
+  console.log('capture page (row='+pos.row+', col='+pos.col);
+  chrome.tabs.sendRequest(tab.id, { type : "full-screenshot-page", row:pos.row, col:pos.col}, function(res) {
+    setTimeout(function() {
+      chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
+        canvas.screenshots.push({row: pos.row, col: pos.col, data_url: screenshotUrl});
+        pos.col++;
+        pos.col = pos.col % max.cols; 
+        if(pos.col == 0) {
+          pos.row++;
+          if(pos.row % max.rows == 0) {
+            screenshot_end(tab, canvas);
+            return;
+          }
         }
-      }
-      setTimeout(function() { capture_page_task(tab, max, pos) }, 1000);
-    //});
+        capture_page_task(tab, max, pos, canvas);
+      });
+    }, 1000);
   }); 
 }
 
 
-function capture_stop(tab, imgs) {
+function screenshot_end(tab, canvas) {
   console.log('capture end');
-  chrome.tabs.sendRequest(tab.id, { type : "capture-page-stop"}, function(res) {
-    //create_display_page(tab_id, imgs) { } 
+  chrome.tabs.sendRequest(tab.id, { type : "full-screenshot-end"}, function(res) {
+    create_display_full_screenshot(tab.id, canvas); 
   });
 }
 
 function find_display_view(url) {
-  // lookup views
   var views = chrome.extension.getViews();
   for(var i=0; i < views.length; i++) {
     var view = views[i];
@@ -103,28 +97,48 @@ function find_display_view(url) {
   }
 }
 
-function on_tab_created(tab) {
-  display_tab_id = tab.id;
+function create_display_page(context_tab_id,  res) {  
+  var manager_url = chrome.extension.getURL("display.html");
+  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_images(id, res) } })(context_tab_id, res));
 }
 
-function create_display_page(context_tab_id, res) {  
+function create_display_screenshot(context_tab_id,  res) {  
   var manager_url = chrome.extension.getURL("display.html");
-  focus_or_create_tab(manager_url, context_tab_id, res);
+  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_screenshot(id, res) } })(context_tab_id, res));
+}
+
+function create_display_full_screenshot(context_tab_id,  res) {  
+  var manager_url = chrome.extension.getURL("display.html");
+  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_full_screenshot(id, res) } })(context_tab_id, res));
 }
 
 function download_image(url) {
 	var options = {url: url};
   var save_path = localStorage.getItem('save_path');
-  if(save_path) 
-    options.filename = save_path+'/'+options.url.replace(/^.*[\\\/]/, '');	    
+  
+  var filename = '';
+  var re = /data:(.+?);(\w+?),(.+)/;
+  if(re.test(url)) { // data
+    var image_type  = RegExp.$1;
+    image_type = image_type.replace(/image\//, '.');
+    var d = new Date();
+    filename = (new Date()).valueOf()+'.'+image_type;      
+  } else { // url
+    filename = url.replace(/^.*[\\\/]/, '');
+  }
+
+  if(save_path) { 
+    options.filename = save_path+'/'+filename;	    
+  }
   chrome.downloads.download(options, function(id) {}); 
 }
 
-function focus_or_create_tab(url, context_tab_id, res) {
+
+function focus_or_create_tab(url, func) {
   var view = find_display_view(url);
   if(view) {
     view.focus();
-    view.displayValidImages(context_tab_id, res);
+    func(view);
   } else {
     // view is not created
     chrome.tabs.onUpdated.addListener(function listener(tab_id, changed_props) {
@@ -134,12 +148,11 @@ function focus_or_create_tab(url, context_tab_id, res) {
       // lookup views
       var view = find_display_view(url);
       if(view) {
-        view.displayValidImages(context_tab_id, res);
+        func(view);
       }
     });
 
-    chrome.tabs.create({"url":url, "selected":true}, on_tab_created);
+    chrome.tabs.create({"url":url, "selected":true}, function on_tab_created(tab) { display_tab_id = tab.id; });
   }
 }
-
 

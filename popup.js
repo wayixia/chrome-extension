@@ -22,6 +22,15 @@ function init(){
     );
     deactive();
   }
+  
+  Q.$('wayixia-full-screenshot').onclick = function() {
+    chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
+     function(tabs){
+       extension.on_click_full_screenshot(tabs[0]);
+     }
+    );
+    deactive();
+  }
 
   Q.$('wayixia-options').onclick = function() {
     deactive();

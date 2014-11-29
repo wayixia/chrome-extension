@@ -38,33 +38,42 @@ function generate_response(imgs) {
   };
 }
 
-var g_scroll_top = 0;
-var g_scroll_left = 0;
-var g_overflow = '';
-var g_page_width = 0;
-var g_page_height = 0;
-function capture_full_page_start() {
-  g_scroll_top  = document.body.scrollTop;
-  g_scroll_left = document.body.scrollLeft;
-  g_overflow    = document.body.style.overflow;
-  document.body.style.overflow='hidden';
-  document.body.scrollTop = 0;
-  document.body.scrollLeft= 0;
-  g_page_width  = document.documentElement.clientWidth;
-  g_page_height = document.documentElement.clientHeight;
-  
-  var cols = Math.ceil(document.body.scrollWidth*1.0 / g_page_width);
-  var rows = Math.ceil(document.body.scrollHeight*1.0 / g_page_height);
-  console.log("cols: " + cols + ", rows: " + rows);
- 
-  return {rows: rows, cols: cols}; 
-}
+var g_fullscreen_capture = {
+  scroll_top : 0,
+  scroll_left : 0,
+  overflow : '',
+  page_width : 0,
+  page_height : 0,
 
-function capture_full_page_stop() {
-  //document.body.style.overflow = g_overflow;
-  //document.body.scrollTop = g_scroll_top;
-  //document.body.scrollLeft= g_scroll_left;
-}
+  start : function() {
+    this.scroll_top  = document.body.scrollTop;
+    this.scroll_left = document.body.scrollLeft;
+    this.overflow    = document.body.style.overflow;
+    document.body.style.overflow='hidden';
+    document.body.scrollTop = 0;
+    document.body.scrollLeft= 0;
+    this.page_width  = document.documentElement.clientWidth;
+    this.page_height = document.documentElement.clientHeight;
+  
+    return {
+      full_width : document.body.scrollWidth, 
+      full_height: document.body.scrollHeight, 
+      page_width : this.page_width, 
+      page_height: this.page_height
+    };
+  }, 
+
+  capture_page : function(row, col) {
+    document.body.scrollTop  = row * this.page_height;
+    document.body.scrollLeft = col * this.page_width;
+  },
+
+  stop : function() {
+    document.body.style.overflow = this.overflow;
+    document.body.scrollTop = this.scroll_top;
+    document.body.scrollLeft= this.scroll_left;
+  }
+};
 
 // listener
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) 
@@ -76,16 +85,15 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
   case "display-single-image":
     sendResponse(generate_response([{src: request.src}]));    
     break; 
-  case "capture-full-page":
-    sendResponse(capture_full_page_start());
+  case "full-screenshot-begin":
+    sendResponse(g_fullscreen_capture.start());
     break; 
-  case "capture-page":
-    document.body.scrollTop = request.rows*g_page_height;
-    document.body.scrollLeft = request.cols*g_page_width;
+  case "full-screenshot-page":
+    g_fullscreen_capture.capture_page(request.row, request.col); 
     sendResponse({});
     break; 
-  case "capture-page-stop":
-    capture_full_page_stop();
+  case "full-screenshot-end":
+    g_fullscreen_capture.stop(); 
     sendResponse({});
     break;
   default:

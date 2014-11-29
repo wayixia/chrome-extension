@@ -400,17 +400,54 @@ function initialize () {
   console.log('content is loaded');
 };
 
+var g_screenshot_zoom = 100;
+function initialize_screenshot() {
+  var extension = chrome.extension.getBackgroundPage();
+  var e_zoom = new Q.slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
+    on_xscroll: function(v) {
+      g_screenshot_zoom = v;
+      if(Q.$('wayixia-screenshot-image'))
+        Q.$('wayixia-screenshot-image').style.zoom = v/100.0;  //重新设置比例
+      Q.$('wayixia-screenshot-zoom').innerText = g_screenshot_zoom + '%';
+    }
+  });
+  
+  Q.$('wayixia-screenshot-zoom').innerText = e_zoom.get_value() + '%';
+
+  Q.$('wayixia-screenshot-zoom100').onclick = function() {
+    e_zoom.set_value(100);
+  }
+  
+  Q.$('wayixia-screenshot-download').onclick = function() {
+    if(Q.$('wayixia-screenshot-image')) {
+      extension.download_image(Q.$('wayixia-screenshot-image').src);
+    }
+  }
+}
+
+function set_ui(name) {
+  if(name == 'screenshot') {
+    Q.$('wayixia-toolbar').style.display = 'none';
+    Q.$('wayixia-toolbar-screenshot').style.display = '';
+  } else {
+    Q.$('wayixia-toolbar').style.display = '';
+    Q.$('wayixia-toolbar-screenshot').style.display = 'none';
+  }
+}
+
 function deactive() {
     back2page();
     window.close();
 }
 
 Q.Ready(function() {
-   
+  document.body.ondragstart  =function() { return false; }
+  document.body.onselectstart=function() { return false; }
   Q.$('wayixia-title-bar').onmouseover=function() { this.style.background='#FF9900';}
   Q.$('wayixia-title-bar').onmouseout=function() { this.style.background='#2d2d2d';}
   Q.$('wayixia-title-bar').onmousedown=function() { this.style.background='#FF6600';}
   Q.$('wayixia-title-bar').onclick=function(){ deactive();  }
+  initialize_screenshot();
 });
 
 var source_tab_id = null;
@@ -431,7 +468,10 @@ function copy_data(src_object) {
   return target_object;
 }
 
-function displayValidImages(tab_id, packet) {
+/* call background script */
+
+function display_images(tab_id, packet) {
+  set_ui('images');
   console.log('displayValidImages called tab_id ->' + tab_id);
   source_tab_id = tab_id;
   if(content_load_ok) {
@@ -442,6 +482,74 @@ function displayValidImages(tab_id, packet) {
     request_data.imgs = packet.imgs;
     request_data.data = packet.data;
     initialize();
+  }
+}
+
+function display_full_screenshot(tab_id, canvas_data) {
+  set_ui('screenshot');
+  console.log(canvas_data);
+  var wayixia_container = Q.$('wayixia-list');
+  var img = document.createElement('img');
+  img.id = 'wayixia-screenshot-image';
+  wayixia_container.innerHTML = '';
+  wayixia_container.appendChild(img);
+  merge_images(canvas_data, img);
+}
+
+function display_screenshot(tab_id, image_data) {
+  set_ui('screenshot');
+  var wayixia_container = Q.$('wayixia-list');
+  var img = document.createElement('img');
+  img.id = 'wayixia-screenshot-image';
+  wayixia_container.innerHTML = '';
+  wayixia_container.appendChild(img);
+  img.src = image_data;
+}
+
+/* call background script end */
+
+
+function merge_images(canvas_data, image_element) {
+  // initialize canvas
+  var canvas = document.createElement("canvas");
+	canvas.width = canvas_data.size.full_width;
+	canvas.height = canvas_data.size.full_height;
+  draw_image(canvas, canvas_data, 0, image_element);
+}
+
+function draw_image(canvas, canvas_data, n, image_element) {
+  var screenshots = canvas_data.screenshots;
+  if(n >= screenshots.length ) {
+    // draw completed
+    image_element.src = canvas.toDataURL('image/png');
+  } else {
+    console.log('draw '+n+' image');
+    var draw_context = canvas.getContext("2d");
+    var s = screenshots[n];
+    var row = s.row;
+    var col = s.col;
+    var x=0, y=0;
+    if(row < canvas_data.table.rows-1) {
+      y = row*canvas_data.size.page_height;
+    } else { // last row
+      y = canvas.height - canvas_data.size.page_height; 
+    }
+
+    if(col < canvas_data.table.cols-1) {
+      x = col*canvas_data.size.page_width;
+    } else { // last column
+      x = canvas.width - canvas_data.size.page_width; 
+    }
+    console.log('x:' + x + ', y=' + y); 
+    var memory_image = new Image();
+    memory_image.onload =  (function(ctx, m, l, t) { 
+      return function() {
+        console.log('image load ok');
+        ctx.drawImage(m,l,t); 
+        draw_image(canvas, canvas_data, ++n, image_element);
+      }
+    })(draw_context, memory_image, x, y);
+    memory_image.src = s.data_url;
   }
 }
 

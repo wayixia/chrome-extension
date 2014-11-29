@@ -37,35 +37,48 @@
 
 </style>
 </head>
-<body  ondragstart="return false" onselectstart="return false" style="-moz-user-select:none;-webkit-user-select: none;">
+<body style="-moz-user-select:none;-webkit-user-select: none;">
 <div id="wayixia-overlay">
   <div id="wayixia-container">
     <div id="wayixia-title-bar">
-      <b> 图片批量下载插件 《挖一下》 &nbsp;&nbsp; </b>
+      <b> 图片采集 | 批量下载 | 全屏网页截图 《挖一下》 &nbsp;&nbsp; </b>
     </div>
     <div id="wayixia-list"></div>
     <div id="dummy-div" style="height: 0px;"></div>
   </div>
   <div id="wayixia-toolbar">
-      <a style="font-weight: bold;">按条件过滤</a>
-      <a>宽度</a>
-      <a>
-        <div id="x-ctrl-mini-width" class="q-slider x" style="width: 150px; margin-top: 10px;">
-          <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
-        </div>
-      </a>
-      <a id="wayixia-min-width">0px</a>
-      <a>高度</a>
-      <a> 
-        <div id="x-ctrl-mini-height" class="q-slider x" style="width: 150px; margin-top: 10px;">
-          <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
-        </div>
-      </a>
-      <a id="wayixia-min-height">0px</a>
-      <a id="wayixia-select-all"> <button class="wayixia-ctrl-button">全选</button></a>
-      <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">下载</button> </a>
-      <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: red;">Q群: 321442108</a>
-    </div>
+    <a style="font-weight: bold;">按条件过滤</a>
+    <a>宽度</a>
+    <a>
+      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 150px; margin-top: 10px;">
+        <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
+      </div>
+    </a>
+    <a id="wayixia-min-width">0px</a>
+    <a>高度</a>
+    <a> 
+      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 150px; margin-top: 10px;">
+        <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
+      </div>
+    </a>
+    <a id="wayixia-min-height">0px</a>
+    <a id="wayixia-select-all"> <button class="wayixia-ctrl-button">全选</button></a>
+    <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">下载</button> </a>
+    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: red;">Q群: 321442108</a>
+  </div>
+  <div id="wayixia-toolbar-screenshot">
+    <a style="font-weight: bold;">截图缩放</a>
+    <a>
+      <div id="x-ctrl-screenshot-zoom" class="q-slider x" style="width: 150px; margin-top: 10px;">
+        <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
+      </div>
+    </a>
+    <a id="wayixia-screenshot-zoom">100%</a>
+    <a id="wayixia-screenshot-zoom100"> <button class="wayixia-ctrl-button">原始大小</button> </a>
+    <a id="wayixia-screenshot-download"> <button class="wayixia-ctrl-button">保存截图</button> </a>
+    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: red;">Q群: 321442108</a>
+  </div>
+
 </div>
 </body>
 </html>
