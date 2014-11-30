@@ -374,7 +374,7 @@ function initialize () {
  
   var g_min_width = 0;
   var g_min_height= 0; 
-  var e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, 
+  var e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) {
       g_min_width = v*10;
       _this.each_item(function(item) {
@@ -448,6 +448,8 @@ Q.Ready(function() {
   Q.$('wayixia-title-bar').onmousedown=function() { this.style.background='#FF6600';}
   Q.$('wayixia-title-bar').onclick=function(){ deactive();  }
   initialize_screenshot();
+  initialize();
+  set_ui();
 });
 
 var source_tab_id = null;
@@ -487,7 +489,7 @@ function display_images(tab_id, packet) {
 
 function display_full_screenshot(tab_id, canvas_data) {
   set_ui('screenshot');
-  console.log(canvas_data);
+  source_tab_id = tab_id;
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');
   img.id = 'wayixia-screenshot-image';
@@ -498,6 +500,7 @@ function display_full_screenshot(tab_id, canvas_data) {
 
 function display_screenshot(tab_id, image_data) {
   set_ui('screenshot');
+  source_tab_id = tab_id;
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');
   img.id = 'wayixia-screenshot-image';

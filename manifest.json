@@ -1,26 +1,29 @@
 {
-   "name": "挖一下 图片批量下载和网页截屏",
-   "version": "0.9",
+   "name": "挖一下图片批量下载和网页截屏(支持截全屏)",
+   "version": "1.0",
    "manifest_version": 2,
-   "description": "图片批量下载, 网页全屏截屏",
+   "short_name": "挖一下",
+   "description": "图片批量下载和网页截屏(支持截全屏)",
    "permissions": ["activeTab", "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "background": {
       "scripts": [ "background.js" ]
    },
-   "content_scripts": [ {
+   "content_scripts": [ 
+     {
       "js": [ "content.js" ],
       "matches": [ "http://*/*", "https://*/*" ],
-      "run_at": "document_end"
-   } ],
+      "run_at": "document_end",
+      "all_frames": true
+     } 
+   ],
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",
       "48": "icon48.png"
    },
-   "update_url": "http://clients2.google.com/service/update2/crx",
-	 "browser_action" : {
-	   "default_title" : "挖一下",
-		 "default_icon"  : "icon16.png",
-	   "default_popup" : "popup.html"
-	 }
+   "browser_action" : {
+     "default_title" : "挖一下",
+     "default_icon"  : "icon16.png",
+     "default_popup" : "popup.html"
+   }
 }
