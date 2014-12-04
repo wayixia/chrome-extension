@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title> 挖一下 网页图片批量下载 </title>
+<title> 挖一下 </title>
 <link href="wayixia.css" rel="stylesheet" type="text/css"/>
 <link href="Q.js/ui.css" rel="stylesheet" type="text/css"/>
 <script src="Q.js/Q.js"></script>
@@ -10,6 +10,7 @@
 <script src="Q.js/utils/ajax.js"></script>
 <script src="Q.js/ui/drag.js"></script>
 <script src="Q.js/ui/slider.js"></script>
+<script src="Q.js/ui/wndx-1-0-2.js"></script>
 <script src="config.js"></script>
 <script src="wayixia.js"></script>
 <style>
@@ -19,7 +20,7 @@
   text-indent: 0px; 
   border: 0;
   height: 30px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color:white;
   text-shadow: 1px 0 #000;
@@ -41,7 +42,7 @@
 <div id="wayixia-overlay">
   <div id="wayixia-container">
     <div id="wayixia-title-bar">
-      <b> 图片采集 | 批量下载 | 全屏网页截图 《挖一下》 &nbsp;&nbsp; </b>
+       挖一下  <font style="color: #999;font-size: 16px;"> 图片采集批量下载 | 网页截屏 </font>
     </div>
     <div id="wayixia-list"></div>
     <div id="dummy-div" style="height: 0px;"></div>
@@ -50,21 +51,22 @@
     <a style="font-weight: bold;">按条件过滤</a>
     <a>宽度</a>
     <a>
-      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 150px; margin-top: 10px;">
+      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 120px; margin-top: 10px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-width">0px</a>
     <a>高度</a>
     <a> 
-      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 150px; margin-top: 10px;">
+      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 120px; margin-top: 10px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-height">0px</a>
     <a id="wayixia-select-all"> <button class="wayixia-ctrl-button">全选</button></a>
+    <a id="wayixia-add-block"> <button class="wayixia-ctrl-button">屏蔽</button></a>
     <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">下载</button> </a>
-    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: red;">Q群: 321442108</a>
+    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: #323232;">反馈Q群: 321442108</a>
   </div>
   <div id="wayixia-toolbar-screenshot">
     <a style="font-weight: bold;">截图缩放</a>
@@ -76,7 +78,7 @@
     <a id="wayixia-screenshot-zoom">100%</a>
     <a id="wayixia-screenshot-zoom100"> <button class="wayixia-ctrl-button">原始大小</button> </a>
     <a id="wayixia-screenshot-download"> <button class="wayixia-ctrl-button">保存截图</button> </a>
-    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: red;">Q群: 321442108</a>
+    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="color: #323232;">Q群: 321442108</a>
   </div>
 
 </div>

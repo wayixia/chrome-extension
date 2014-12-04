@@ -289,8 +289,6 @@ function initialize () {
     _this.open_window(url, {height:355}); 
   }
 
-
-
   //
   // Returns a function which will handle displaying information about the
   // image once the image has finished loading.
@@ -332,7 +330,7 @@ function initialize () {
     //filter image duplicated
     var accept_images = {};
     for(var i=0; i < imgs.length ; i++) {
-      if(imgs[i].src) {
+      if(imgs[i].src && (!_this.is_block_image(imgs[i].src))) {
         accept_images[imgs[i].src] = true;
       }
     }
@@ -353,7 +351,13 @@ function initialize () {
     var height = item.getAttribute('data-height');
     item.style.display = ((width < min_width) || (height < min_height)) ? 'none':'';
   };
-    
+   
+  _this.is_block_image = function(url) {
+    var extension = chrome.extension.getBackgroundPage();
+    return extension.is_block_image(url); 
+  }
+
+
   wayixia_container = Q.$('wayixia-list');
   wayixia_title_bar = Q.$('wayixia-title-bar');
   Q.$('wayixia-select-all').onclick=function(){ 
@@ -369,7 +373,32 @@ function initialize () {
   Q.$('wayixia-local-download').onclick=function(){ 
     _this.download();
   }
-  
+ 
+  Q.$('wayixia-add-block').onclick=function() {
+    var box = new Q.MessageBox({
+      title: '挖一下',
+      content: '<div style="margin:auto; padding:20px;font-size:14px;">屏蔽后将不再显示, 确定要屏蔽选中图片吗?</div>',
+      on_ok: function() {
+        var remove_items = [];
+        var extension = chrome.extension.getBackgroundPage();
+        _this.each_item(function(item) {
+          if(item.className == "wayixia-box mouseselected" && item.style.display == '') {
+            var url = item.getAttribute('data-url');
+            extension.block_image_add(url);
+            remove_items.push(item);
+            //item.parentNode.removeChild(item);
+          }
+        });
+
+        for(var i=0; i < remove_items.length; i++) {
+          var item = remove_items[i];
+          item.parentNode.removeChild(item);
+        }
+        return true; 
+      },
+      on_no: function() { return true; },
+    });
+  } 
   //check_login();
  
   var g_min_width = 0;
@@ -384,7 +413,7 @@ function initialize () {
     }
   });
   
-  var e_height = new Q.slider({id: 'x-ctrl-mini-height', min: 0, max: 100, 
+  var e_height = new Q.slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) { 
       g_min_height = v*10;
       _this.each_item(function(item) {

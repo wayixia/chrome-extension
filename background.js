@@ -5,6 +5,7 @@
 
 var display_tab_id = null;
 var plugin_name  = "挖一下";
+var block_images = {};
 
 // create context menu
 var contexts = ["page", "image", "selection","editable","link","video","audio"];
@@ -133,6 +134,26 @@ function download_image(url) {
   chrome.downloads.download(options, function(id) {}); 
 }
 
+function block_image_add(url) {
+  var images = JSON.parse(localStorage.getItem('block_images')) || {};
+  images[url] = 1;
+  localStorage.setItem('block_images', JSON.stringify(images));
+  console.log(images);
+}
+
+function block_image_remove(url) {
+  var images = JSON.parse(localStorage.getItem('block_images')) || {};
+  console.log(images);
+  delete images[url];
+  console.log(images);
+  localStorage.setItem('block_images', JSON.stringify(images));
+  console.log(images);
+}
+
+function is_block_image(url) {
+  var images = JSON.parse(localStorage.getItem('block_images')) || {};
+  return !!images[url];
+}
 
 function focus_or_create_tab(url, func) {
   var view = find_display_view(url);
