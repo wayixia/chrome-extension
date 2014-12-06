@@ -68,7 +68,6 @@ a#wayixia-qq {
 #wayixia-container {
 	font-family: arial, 'helvetica neue', sans-serif;
 	position: absolute;
-	z-index: 999999999999989;
 	top: 80;
 	left: 0;
   right: 0;
@@ -77,6 +76,7 @@ a#wayixia-qq {
 	opacity: 1;
 	hasLayout: -1;
   overflow:auto;
+  padding-bottom: 15px;
 }
 
 #wayixia-toolbar, #wayixia-toolbar-screenshot {

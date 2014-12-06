@@ -10,7 +10,9 @@
 <script src="Q.js/utils/ajax.js"></script>
 <script src="Q.js/ui/drag.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
+<script src="Q.js/ui/wndx-1-0-2.js"></script>
 <script src="config.js"></script>
+<script src="images_box.js"></script>
 <script src="options.js"></script>
 <style>
 
@@ -25,6 +27,18 @@
 
 #layer-about {
   line-height: 16px;
+}
+
+#layer-block-images {
+  visibility:hidden;
+  position: absolute;
+  left: 0; top:0;
+  right: 0; bottom: 30;
+  background: red;
+}
+
+#layer-block-images #wayixia-container {
+  top: 0;
 }
 
 </style>
@@ -52,8 +66,10 @@
 	<br>
 </div>
 
-<div id="block_images"> 
-
+<div id="layer-block-images"> 
+  <div id="wayixia-container">
+    <div id="wayixia-list"></div>
+  </div>
 </div>
 
 </body>

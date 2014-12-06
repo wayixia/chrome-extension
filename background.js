@@ -155,6 +155,10 @@ function is_block_image(url) {
   return !!images[url];
 }
 
+function block_images_all() {
+  return JSON.parse(localStorage.getItem('block_images')) || {};
+}
+
 function focus_or_create_tab(url, func) {
   var view = find_display_view(url);
   if(view) {

@@ -2,7 +2,7 @@
 var g_option_window = null;
 var g_about_window = null;
 var g_block_window = null;
-var g_table = null;
+var g_block_images_box = null;
 function init_about() {
   g_about_window = new Q.MessageBox({
     title: '关于插件',
@@ -39,20 +39,49 @@ function init() {
 
   // block images
   Q.$('manager_block_images').onclick = function() {
-    g_block_window = new Q.Dialog({
-      parent: g_option_window,
-      width: 800,
-      height: 600,
-      title: '已屏蔽图片',
-      content: Q.$('block_images'),
-      buttons: [
-        { text: '关 闭', onclick: function() { return true; } },
-      ]
-    });
-    g_block_window.domodal();
+    g_block_images_box = new Q.images_box({container: 'wayixia-list'});
+    
+    var extension = chrome.extension.getBackgroundPage();
+    var block_images = extension.block_images_all();
+    g_block_images_box.display_images(block_images, {})();  
+    display_block_images();
   } 
 }
 
+function display_block_images() {
+  
+  g_block_window = new Q.Dialog({
+    parent: g_option_window,
+    width: 800,
+    height: 600,
+    title: '已屏蔽图片',
+    content: Q.$('layer-block-images'),
+    buttons: [
+      { text: '取消屏蔽', onclick: function() { block_images_remove(); return false; }  },
+      { text: '关 闭', style:'syscancelbtn', onclick: function() { return true; } 
+      },
+    ]
+  });
+  Q.$('layer-block-images').style.visibility = 'visible';
+  g_block_window.domodal();
+}
+
+function block_images_remove() {
+  var extension = chrome.extension.getBackgroundPage();
+  var remove_items = [];
+  g_block_images_box.each_item(function(item) {
+    if(item.className == "wayixia-box mouseselected" && item.style.display == '') {
+      var url = item.getAttribute('data-url');
+      extension.block_image_remove(url);
+      remove_items.push(item);
+    }
+  });
+  
+  for(var i=0; i < remove_items.length; i++) {
+    var item = remove_items[i];
+    item.parentNode.removeChild(item);
+  }
+}
 
 Q.Ready(function() {
   document.body.ondragstart  =function() { return false; }

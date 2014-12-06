@@ -12,6 +12,7 @@
 <script src="Q.js/ui/slider.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
 <script src="config.js"></script>
+<script src="images_box.js"></script>
 <script src="wayixia.js"></script>
 <style>
 
@@ -36,6 +37,17 @@
 
 }
 
+a#wayixia-show-block {
+  padding-left: 25px;
+  padding-right: 5px;
+  cursor: default;
+  background : transparent url(images/unchecked.gif) no-repeat 5px center;
+}
+
+
+a#wayixia-show-block.checked {
+  background : transparent url(images/checked.gif) no-repeat 5px center;
+}
 </style>
 </head>
 <body style="-moz-user-select:none;-webkit-user-select: none;">
@@ -63,6 +75,7 @@
       </div>
     </a>
     <a id="wayixia-min-height">0px</a>
+    <a id="wayixia-show-block" class="checked"> 已屏蔽(0) </a>
     <a id="wayixia-select-all"> <button class="wayixia-ctrl-button">全选</button></a>
     <a id="wayixia-add-block"> <button class="wayixia-ctrl-button">屏蔽</button></a>
     <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">下载</button> </a>
