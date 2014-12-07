@@ -27,11 +27,11 @@ function initialize () {
   Q.$('wayixia-show-block').onclick=function(){ 
     var block_display = '';
     if("checked" == this.className) {
-      this.className = "";
-      block_display = '';
+      Q.removeClass(this, "checked");
+      block_display = "";
     } else {
-      this.className = "checked";
-      block_display = 'none';
+      Q.addClass(this, "checked");
+      block_display = "none";
     }
     
     _this.images_box.each_item(function(item) {
@@ -51,7 +51,15 @@ function initialize () {
     }
   }
 
-  Q.$('wayixia-local-download').onclick=function(){ _this.download(); }
+  Q.$('wayixia-local-download').onclick=function() { 
+    var extension = chrome.extension.getBackgroundPage();
+    _this.images_box.each_item(function(item) {
+       if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+         var url = item.getAttribute('data-url');
+         extension.download_image(url);
+       }
+    });
+  }
  
   Q.$('wayixia-add-block').onclick=function() {
     var box = new Q.MessageBox({
@@ -61,10 +69,10 @@ function initialize () {
         var remove_items = [];
         var extension = chrome.extension.getBackgroundPage();
         _this.images_box.each_item(function(item) {
-          if(item.className == "wayixia-box mouseselected" && item.style.display == '') {
+          if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
             var url = item.getAttribute('data-url');
             extension.block_image_add(url);
-            item.className = "wayixia-box mouseselected blocked";
+            Q.addClass(item, 'blocked');
             item.style.display = 'none';
             blocked_images.push(url);
           }
@@ -76,7 +84,36 @@ function initialize () {
       on_no: function() { return true; },
     });
   } 
- 
+
+  function block_image_item(blocked_images) {
+    return function(item) {
+      var url = item.getAttribute('data-url');
+      for(var i=0; i < blocked_images.length; i++) {
+        if(url == blocked_images[i]) {
+          Q.addClass(item, 'blocked');
+          item.style.display = 'none';
+        }
+      }
+    }
+  }
+
+  this.display_valid_images = function(imgs, data) {
+    //filter image duplicated
+    var accept_images  = {};
+    blocked_images = [];
+    for(var i=0; i < imgs.length ; i++) {
+      if(imgs[i].src) {
+        var blocked = _this.is_block_image(imgs[i].src);
+        accept_images[imgs[i].src] = blocked;
+        if(blocked)  
+          blocked_images.push(imgs[i].src);
+      }
+    }
+    Q.$('wayixia-show-block').innerText = '已屏蔽('+blocked_images.length+')';
+    
+    return t.images_box.display_images(accept_images, data, block_image_item(blocked_images));
+  }
+
   var g_min_width = 0;
   var g_min_height= 0; 
   var e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
@@ -101,45 +138,6 @@ function initialize () {
   
   if(request_data.imgs) {
     _this.display_valid_images(request_data.imgs, request_data.data)();
-  }
-
-  _this.block_image_item = function(blocked_images) {
-    return function(item) {
-      var url = item.getAttribute('data-url');
-      for(var i=0; i < blocked_images.length; i++) {
-        if(url == blocked_images[i]) {
-          item.className = 'wayixia-box blocked';
-          item.style.display = 'none';
-        }
-      }
-    }
-  }
-
-  _this.display_valid_images = function(imgs, data) {
-    //filter image duplicated
-    var accept_images  = {};
-    blocked_images = [];
-    for(var i=0; i < imgs.length ; i++) {
-      if(imgs[i].src) {
-        var blocked = _this.is_block_image(imgs[i].src);
-        accept_images[imgs[i].src] = blocked;
-        if(blocked)  
-          blocked_images.push(imgs[i].src);
-      }
-    }
-    Q.$('wayixia-show-block').innerText = '已屏蔽('+blocked_images.length+')';
-    
-    return t.images_box.display_images(accept_images, data, _this.block_image_item(blocked_images));
-  }
-
-  _this.download = function() {
-    var extension = chrome.extension.getBackgroundPage();
-    _this.images_box.each_item(function(item) {
-       if((item.className.indexOf('wayixia-box mouseselected') != -1) && item.style.display == '') {
-         var url = item.getAttribute('data-url');
-         extension.download_image(url);
-       }
-    });
   }
 
   content_load_ok = true;

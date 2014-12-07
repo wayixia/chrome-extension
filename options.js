@@ -70,7 +70,7 @@ function block_images_remove() {
   var extension = chrome.extension.getBackgroundPage();
   var remove_items = [];
   g_block_images_box.each_item(function(item) {
-    if(item.className == "wayixia-box mouseselected" && item.style.display == '') {
+    if((item.className.indexOf("mouseselected") != -1) && item.style.display == '') {
       var url = item.getAttribute('data-url');
       extension.block_image_remove(url);
       remove_items.push(item);

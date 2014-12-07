@@ -40,27 +40,27 @@ create_element: function(config, init) {
   inner_img.src=config.src;
   inner_img.className = 'image';
   inner_img.style.cssText = 'margin-top:'+config.margin_top+'px;width:'+config.size_width+'px;height:'+config.size_height+'px;'
-
+  
   box.onmouseover = function() {
-    if("wayixia-box mouseselected" == this.className) 
+    if(this.className.indexOf('mouseselected') != -1) 
       return;
-    this.className="wayixia-box mouseover"
+    Q.addClass(this, "mouseover");
   } 
   
   box.onmouseout = function(e) {
-    if("wayixia-box mouseselected" == this.className) 
+    if(this.className.indexOf('mouseselected') != -1) 
       return;
-    this.className="wayixia-box"
+    Q.removeClass(this, "mouseover");
   }
 
   box.onclick = function() {
-    if("wayixia-box mouseover" != this.className) {
-      this.className="wayixia-box";
+    if(this.className.indexOf('mouseselected') != -1) { 
+      Q.removeClass(this, "mouseselected"); 
     } else {
-      this.className="wayixia-box mouseselected";
-    }
+      Q.addClass(this, "mouseselected");
+    } 
   }
-
+  
   init(box);
 },
 
@@ -76,9 +76,11 @@ each_item : function(callback) {
 },
 
 select_all : function(selected) {
-  var className = (!!selected)?"wayixia-box mouseselected":"wayixia-box";
   this.each_item(function(item) {
-      item.className = className;
+    if(selected)
+      Q.addClass(item, 'mouseselected');
+    else
+      Q.removeClass(item, 'mouseselected');
   });
 },
 
