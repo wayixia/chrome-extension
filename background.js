@@ -49,7 +49,6 @@ function on_click_full_screenshot(tab) {
   chrome.tabs.sendRequest(tab.id, { type : "full-screenshot-begin"}, function(res) {
     if(!res)
       return;
-    console.log(res);
     var cols = Math.ceil(res.full_width*1.0 / res.page_width);
     var rows = Math.ceil(res.full_height*1.0 / res.page_height);
     var max_pos     = { rows: rows, cols:cols };
@@ -138,16 +137,12 @@ function block_image_add(url) {
   var images = JSON.parse(localStorage.getItem('block_images')) || {};
   images[url] = 1;
   localStorage.setItem('block_images', JSON.stringify(images));
-  console.log(images);
 }
 
 function block_image_remove(url) {
   var images = JSON.parse(localStorage.getItem('block_images')) || {};
-  console.log(images);
   delete images[url];
-  console.log(images);
   localStorage.setItem('block_images', JSON.stringify(images));
-  console.log(images);
 }
 
 function is_block_image(url) {

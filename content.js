@@ -19,7 +19,8 @@ function get_all_images() {
 }
 
 function get_document_images(doc) {
-  var links = [].slice.apply(doc.getElementsByTagName('img'));
+  var imgs = doc.getElementsByTagName('img');
+  var links = [].slice.apply(imgs);
   links = links.map(function(element) {
     return {src: element.src};
   });
@@ -79,7 +80,7 @@ var g_fullscreen_capture = {
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) 
 {
   switch (request.type) {
-  case "display-all-images":
+  case "display-all-images": 
     sendResponse(generate_response(get_all_images()));
     break;
   case "display-single-image":
