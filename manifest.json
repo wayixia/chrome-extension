@@ -1,6 +1,6 @@
 {
    "name": "挖一下",
-   "version": "1.5",
+   "version": "1.4",
    "manifest_version": 2,
    "short_name": "挖一下",
    "description": "图片批量下载和网页截屏(支持截全屏)",
