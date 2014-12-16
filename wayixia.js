@@ -26,7 +26,7 @@ function initialize () {
  
   Q.$('wayixia-show-block').onclick=function(){ 
     var block_display = '';
-    if("checked" == this.className) {
+    if(this.className.indexOf('checked') != -1) {
       Q.removeClass(this, "checked");
       block_display = "";
     } else {

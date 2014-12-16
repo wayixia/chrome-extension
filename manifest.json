@@ -1,12 +1,12 @@
 {
    "name": "挖一下",
-   "version": "1.4",
+   "version": "1.5",
    "manifest_version": 2,
    "short_name": "挖一下",
    "description": "图片批量下载和网页截屏(支持截全屏)",
    "permissions": ["activeTab", "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "background": {
-      "scripts": [ "background.js" ]
+      "scripts": [ "config.js", "background.js" ]
    },
    "content_scripts": [ 
      {

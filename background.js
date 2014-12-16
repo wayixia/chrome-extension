@@ -22,7 +22,7 @@ chrome.contextMenus.create({
 });
 
 function on_click_wa_single(info, tab) {
-	download_image(info.srcUrl);
+  download_image(info.srcUrl);
 }
 
 function on_click_wa_all(info, tab) {  
@@ -114,7 +114,7 @@ function create_display_full_screenshot(context_tab_id,  res) {
 
 function download_image(url) {
 	var options = {url: url};
-  var save_path = localStorage.getItem('save_path');
+  var save_path = user_config_get('save_path');
   
   var filename = '';
   var re = /data:(.+?);(\w+?),(.+)/;
@@ -133,26 +133,6 @@ function download_image(url) {
   chrome.downloads.download(options, function(id) {}); 
 }
 
-function block_image_add(url) {
-  var images = JSON.parse(localStorage.getItem('block_images')) || {};
-  images[url] = 1;
-  localStorage.setItem('block_images', JSON.stringify(images));
-}
-
-function block_image_remove(url) {
-  var images = JSON.parse(localStorage.getItem('block_images')) || {};
-  delete images[url];
-  localStorage.setItem('block_images', JSON.stringify(images));
-}
-
-function is_block_image(url) {
-  var images = JSON.parse(localStorage.getItem('block_images')) || {};
-  return !!images[url];
-}
-
-function block_images_all() {
-  return JSON.parse(localStorage.getItem('block_images')) || {};
-}
 
 function focus_or_create_tab(url, func) {
   var view = find_display_view(url);
@@ -175,4 +155,6 @@ function focus_or_create_tab(url, func) {
     chrome.tabs.create({"url":url, "selected":true}, function on_tab_created(tab) { display_tab_id = tab.id; });
   }
 }
+
+console.log('background.js init');
 

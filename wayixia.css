@@ -217,3 +217,28 @@ a#wayixia-qq {
   /*#CFBAAA, #FF931E*/
 }
 
+.wayixia-ctrl-button {
+  background: #F90;
+  text-indent: 0px; 
+  border: 0;
+  height: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  color:white;
+  text-shadow: 1px 0 #000;
+  padding: 0 10px;
+}
+
+
+/* ui class */
+.checkbox {
+  padding-left: 20px;
+  padding-right: 5px;
+  cursor: default;
+  background : transparent url(images/unchecked.gif) no-repeat 0 center;
+}
+
+.checkbox.checked {
+  background : transparent url(images/checked.gif) no-repeat 0 center;
+}
+
