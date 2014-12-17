@@ -24,5 +24,12 @@
      "default_title" : "挖一下",
      "default_icon"  : "icon16.png",
      "default_popup" : "popup.html"
+   },
+
+   "commands": {
+     "toggle-wa-all": {
+       "suggested_key": { "default": "Ctrl+Q" },
+       "description": "Toggle Wa all images"
+     }
    }
 }

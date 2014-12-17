@@ -23,7 +23,13 @@ function initialize () {
   var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
   this.images_box = new Q.images_box({container: 'wayixia-list'});
- 
+
+  Q.addEvent(document, 'keyup', function(evt) {
+    var evt = evt || window.event;
+    var kcode = evt.which || evt.keyCode;
+    if(kcode == 27) // ESC
+      deactive();
+  })
   Q.$('wayixia-show-block').onclick=function(){ 
     var block_display = '';
     if(this.className.indexOf('checked') != -1) {

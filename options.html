@@ -10,7 +10,6 @@
 <script src="Q.js/utils/ajax.js"></script>
 <script src="Q.js/ui/drag.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
-<script src="config.js"></script>
 <script src="images_box.js"></script>
 <script src="options.js"></script>
 <style>
@@ -45,13 +44,17 @@
 <body style="-moz-user-select:none;-webkit-user-select: none;">
 <img id="test-image" />
 <div id="layer">
-  <b>图片保存路径</b>(<font color="#999">相对于系统默认下载目录, 留空则使用系统默认路径</font>)<br> 
+  <b>图片保存路径</b>（<font color="#999">相对于系统默认下载目录, 留空则使用系统默认路径</font>）<br> 
   <input id="save_path" size="50"> <br>
   <a id="date_folder" class="checkbox">按日期归类</a>
   <br>
   <br>
   <b>屏蔽图片管理</b><br>
   <button id="manager_block_images" size="50">打开图片管理</button> <br>
+  <br>
+  <b>快捷键</b><br>
+  1. 采集页面图片（<font color="#999">Ctrl+Q</font>）<br>
+  2. 关闭采集页面（<font color="#999">ESC</font>）<br>
 </div>
 
 

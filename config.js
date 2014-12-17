@@ -27,7 +27,7 @@ function user_config_set(key, value) {
 }
 
 function user_config_get(key) {
-  return localStorage.getItem('save_path');
+  return localStorage.getItem(key);
 }
 
 function block_image_add(url) {

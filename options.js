@@ -20,7 +20,7 @@ function init_about() {
 function init() {
   var extension = chrome.extension.getBackgroundPage();
   Q.$('save_path').value = extension.user_config_get('save_path');
-  var date_folder = extension.user_config_get('date_folder');
+  var date_folder = (extension.user_config_get('date_folder') != '0');
   if(date_folder) {
     Q.addClass(Q.$('date_folder'), 'checked');
   } else {
@@ -33,7 +33,7 @@ function init() {
     buttons : [
       { text: '保 存', onclick: function() { 
          extension.user_config_set('save_path', Q.$('save_path').value);
-         extension.user_config_set('date_folder', (Q.$('date_folder').className.indexOf('checked') != -1));
+         extension.user_config_set('date_folder', (Q.$('date_folder').className.indexOf('checked') != -1)?1:0);
          new Q.MessageBox({title: '挖一下', content: '<div style="margin:auto; padding:20px;font-size:14px;">设置保存成功!</div>'});
          return false;
         }

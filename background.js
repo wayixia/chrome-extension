@@ -113,9 +113,9 @@ function create_display_full_screenshot(context_tab_id,  res) {
 }
 
 function download_image(url) {
-	var options = {url: url};
+  var options = {url: url};
   var save_path = user_config_get('save_path');
-  
+  var date_folder = (user_config_get('date_folder') != '0'); 
   var filename = '';
   var re = /data:(.+?);(\w+?),(.+)/;
   if(re.test(url)) { // data
@@ -126,10 +126,22 @@ function download_image(url) {
   } else { // url
     filename = url.replace(/^.*[\\\/]/, '');
   }
+  
+  var date_path = '';
+  if(date_folder) {
+    var date = new Date();
+    var month = date.getMonth()+1; //)>9?date.getMonth():'0'+date.getMonth();
+    var day = date.getDate();      //>9?date.getMonth():'0'+date.getDate();
+    month = month>9?month:('0'+month);
+    day   = day>9?day:('0'+day);
+    date_path = date.getFullYear()+'-'+month+'-'+day;
+    filename = date_path + '/' + filename;
+  }
 
   if(save_path) { 
-    options.filename = save_path+'/'+filename;	    
+    options.filename = save_path+'/'+filename;      
   }
+  options.filename = options.filename.replace(/[\\\/]+/, '/');
   chrome.downloads.download(options, function(id) {}); 
 }
 
@@ -155,6 +167,19 @@ function focus_or_create_tab(url, func) {
     chrome.tabs.create({"url":url, "selected":true}, function on_tab_created(tab) { display_tab_id = tab.id; });
   }
 }
+
+// add commands listener
+chrome.commands.onCommand.addListener(function(command) {
+  if (command == "toggle-wa-all") {
+    // Get the currently selected tab
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      // Toggle the wa all images
+      on_click_wa_all({}, tabs[0]);
+      //var current = tabs[0]
+      //chrome.tabs.update(current.id, {'pinned': !current.pinned});
+    });
+  }
+});
 
 console.log('background.js init');
 
