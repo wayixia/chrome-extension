@@ -30,32 +30,24 @@ function initialize () {
     if(kcode == 27) // ESC
       deactive();
   })
-  Q.$('wayixia-show-block').onclick=function(){ 
-    var block_display = '';
-    if(this.className.indexOf('checked') != -1) {
-      Q.removeClass(this, "checked");
-      block_display = "";
-    } else {
-      Q.addClass(this, "checked");
-      block_display = "none";
-    }
-    
-    _this.images_box.each_item(function(item) {
-      if(item.className.indexOf('blocked') != -1) {
-        item.style.display = block_display; 
-      }
-    });
-  }
 
-  Q.$('wayixia-select-all').onclick=function(){ 
-    if("checked" == this.className) {
-      this.className = "";
-      _this.images_box.select_all(false);
-    } else {
-      this.className = "checked";
-      _this.images_box.select_all(true); 
+  new Q.checkbox({id:'wayixia-show-block',
+    onchange: function(checked) {
+      var block_display = checked?'none':'';
+    
+      _this.images_box.each_item(function(item) {
+        if(Q.hasClass(item, 'blocked')) {
+          item.style.display = block_display; 
+        }
+      });
     }
-  }
+  }); 
+
+  new Q.checkbox({id: 'wayixia-select-all',
+    onchange: function(checked) {
+      _this.images_box.select_all(checked);
+    }  
+  });
 
   Q.$('wayixia-local-download').onclick=function() { 
     var extension = chrome.extension.getBackgroundPage();
@@ -69,13 +61,13 @@ function initialize () {
  
   Q.$('wayixia-add-block').onclick=function() {
     var box = new Q.MessageBox({
-      title: '挖一下',
-      content: '<div style="margin:auto; padding:20px;font-size:14px;">屏蔽后将不再显示, 确定要屏蔽选中图片吗?</div>',
+      title: locale_text('extName'),
+      content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('infoAddBlock')+'</div>',
       on_ok: function() {
         var remove_items = [];
         var extension = chrome.extension.getBackgroundPage();
         _this.images_box.each_item(function(item) {
-          if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+          if(Q.hasClass(item, 'mouseselected') && item.style.display == '') {
             var url = item.getAttribute('data-url');
             extension.block_image_add(url);
             Q.addClass(item, 'blocked');
@@ -83,7 +75,7 @@ function initialize () {
             blocked_images.push(url);
           }
         });
-        Q.$('wayixia-show-block').innerText = '已屏蔽('+blocked_images.length+')';
+        Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
 
         return true; 
       },
@@ -105,6 +97,8 @@ function initialize () {
 
   this.display_valid_images = function(imgs, data) {
     //filter image duplicated
+    if(!imgs)
+      return;
     var accept_images  = {};
     blocked_images = [];
     for(var i=0; i < imgs.length ; i++) {
@@ -115,7 +109,7 @@ function initialize () {
           blocked_images.push(imgs[i].src);
       }
     }
-    Q.$('wayixia-show-block').innerText = '已屏蔽('+blocked_images.length+')';
+    Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
     
     return t.images_box.display_images(accept_images, data, block_image_item(blocked_images));
   }
@@ -156,7 +150,7 @@ function initialize_screenshot() {
     on_xscroll: function(v) {
       g_screenshot_zoom = v;
       if(Q.$('wayixia-screenshot-image'))
-        Q.$('wayixia-screenshot-image').style.zoom = v/100.0;  //重新设置比例
+        Q.$('wayixia-screenshot-image').style.zoom = v/100.0;  
       Q.$('wayixia-screenshot-zoom').innerText = g_screenshot_zoom + '%';
     }
   });
@@ -188,6 +182,7 @@ function deactive() {
 Q.Ready(function() {
   document.body.ondragstart  =function() { return false; }
   document.body.onselectstart=function() { return false; }
+  Q.set_locale_text(locale_text);
   Q.$('wayixia-title-bar').onmouseover=function() { this.style.background='#FF9900';}
   Q.$('wayixia-title-bar').onmouseout=function() { this.style.background='#2d2d2d';}
   Q.$('wayixia-title-bar').onmousedown=function() { this.style.background='#FF6600';}
@@ -277,7 +272,7 @@ function draw_image(canvas, canvas_data, n, image_element) {
     } else { // last column
       x = canvas.width - canvas_data.size.page_width; 
     }
-    console.log('x:' + x + ', y=' + y); 
+    //console.log('x:' + x + ', y=' + y); 
     var memory_image = new Image();
     memory_image.onload =  (function(ctx, m, l, t) { 
       return function() {

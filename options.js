@@ -3,9 +3,10 @@ var g_option_window = null;
 var g_about_window = null;
 var g_block_window = null;
 var g_block_images_box = null;
+
 function init_about() {
   g_about_window = new Q.MessageBox({
-    title: '关于插件',
+    title: locale_text('extAbout'),
     width: 500,
     height: 300, 
     content: Q.$('layer-about'),
@@ -14,31 +15,29 @@ function init_about() {
   });
 
   Q.$('layer-about').style.visibility = 'visible';
-  Q.$('layer-about-version').innerText = '版本: v' + chrome.runtime.getManifest().version;
+  Q.$('layer-about-version').innerText = locale_text('extVersion') + ': v.' + chrome.runtime.getManifest().version;
 }
 
 function init() {
   var extension = chrome.extension.getBackgroundPage();
   Q.$('save_path').value = extension.user_config_get('save_path');
-  var date_folder = (extension.user_config_get('date_folder') != '0');
-  if(date_folder) {
-    Q.addClass(Q.$('date_folder'), 'checked');
-  } else {
-    Q.removeClass(Q.$('date_folder'), 'checked');
-  }
+  var option_date_folder = (extension.user_config_get('date_folder') != '0');
+  var date_folder = new Q.checkbox({ id : "date_folder" });
+  date_folder.set_checked(option_date_folder);
   g_option_window = new Q.Dialog({
-    title: '选项',
+    title: locale_text('extOptions'),
     content: Q.$('layer'),
     on_close: function() { window.close(); },
     buttons : [
-      { text: '保 存', onclick: function() { 
+      { text: locale_text('btnSave'), onclick: function() { 
          extension.user_config_set('save_path', Q.$('save_path').value);
-         extension.user_config_set('date_folder', (Q.$('date_folder').className.indexOf('checked') != -1)?1:0);
-         new Q.MessageBox({title: '挖一下', content: '<div style="margin:auto; padding:20px;font-size:14px;">设置保存成功!</div>'});
+         extension.user_config_set('date_folder', (date_folder.checked())?1:0);
+         new Q.MessageBox({title: locale_text('extName'), 
+           content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('saveOptions')+'</div>'});
          return false;
         }
       },
-      { text: '取 消', style: 'syscancelbtn', onclick: function() { return true; }          },
+      { text: locale_text('qCancel'), style: 'syscancelbtn', onclick: function() { return true; }          },
     ]  
   });
   Q.$('layer').style.visibility = 'visible';
@@ -52,27 +51,18 @@ function init() {
     g_block_images_box.display_images(block_images, {})();  
     display_block_images();
   }
-
-  Q.$('date_folder').onclick = function() {
-    if(this.className.indexOf('checked') != -1) {
-      Q.removeClass(this, "checked");
-    } else {
-      Q.addClass(this, "checked");
-    } 
-  }
 }
 
 function display_block_images() {
-  
   g_block_window = new Q.Dialog({
     parent: g_option_window,
     width: 800,
     height: 600,
-    title: '已屏蔽图片',
+    title: locale_text('haveBlocked'),
     content: Q.$('layer-block-images'),
     buttons: [
-      { text: '取消屏蔽', onclick: function() { block_images_remove(); return false; }  },
-      { text: '关 闭', style:'syscancelbtn', onclick: function() { return true; } 
+      { text: locale_text('btnUnblock'), onclick: function() { block_images_remove(); return false; }  },
+      { text: locale_text('qCancel'), style:'syscancelbtn', onclick: function() { return true; } 
       },
     ]
   });
@@ -101,6 +91,12 @@ Q.Ready(function() {
   document.body.ondragstart  =function() { return false; }
   document.body.onselectstart=function() { return false; }
   
+  Q.addEvent(document, 'keyup', function(evt) {
+    var evt = evt || window.event;
+    var kcode = evt.which || evt.keyCode;
+    if(kcode == 27) // ESC
+      window.close();
+  })
   var hash = location.hash;
   if(hash == "#about") {
     init_about();     

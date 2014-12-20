@@ -1,9 +1,10 @@
 {
-   "name": "挖一下",
+   "name": "__MSG_extName__",
    "version": "1.5",
+   "default_locale" : "zh_CN",
    "manifest_version": 2,
-   "short_name": "挖一下",
-   "description": "图片批量下载和网页截屏(支持截全屏)",
+   "short_name": "__MSG_extName__",
+   "description": "__MSG_extDescription__",
    "permissions": ["activeTab", "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "background": {
       "scripts": [ "config.js", "background.js" ]
@@ -21,7 +22,7 @@
       "48": "icon48.png"
    },
    "browser_action" : {
-     "default_title" : "挖一下",
+     "default_title" : "__MSG_extName__",
      "default_icon"  : "icon16.png",
      "default_popup" : "popup.html"
    },

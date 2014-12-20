@@ -1,0 +1,202 @@
+{
+  "extName" : {
+    "message" : "Wayixia Image Download And Full Page Screen Capture",
+    "description": "Wayixia Image Download and Full Page Screen Capture"
+  },
+
+  "extDescription": {
+    "message": "A tool for image download & full page screen capture",
+    "description": "A tool for image download & full page screen capture"
+  },
+
+  "extAbout": {
+    "message": "About",
+    "description": "About"
+  },
+
+  "extVersion" : {
+    "message": "Version",
+    "description": "Version"
+  },
+
+  "menuDigImages": {
+    "message": "采集图片",
+    "description": "采集图片"
+  },
+
+
+  "menuScreenshot": {
+    "message": "当前区域截图",
+    "description": "当前区域截图"
+  },
+
+
+  "menuFullPageScreenshot": {
+    "message": "完整网页截图",
+    "description": "完整网页截图"
+  },
+  
+  "filterBy": {
+    "message": "按条件过滤",
+    "description": "按条件过滤"
+  },
+
+  "filterWidth": {
+    "message": "Width",
+    "description": "Width"
+  },
+  
+  "filterHeight": {
+    "message": "Height",
+    "description": "Height"
+  },
+  
+  "selectAll": {
+    "message": "All",
+    "description": "All"
+  },
+
+  "haveBlocked": {
+    "message": "Blocked",
+    "description": "Blocked"
+  },
+
+  "addBlock": {
+    "message": "Block",
+    "description": "Block"
+  },
+  
+  "download": {
+    "message": "Download",
+    "description": "Download"
+  },
+  
+  "captureZoom": {
+    "message": "Zoom",
+    "description": "Zoom"
+  },
+  
+  "orignalSize": {
+    "message": "Orignal",
+    "description": "Orignal"
+  },
+  
+  "saveCapture": {
+    "message": "SaveCapture",
+    "description": "SaveCapture"
+  },
+
+  "infoAddBlock": {
+    "message": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?",
+    "description": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?"
+  },
+ 
+  "savePath":  {
+    "message" : "图片保存路径",
+    "description": "图片保存路径"
+  },
+
+  "savePathAttention" : {
+    "message": "相对于系统默认下载目录, 留空则使用系统默认路径",
+    "description": "相对于系统默认下载目录, 留空则使用系统默认路径"
+  },
+
+  "saveWithDateFolder" : {
+    "message": "按日期归类",
+    "description": "按日期归类"
+  },
+
+
+  "blockImageManage" : {
+    "message": "屏蔽图片管理",
+    "description": "屏蔽图片管理"
+  },
+
+  "openBlockImages" : {
+    "message": "打开图片管理",
+    "description": "打开图片管理"
+  },
+
+
+  "shortcut" : {
+    "message": "快捷键",
+    "description": "快捷键"
+  },
+
+
+  "digImage" : {
+    "message": "采集网页图片",
+    "description": "采集网页图片"
+  },
+
+  "closeExtensionWindow" : {
+    "message": "关闭插件窗口",
+    "description": "关闭插件窗口"
+  },
+
+  "developer" : {
+    "message": "Developer",
+    "description": "Developer"
+  },
+  
+  
+  "extOptions" : {
+    "message": "Options",
+    "description": "Options"
+  },
+
+  "extFeedBack": {
+    "message" : "Feedback",
+    "description" : "Feedback"
+  },
+
+  "saveOptions" : {
+    "message": "Setting save successfully!",
+    "description": "Setting save successfully!!"
+  },
+ 
+
+  "btnSave" : {
+    "message": "Save",
+    "description": "Save"
+  },
+
+
+  "btnOK" : {
+    "message": " OK ",
+    "description": " OK "
+  },
+  
+  "btnUnblock" : {
+    "message": "Unblock",
+    "description": "Unblock"
+  },
+  
+  "btnClose" : {
+    "message": "Close",
+    "description": "Close"
+  },
+
+
+  "qYes" : {
+    "message": " YES ",
+    "description": " YES "
+  },
+
+
+  "qNo" : {
+    "message": " NO ",
+    "description": " NO "
+  },
+
+
+  "qCancel" : {
+    "message": " Cancel ",
+    "description": " Cancel "
+  },
+
+  "dummy" : {
+    "message": "",
+    "description": ""
+  }
+}

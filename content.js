@@ -86,14 +86,14 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
   case "display-single-image":
     sendResponse(generate_response([{src: request.src}]));    
     break; 
-  case "full-screenshot-begin":
+  case "screenshot-begin":
     sendResponse(g_fullscreen_capture.start());
     break; 
-  case "full-screenshot-page":
+  case "screenshot-page":
     g_fullscreen_capture.capture_page(request.row, request.col); 
     sendResponse({});
     break; 
-  case "full-screenshot-end":
+  case "screenshot-end":
     g_fullscreen_capture.stop(); 
     sendResponse({});
     break;

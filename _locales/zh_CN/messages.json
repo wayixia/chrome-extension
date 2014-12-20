@@ -1,0 +1,202 @@
+{
+  "extName" : {
+    "message" : "挖一下",
+    "description": "挖一下"
+  },
+
+  "extDescription": {
+    "message": "图片批量下载 | 网页截屏",
+    "description": "图片批量下载 | 网页截屏"
+  },
+ 
+  "extAbout": {
+    "message": "关于插件",
+    "description": "关于插件"
+  },
+
+  "extVersion" : {
+    "message": "版本",
+    "description": "版本"
+  },
+
+  "menuDigImages": {
+    "message": "采集图片",
+    "description": "采集图片"
+  },
+
+
+  "menuScreenshot": {
+    "message": "当前区域截图",
+    "description": "当前区域截图"
+  },
+
+
+  "menuFullPageScreenshot": {
+    "message": "完整网页截图",
+    "description": "完整网页截图"
+  },
+  
+  "filterBy": {
+    "message": "按条件过滤",
+    "description": "按条件过滤"
+  },
+
+  "filterWidth": {
+    "message": "宽度",
+    "description": "宽度"
+  },
+  
+  "filterHeight": {
+    "message": "高度",
+    "description": "高度"
+  },
+  
+  "selectAll": {
+    "message": "全选",
+    "description": "全选"
+  },
+
+  "haveBlocked": {
+    "message": "已屏蔽图片",
+    "description": "已屏蔽图片"
+  },
+
+  "addBlock": {
+    "message": "屏蔽",
+    "description": "屏蔽"
+  },
+  
+  "download": {
+    "message": "下载",
+    "description": "下载"
+  },
+  
+  "captureZoom": {
+    "message": "截图缩放",
+    "description": "截图缩放"
+  },
+  
+  "orignalSize": {
+    "message": "原始大小",
+    "description": "原始大小"
+  },
+  
+  "saveCapture": {
+    "message": "保存截图",
+    "description": "保存截图"
+  },
+
+  "infoAddBlock": {
+    "message": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?",
+    "description": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?"
+  },
+ 
+  "savePath":  {
+    "message" : "图片保存路径",
+    "description": "图片保存路径"
+  },
+
+  "savePathAttention" : {
+    "message": "相对于系统默认下载目录, 留空则使用系统默认路径",
+    "description": "相对于系统默认下载目录, 留空则使用系统默认路径"
+  },
+
+  "saveWithDateFolder" : {
+    "message": "按日期归类",
+    "description": "按日期归类"
+  },
+
+
+  "blockImageManage" : {
+    "message": "屏蔽图片管理",
+    "description": "屏蔽图片管理"
+  },
+
+  "openBlockImages" : {
+    "message": "打开图片管理",
+    "description": "打开图片管理"
+  },
+
+
+  "shortcut" : {
+    "message": "快捷键",
+    "description": "快捷键"
+  },
+
+
+  "digImage" : {
+    "message": "采集网页图片",
+    "description": "采集网页图片"
+  },
+
+  "closeExtensionWindow" : {
+    "message": "关闭插件窗口",
+    "description": "关闭插件窗口"
+  },
+
+  "developer" : {
+    "message": "开发人员",
+    "description": "开发人员"
+  },
+  
+  
+  "extOptions" : {
+    "message": "选 项",
+    "description": "选 项"
+  },
+
+  "extFeedBack": {
+    "message" : "反馈",
+    "description" : "反馈"
+  },
+
+  "saveOptions" : {
+    "message": "设置保存成功!",
+    "description": "设置保存成功!"
+  },
+ 
+
+  "btnSave" : {
+    "message": "保 存",
+    "description": "保 存"
+  },
+
+
+  "btnOK" : {
+    "message": "确 定",
+    "description": "确 定"
+  },
+  
+  "btnUnblock" : {
+    "message": "解除屏蔽",
+    "description": "解除屏蔽"
+  },
+  
+  "btnClose" : {
+    "message": "关 闭",
+    "description": "关 闭"
+  },
+
+
+  "qYes" : {
+    "message": " 是 ",
+    "description": " 是 "
+  },
+
+
+  "qNo" : {
+    "message": " 否 ",
+    "description": " 否 "
+  },
+
+
+  "qCancel" : {
+    "message": " 取消 ",
+    "description": " 取消 "
+  },
+
+  "dummy" : {
+    "message": "",
+    "description": ""
+  }
+}

@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title> 挖一下 </title>
+<title> __MSG_extName__ </title>
 <link href="wayixia.css" rel="stylesheet" type="text/css"/>
 <link href="Q.js/ui.css" rel="stylesheet" type="text/css"/>
 <script src="Q.js/Q.js"></script>
@@ -11,6 +11,8 @@
 <script src="Q.js/ui/drag.js"></script>
 <script src="Q.js/ui/slider.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
+<script src="Q.js/ui/checkbox.js"></script>
+<script src="i18n.js"></script>
 <script src="images_box.js"></script>
 <script src="wayixia.js"></script>
 </head>
@@ -18,44 +20,44 @@
 <div id="wayixia-overlay">
   <div id="wayixia-container">
     <div id="wayixia-title-bar">
-       挖一下  <font style="color: #999;font-size: 16px;"> 图片采集批量下载 | 网页截屏 </font>
+       __MSG_extName__  <font style="color: #999;font-size: 16px;"> __MSG_extDescription__ </font>
     </div>
     <div id="wayixia-list"></div>
     <div id="dummy-div" style="height: 0px;"></div>
   </div>
   <div id="wayixia-toolbar">
-    <a style="font-weight: bold;">按条件过滤</a>
-    <a>宽度</a>
+    <a style="font-weight: bold;">__MSG_filterBy__</a>
+    <a>__MSG_filterWidth__</a>
     <a>
-      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 120px; margin-top: 10px;">
+      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 100px; margin-top: 10px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-width">0px</a>
-    <a>高度</a>
+    <a>__MSG_filterHeight__</a>
     <a> 
-      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 120px; margin-top: 10px;">
+      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 100px; margin-top: 10px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-height">0px</a>
-    <a id="wayixia-show-block" class="checkbox checked"> 已屏蔽(0) </a>
-    <a id="wayixia-select-all"> <button class="wayixia-ctrl-button">全选</button></a>
-    <a id="wayixia-add-block"> <button class="wayixia-ctrl-button">屏蔽</button></a>
-    <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">下载</button> </a>
-    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="">建议反馈</a>
+    <a id="wayixia-select-all" class="checkbox">__MSG_selectAll__</a>
+    <a id="wayixia-show-block" class="checkbox checked"> __MSG_haveBlocked__(0) </a>
+    <a id="wayixia-add-block"> <button class="wayixia-ctrl-button">__MSG_addBlock__</button></a>
+    <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">__MSG_download__</button> </a>
+    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="feedback" style="">__MSG_extFeedBack__</a>
   </div>
   <div id="wayixia-toolbar-screenshot">
-    <a style="font-weight: bold;">截图缩放</a>
+    <a style="font-weight: bold;">__MSG_captureZoom__</a>
     <a>
       <div id="x-ctrl-screenshot-zoom" class="q-slider x" style="width: 150px; margin-top: 10px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-screenshot-zoom">100%</a>
-    <a id="wayixia-screenshot-zoom100"> <button class="wayixia-ctrl-button">原始大小</button> </a>
-    <a id="wayixia-screenshot-download"> <button class="wayixia-ctrl-button">保存截图</button> </a>
-    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="加入反馈" style="">建议反馈</a>
+    <a id="wayixia-screenshot-zoom100"> <button class="wayixia-ctrl-button">__MSG_orignalSize__</button> </a>
+    <a id="wayixia-screenshot-download"> <button class="wayixia-ctrl-button">__MSG_saveCapture__</button> </a>
+    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="feedback" style="">__MSG_extFeedBack__</a>
   </div>
 
 </div>

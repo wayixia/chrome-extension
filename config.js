@@ -2,6 +2,14 @@
 //wayixia chrome plugin config api
 //
 
+function user_config_is_new() {
+  var current_version = user_config_get('wayixia_version');
+  console.log(current_version + ' -> ' + chrome.runtime.getManifest().version);
+  var result = (parseFloat(current_version, 10) < parseFloat(chrome.runtime.getManifest().version, 10));
+  user_config_set('wayixia_version', chrome.runtime.getManifest().version);
+  return result;
+}
+
 function user_config_load(data) {
   var config = JSON.parse(data);
   if(config) {
@@ -29,6 +37,8 @@ function user_config_set(key, value) {
 function user_config_get(key) {
   return localStorage.getItem(key);
 }
+
+
 
 function block_image_add(url) {
   var images = JSON.parse(localStorage.getItem('block_images')) || {};
