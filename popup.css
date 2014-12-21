@@ -1,0 +1,38 @@
+
+body {
+  margin:0;border:0;padding:0;width:__MSG_menuPopupWidth__px;height:160px;visibility:hidden;
+}
+
+.wayixia-menu {
+	height:160px;
+	width:__MSG_menuPopupWidth__px; 
+	border:0;
+  padding: 0px;
+}
+
+.wayixia-menu li {
+  background-color: transparent;
+	width:__MSG_menuPopupWidth__px; 
+	white-space: nowrap; 
+	height: 30px; 
+	padding: 0px; 
+	margin: 0px; 
+	display: block; 
+	cursor: default;
+ 	border: 0px solid blue;
+}
+
+.wayixia-menu li:hover, .wayixia-menu li:hover td {
+  background-color: #F90;
+  color: #FFF;
+}
+
+.wayixia-menu li:hover.seperator {
+  background-color:transparent
+}
+
+.wayixia-menu li.seperator {
+  height: 10px;
+}
+
+

@@ -16,10 +16,8 @@
 <script src="options.js"></script>
 <style>
 
-#layer,#layer-about {
+#layer-about {
   margin: auto;
-  backgroundss: #F1f1f1;
-  line-height: 30px;
   padding: 10px;
   font-size: 16px;
   visibility: hidden;
@@ -29,12 +27,18 @@
   line-height: 16px;
 }
 
-#layer-block-images {
+#layer,#layer-block-images {
   visibility:hidden;
   position: absolute;
   left: 0; top:0;
   right: 0; bottom: 30;
-  background: red;
+}
+
+#layer {
+  line-height: 30px;
+  font-size: 16px;
+  padding: 10px;
+  overflow:auto;
 }
 
 #layer-block-images #wayixia-container {
@@ -61,9 +65,9 @@
 
 
 <div id="layer-about">
-  <img src="icon128.png" style="float:left"> <p style="font-size: 22px;">__MSG_extName__ __MSG_extDescription__</p>
+  <img src="icon128.png" style="float:left; margin-bottom: 70px;"> <p style="font-size: 22px;line-height: 30px;"><b>__MSG_extShortName__</b> __MSG_extShortDescription__</p>
   <p id="layer-about-version"></p> 
-  <p>__MSG_developer__ &nbsp;&nbsp;&nbsp;life.qm@gmail.com</p>
+  <p>__MSG_developer__s: life.qm@gmail.com</p>
   <p style="color: #666;">2014&copy;wayixia.com</p>
   <div style="clear:both;"></div>
   <br>

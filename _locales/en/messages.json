@@ -1,12 +1,22 @@
 {
   "extName" : {
-    "message" : "Wayixia Image Download And Full Page Screen Capture",
-    "description": "Wayixia Image Download and Full Page Screen Capture"
+    "message" : "Batch Image Dig & Full Page Screen Capture",
+    "description": "Batch Image Dig & Full Page Screen Capture"
+  },
+  
+  "extShortName" : {
+    "message" : "Wayixia",
+    "description": "Wayixia"
   },
 
   "extDescription": {
-    "message": "A tool for image download & full page screen capture",
-    "description": "A tool for image download & full page screen capture"
+    "message": "An usefull tool for batch image download & full page screen capture",
+    "description": "An usefull tool for batch image download & full page screen capture"
+  },
+  
+  "extShortDescription": {
+    "message": "image download & full page screen capture",
+    "description": "image download & full page screen capture"
   },
 
   "extAbout": {
@@ -20,25 +30,30 @@
   },
 
   "menuDigImages": {
-    "message": "采集图片",
-    "description": "采集图片"
+    "message": "Dig Images",
+    "description": "Dig Images"
   },
 
 
   "menuScreenshot": {
-    "message": "当前区域截图",
-    "description": "当前区域截图"
+    "message": "Page Screen Capture",
+    "description": "Page Screen Capture"
   },
 
 
   "menuFullPageScreenshot": {
-    "message": "完整网页截图",
-    "description": "完整网页截图"
+    "message": "Full Page Screen Capture",
+    "description": "Full Page Screen Capture"
+  },
+  
+  "menuPopupWidth": {
+    "message": "200",
+    "description": "200"
   },
   
   "filterBy": {
-    "message": "按条件过滤",
-    "description": "按条件过滤"
+    "message": "Filter",
+    "description": "Filter"
   },
 
   "filterWidth": {
@@ -87,51 +102,51 @@
   },
 
   "infoAddBlock": {
-    "message": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?",
-    "description": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?"
+    "message": "The blocked images is never be displayed in the result page，confirm blocking these images?",
+    "description": "The blocked images is never be displayed in the result page，confirm blocking these images?"
   },
  
   "savePath":  {
-    "message" : "图片保存路径",
-    "description": "图片保存路径"
+    "message" : "Save path of downloaded images",
+    "description": "Save path of downloaded images"
   },
 
   "savePathAttention" : {
-    "message": "相对于系统默认下载目录, 留空则使用系统默认路径",
-    "description": "相对于系统默认下载目录, 留空则使用系统默认路径"
+    "message": "The path is relative chrome download path, empty means using the default chrome download path",
+    "description": "The path is relative chrome download path, empty means using the default chrome download path"
   },
 
   "saveWithDateFolder" : {
-    "message": "按日期归类",
-    "description": "按日期归类"
+    "message": "Date folder",
+    "description": "Date folder"
   },
 
 
   "blockImageManage" : {
-    "message": "屏蔽图片管理",
-    "description": "屏蔽图片管理"
+    "message": "Manage the blocked images",
+    "description": "Manage the blocked images"
   },
 
   "openBlockImages" : {
-    "message": "打开图片管理",
-    "description": "打开图片管理"
+    "message": "Open",
+    "description": "Open"
   },
 
 
   "shortcut" : {
-    "message": "快捷键",
-    "description": "快捷键"
+    "message": "Shortcut",
+    "description": "Shortcut"
   },
 
 
   "digImage" : {
-    "message": "采集网页图片",
-    "description": "采集网页图片"
+    "message": "Gather images",
+    "description": "Gather images"
   },
 
   "closeExtensionWindow" : {
-    "message": "关闭插件窗口",
-    "description": "关闭插件窗口"
+    "message": "Close extension page",
+    "description": "Close extension page"
   },
 
   "developer" : {
@@ -151,8 +166,8 @@
   },
 
   "saveOptions" : {
-    "message": "Setting save successfully!",
-    "description": "Setting save successfully!!"
+    "message": "Save successfully!",
+    "description": "Save successfully!!"
   },
  
 

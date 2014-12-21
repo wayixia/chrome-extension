@@ -8,7 +8,7 @@ function init_about() {
   g_about_window = new Q.MessageBox({
     title: locale_text('extAbout'),
     width: 500,
-    height: 300, 
+    height: 200, 
     content: Q.$('layer-about'),
     on_close: function() {window.close();},
     on_ok: function() {window.close();}
@@ -25,6 +25,8 @@ function init() {
   var date_folder = new Q.checkbox({ id : "date_folder" });
   date_folder.set_checked(option_date_folder);
   g_option_window = new Q.Dialog({
+    width: 600,
+    height: 430,
     title: locale_text('extOptions'),
     content: Q.$('layer'),
     on_close: function() { window.close(); },
@@ -32,7 +34,7 @@ function init() {
       { text: locale_text('btnSave'), onclick: function() { 
          extension.user_config_set('save_path', Q.$('save_path').value);
          extension.user_config_set('date_folder', (date_folder.checked())?1:0);
-         new Q.MessageBox({title: locale_text('extName'), 
+         new Q.MessageBox({title: locale_text('extShortName'), 
            content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('saveOptions')+'</div>'});
          return false;
         }

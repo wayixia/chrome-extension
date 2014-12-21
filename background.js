@@ -4,7 +4,7 @@
 //
 
 var display_tab_id = null;
-var plugin_name  = chrome.i18n.getMessage('extName');
+var plugin_name  = chrome.i18n.getMessage('menuDigImages');
 var block_images = {};
 
 // check new version for helper

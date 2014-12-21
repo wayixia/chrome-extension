@@ -3,8 +3,18 @@
     "message" : "挖一下",
     "description": "挖一下"
   },
+  
+  "extShortName" : {
+    "message" : "挖一下",
+    "description": "挖一下"
+  },
 
   "extDescription": {
+    "message": "图片批量下载 | 网页截屏",
+    "description": "图片批量下载 | 网页截屏"
+  },
+  
+  "extShortDescription": {
     "message": "图片批量下载 | 网页截屏",
     "description": "图片批量下载 | 网页截屏"
   },
@@ -34,6 +44,11 @@
   "menuFullPageScreenshot": {
     "message": "完整网页截图",
     "description": "完整网页截图"
+  },
+  
+  "menuPopupWidth": {
+    "message": "150",
+    "description": "150"
   },
   
   "filterBy": {
