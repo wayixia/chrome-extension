@@ -7,12 +7,15 @@
 
 Q.images_box = Q.extend({
 hwnd: null,
-__init__ : function(config) {
-  config = config || {};
-  this.hwnd = Q.$(config.container);
+__init__ : function(json) {
+  json = json || {};
+  this.hwnd = Q.$(json.container);
+  this.on_item_changed = json.on_item_changed || function(item, checked) {};
+  this.is_item_enabled = json.is_item_enabled || function(item) { return true; };
 },
 
 create_element: function(config, init) {
+  var _this = this;
   var box = document.createElement('DIV');
   box.setAttribute('data-url', config.src);
   box.setAttribute('data-width', config.width);
@@ -42,28 +45,36 @@ create_element: function(config, init) {
   inner_img.style.cssText = 'margin-top:'+config.margin_top+'px;width:'+config.size_width+'px;height:'+config.size_height+'px;'
   
   box.onmouseover = function() {
-    if(this.className.indexOf('mouseselected') != -1) 
+    if(!_this.is_item_enabled(this))
+      return;
+    if(Q.hasClass(this, 'mouseselected')) 
       return;
     Q.addClass(this, "mouseover");
   } 
   
   box.onmouseout = function(e) {
-    if(this.className.indexOf('mouseselected') != -1) 
+    if(!_this.is_item_enabled(this))
+      return;
+    if(Q.hasClass(this, 'mouseselected')) 
       return;
     Q.removeClass(this, "mouseover");
   }
 
   box.onclick = function() {
-    if(this.className.indexOf('mouseselected') != -1) { 
+    if(!_this.is_item_enabled(this))
+      return;
+    var has = Q.hasClass(this, 'mouseselected');
+    if(has) { 
       Q.removeClass(this, "mouseselected"); 
     } else {
       Q.addClass(this, "mouseselected");
-    } 
+    }
+    _this.on_item_changed(this, !has); 
   }
   
   init(box);
 },
-
+  
 each_item : function(callback) {
   var items = this.hwnd.childNodes;
   for(var i=0; i < items.length; i++) {
@@ -75,14 +86,18 @@ each_item : function(callback) {
  
 },
 
-select_all : function(selected) {
-  this.each_item(function(item) {
-    if(selected)
-      Q.addClass(item, 'mouseselected');
-    else
-      Q.removeClass(item, 'mouseselected');
-  });
+select_all : function(checked) {
+  this.each_item((function(o, state) { return function(item) { o.set_check(item, state); } })(this, checked));
 },
+
+set_check : function(item, checked) {
+  if(checked)
+    Q.addClass(item, 'mouseselected');
+  else
+    Q.removeClass(item, 'mouseselected');
+
+  this.on_item_changed(item, checked); 
+}, 
 
 //
 // Returns a function which will handle displaying information about the

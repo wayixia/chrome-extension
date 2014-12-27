@@ -3,6 +3,18 @@
  *  
  * */
 
+// impliment prototype of currentStyle
+var agent   = function() { return navigator.userAgent.toLowerCase(); }
+var isW3C   = function() { return document.getElementById ? true:false; }
+var isNS6   = function() { return isW3C() && (navigator.appName=="Netscape"); }
+
+//为Firefox下的DOM对象增加innerText属性
+if(isNS6()) { //firefox innerText define
+  HTMLElement.prototype.__defineGetter__("innerText",    function() { return this.textContent; });
+  HTMLElement.prototype.__defineSetter__("innerText",    function(sText) { this.textContent=sText; });
+  HTMLElement.prototype.__defineGetter__("currentStyle", function () { return this.ownerDocument.defaultView.getComputedStyle(this, null); });     
+}
+
 function get_all_images() {
   var links  = [];
   var docs = [].slice.apply(window.frames);
@@ -24,6 +36,24 @@ function get_document_images(doc) {
   links = links.map(function(element) {
     return {src: element.src};
   });
+  
+  var all = document.all;
+  for(var i=0; i != all.length; i++) {
+    var e = all[i];
+    if(e.nodeType == 1) {
+      var url = "";
+      if(e.currentStyle && e.currentStyle.backgroundImage) {
+        url = e.currentStyle.backgroundImage
+      } else if(e.style && e.style.backgroundImage) {
+        url = e.style.backgroundImage;        
+      }
+      if(url !="" && /^url\(/.test(url)) {
+        url =url.replace(/^url\(/, '').replace(/\)$/, '');       
+        links.push({src: url});
+      }
+    }
+  }
+
   return links;
 }
 
@@ -102,3 +132,4 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
     break;
   }
 });
+

@@ -52,8 +52,8 @@
   },
   
   "filterBy": {
-    "message": "按条件过滤",
-    "description": "按条件过滤"
+    "message": "过滤",
+    "description": "过滤"
   },
 
   "filterWidth": {
@@ -72,8 +72,8 @@
   },
 
   "haveBlocked": {
-    "message": "已屏蔽图片",
-    "description": "已屏蔽图片"
+    "message": "已屏蔽",
+    "description": "已屏蔽"
   },
 
   "addBlock": {

@@ -55,9 +55,6 @@ a#wayixia-qq {
   margin: 10px;
 }
 
-
-
-
 #wayixia-container, #wayixia-container * {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
@@ -85,7 +82,7 @@ a#wayixia-qq {
   left: 0px;
   right: 0px;
   height: 45px;
-  background: #F8F8F8;
+  background: rgba(248,248,248,0.5);
   box-shadow:0 1px 3px rgba(0,0,0,.3);
   -moz-box-shadow:0 1px 3px rgba(0,0,0,.3);
   -webkit-box-shadow:0 1px 3px rgba(0,0,0,.3)
@@ -94,11 +91,11 @@ a#wayixia-qq {
 
 #wayixia-toolbar a, #wayixia-toolbar-screenshot a {
   font-size: 16px;
-  color: #000;
+  color: #777;
   height: 30px;
   line-height: 30px;
   text-decoration: none;
-  margin-left: 10px;
+  margin-left: 5px;
   display:inline-block;
 }
 
@@ -229,18 +226,8 @@ a#wayixia-qq {
   padding: 0 10px;
 }
 
-
-/* ui class */
-.checkbox {
-  padding-left: 20px;
-  padding-right: 5px;
-  cursor: default;
-  background : transparent url(images/unchecked.gif) no-repeat 0 center;
+a#wayixia-filter-icon {
+  background: transparent url(images/filter.png) no-repeat left center;
+  width: 23px;
+  margin-left: 10px;
 }
-
-.checkbox.checked {
-  background : transparent url(images/checked.gif) no-repeat 0 center;
-}
-
-
-

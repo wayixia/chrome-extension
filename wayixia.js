@@ -19,10 +19,23 @@ function is_block_image(url) {
 function initialize () {
   var _this = t = this;
   var blocked_images = [];
+  var selected_length = 0;
+  var accept_length  = 0;
   var wayixia_images_loading = 0;
   var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
-  this.images_box = new Q.images_box({container: 'wayixia-list'});
+  this.images_box = new Q.images_box({container: 'wayixia-list', 
+    on_item_changed: function(item, check) {
+      if(item.style.display == '') { 
+        if(check) {
+          selected_length++;
+        } else {
+          selected_length--;
+        }
+        update_ui_count();
+      }
+    }
+  });
 
   Q.addEvent(document, 'keyup', function(evt) {
     var evt = evt || window.event;
@@ -33,15 +46,21 @@ function initialize () {
 
   new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {
-      var block_display = checked?'none':'';
-    
       _this.images_box.each_item(function(item) {
         if(Q.hasClass(item, 'blocked')) {
-          item.style.display = block_display; 
+          if(checked) {
+            item.style.display = 'none';
+            accept_length--; 
+          } else {
+            item.style.display = '';
+            accept_length++; 
+          }
         }
       });
+
+      update_ui_count();
     }
-  }); 
+  });
 
   new Q.checkbox({id: 'wayixia-select-all',
     onchange: function(checked) {
@@ -70,26 +89,44 @@ function initialize () {
           if(Q.hasClass(item, 'mouseselected') && item.style.display == '') {
             var url = item.getAttribute('data-url');
             extension.block_image_add(url);
-            Q.addClass(item, 'blocked');
-            item.style.display = 'none';
             blocked_images.push(url);
+            block_item(item, true);
           }
         });
-        Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
+
+        update_ui_count();
+        //Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
 
         return true; 
       },
       on_no: function() { return true; },
     });
-  } 
+  }
 
-  function block_image_item(blocked_images) {
+  function block_item(item, blocked) {
+    if(blocked) {
+      Q.addClass(item, 'blocked');
+      item.style.display = 'none';
+      _this.images_box.set_check(item, false);
+      accept_length--;
+    } else {
+      Q.removeClass(item, 'blocked');
+      item.style.display = '';
+      accept_length++;
+    }
+  }
+
+  function update_ui_count() {
+    Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
+    Q.$('wayixia-select-all').innerText = locale_text('selectAll') + '('+selected_length+'/'+accept_length+')';
+  }
+
+  function block_image_items(blocked_images) {
     return function(item) {
       var url = item.getAttribute('data-url');
       for(var i=0; i < blocked_images.length; i++) {
         if(url == blocked_images[i]) {
-          Q.addClass(item, 'blocked');
-          item.style.display = 'none';
+          block_item(item, true); 
         }
       }
     }
@@ -100,18 +137,22 @@ function initialize () {
     if(!imgs)
       return;
     var accept_images  = {};
+    accept_length  = 0;
+    selected_length = 0;
     blocked_images = [];
     for(var i=0; i < imgs.length ; i++) {
-      if(imgs[i].src) {
-        var blocked = _this.is_block_image(imgs[i].src);
-        accept_images[imgs[i].src] = blocked;
-        if(blocked)  
-          blocked_images.push(imgs[i].src);
+      var url = imgs[i].src;
+      if(url && (accept_images[url] == undefined) ) {
+        var blocked = _this.is_block_image(url);
+        accept_images[url] = blocked;
+        accept_length++;
+        if(blocked) 
+          blocked_images.push(url);
       }
     }
-    Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
-    
-    return t.images_box.display_images(accept_images, data, block_image_item(blocked_images));
+    accept_length -= blocked_images.length;
+    update_ui_count();
+    return t.images_box.display_images(accept_images, data, block_image_items(blocked_images));
   }
 
   var g_min_width = 0;
