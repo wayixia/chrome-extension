@@ -8,7 +8,7 @@ function init(){
   Q.$('wayixia-all-images').onclick = function() {
     chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
      function(tabs){
-       extension.on_click_wa_all({}, tabs[0]);
+       extension.on_click_wa_all({track_from: 'from_popup'}, tabs[0]);
      }
     );
     deactive();

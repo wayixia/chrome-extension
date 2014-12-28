@@ -99,6 +99,10 @@ a#wayixia-qq {
   display:inline-block;
 }
 
+#wayixia-screenshot-image {
+  position: absolute;
+}
+
 .wayixia-box {
   position: relative;
   padding: 0;

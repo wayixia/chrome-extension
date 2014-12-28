@@ -51,11 +51,6 @@
     "description": "150"
   },
   
-  "filterBy": {
-    "message": "过滤",
-    "description": "过滤"
-  },
-
   "filterWidth": {
     "message": "宽度",
     "description": "宽度"

@@ -61,15 +61,7 @@ create_element: function(config, init) {
   }
 
   box.onclick = function() {
-    if(!_this.is_item_enabled(this))
-      return;
-    var has = Q.hasClass(this, 'mouseselected');
-    if(has) { 
-      Q.removeClass(this, "mouseselected"); 
-    } else {
-      Q.addClass(this, "mouseselected");
-    }
-    _this.on_item_changed(this, !has); 
+    _this.set_check(this, !Q.hasClass(this, 'mouseselected'));
   }
   
   init(box);
@@ -91,6 +83,10 @@ select_all : function(checked) {
 },
 
 set_check : function(item, checked) {
+  if(!this.is_item_enabled(item))
+      return;
+  if(checked == Q.hasClass(item, 'mouseselected'))
+    return;
   if(checked)
     Q.addClass(item, 'mouseselected');
   else
@@ -153,7 +149,6 @@ check_size : function(item, min_width, min_height) {
   var width = item.getAttribute('data-width');
   var height = item.getAttribute('data-height');
   item.style.display = ((width < min_width) || (height < min_height)) ? 'none':'';
-
 },
 
 copy_data : function(src_object) {

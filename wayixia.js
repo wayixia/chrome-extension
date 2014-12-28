@@ -19,41 +19,35 @@ function is_block_image(url) {
 function initialize () {
   var _this = t = this;
   var blocked_images = [];
-  var selected_length = 0;
   var accept_length  = 0;
   var wayixia_images_loading = 0;
   var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
-  this.images_box = new Q.images_box({container: 'wayixia-list', 
+  
+  var wayixia_images_box = new Q.images_box({container: 'wayixia-list', 
     on_item_changed: function(item, check) {
       if(item.style.display == '') { 
-        if(check) {
-          selected_length++;
-        } else {
-          selected_length--;
-        }
         update_ui_count();
       }
+    },
+    is_item_enabled: function(item) {
+      return (item.style.display != 'none');
     }
   });
 
-  Q.addEvent(document, 'keyup', function(evt) {
-    var evt = evt || window.event;
-    var kcode = evt.which || evt.keyCode;
-    if(kcode == 27) // ESC
-      deactive();
-  })
-
   new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {
-      _this.images_box.each_item(function(item) {
+      wayixia_track_button_click(Q.$('wayixia-show-block'));
+      var visible = !checked;
+      wayixia_images_box.each_item(function(item) {
         if(Q.hasClass(item, 'blocked')) {
-          if(checked) {
-            item.style.display = 'none';
-            accept_length--; 
-          } else {
+          if(visible) {
             item.style.display = '';
             accept_length++; 
+          } else {
+            accept_length--; 
+            wayixia_images_box.set_check(item, false);
+            item.style.display = 'none';
           }
         }
       });
@@ -62,97 +56,109 @@ function initialize () {
     }
   });
 
-  new Q.checkbox({id: 'wayixia-select-all',
+  var button_select_all = new Q.checkbox({id: 'wayixia-select-all',
     onchange: function(checked) {
-      _this.images_box.select_all(checked);
+       wayixia_track_button_click(Q.$('wayixia-select-all'));
+      wayixia_images_box.select_all(checked);
     }  
   });
 
-  Q.$('wayixia-local-download').onclick=function() { 
-    var extension = chrome.extension.getBackgroundPage();
-    _this.images_box.each_item(function(item) {
-       if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-         var url = item.getAttribute('data-url');
-         extension.download_image(url);
-       }
-    });
-  }
- 
   Q.$('wayixia-add-block').onclick=function() {
+    wayixia_track_button_click(this);
     var box = new Q.MessageBox({
       title: locale_text('extName'),
       content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('infoAddBlock')+'</div>',
       on_ok: function() {
         var remove_items = [];
         var extension = chrome.extension.getBackgroundPage();
-        _this.images_box.each_item(function(item) {
+        wayixia_images_box.each_item(function(item) {
           if(Q.hasClass(item, 'mouseselected') && item.style.display == '') {
-            var url = item.getAttribute('data-url');
-            extension.block_image_add(url);
-            blocked_images.push(url);
+            if(!Q.hasClass(item, 'blocked')) {
+              var url = item.getAttribute('data-url');
+              extension.block_image_add(url);
+              blocked_images.push(url);
+	    }
             block_item(item, true);
+            accept_length--;
           }
         });
 
         update_ui_count();
-        //Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
-
         return true; 
       },
       on_no: function() { return true; },
     });
   }
 
+
+  Q.$('wayixia-local-download').onclick=function() {
+    wayixia_track_button_click(this);
+    var extension = chrome.extension.getBackgroundPage();
+    wayixia_images_box.each_item(function(item) {
+       if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+         var url = item.getAttribute('data-url');
+         extension.download_image(url);
+       }
+    });
+  }
+  
   function block_item(item, blocked) {
     if(blocked) {
       Q.addClass(item, 'blocked');
       item.style.display = 'none';
-      _this.images_box.set_check(item, false);
-      accept_length--;
+      wayixia_images_box.set_check(item, false);
     } else {
       Q.removeClass(item, 'blocked');
       item.style.display = '';
-      accept_length++;
     }
   }
 
   function update_ui_count() {
     Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
-    Q.$('wayixia-select-all').innerText = locale_text('selectAll') + '('+selected_length+'/'+accept_length+')';
+    Q.$('wayixia-select-all').innerText = locale_text('selectAll') + '('+accept_length+')';
   }
 
-  function block_image_items(blocked_images) {
+  function init_block_image_items(blocked_images) {
     return function(item) {
+      var is_blocked = false;
       var url = item.getAttribute('data-url');
       for(var i=0; i < blocked_images.length; i++) {
         if(url == blocked_images[i]) {
           block_item(item, true); 
+          is_blocked = true;
         }
+      }
+
+      if(!is_blocked) {
+        accept_length++;
+        update_ui_count();
       }
     }
   }
 
+  // entry display images
   this.display_valid_images = function(imgs, data) {
-    //filter image duplicated
-    if(!imgs)
-      return;
+    // init data
     var accept_images  = {};
     accept_length  = 0;
-    selected_length = 0;
     blocked_images = [];
+
+    if(!imgs)
+      return;
+    //filter image duplicated
     for(var i=0; i < imgs.length ; i++) {
       var url = imgs[i].src;
       if(url && (accept_images[url] == undefined) ) {
         var blocked = _this.is_block_image(url);
         accept_images[url] = blocked;
-        accept_length++;
+        //accept_length++;
         if(blocked) 
           blocked_images.push(url);
       }
     }
-    accept_length -= blocked_images.length;
+    //accept_length -= blocked_images.length;
     update_ui_count();
-    return t.images_box.display_images(accept_images, data, block_image_items(blocked_images));
+    return wayixia_images_box.display_images(accept_images, data, init_block_image_items(blocked_images));
   }
 
   var g_min_width = 0;
@@ -160,8 +166,8 @@ function initialize () {
   var e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) {
       g_min_width = v*10;
-      _this.images_box.each_item(function(item) {
-        _this.images_box.check_size(item, g_min_width, g_min_height);
+      wayixia_images_box.each_item(function(item) {
+        wayixia_images_box.check_size(item, g_min_width, g_min_height);
       });
       Q.$('wayixia-min-width').innerText = g_min_width + 'px';
     }
@@ -170,8 +176,8 @@ function initialize () {
   var e_height = new Q.slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) { 
       g_min_height = v*10;
-      _this.images_box.each_item(function(item) {
-        _this.images_box.check_size(item, g_min_width, g_min_height);
+      wayixia_images_box.each_item(function(item) {
+        wayixia_images_box.check_size(item, g_min_width, g_min_height);
       });
       Q.$('wayixia-min-height').innerText = g_min_height + 'px';
     }
@@ -180,6 +186,16 @@ function initialize () {
   if(request_data.imgs) {
     _this.display_valid_images(request_data.imgs, request_data.data)();
   }
+
+  // shortcut
+  Q.addEvent(document, 'keyup', function(evt) {
+    var evt = evt || window.event;
+    var kcode = evt.which || evt.keyCode;
+    if(kcode == 27) {// ESC
+      wayixia_track_event('deactive', 'shortcut-ESC');
+      deactive();
+    }
+  });
 
   content_load_ok = true;
   console.log('content is loaded');
@@ -199,6 +215,7 @@ function initialize_screenshot() {
   Q.$('wayixia-screenshot-zoom').innerText = e_zoom.get_value() + '%';
   Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.set_value(100); }
   Q.$('wayixia-screenshot-download').onclick = function() {
+    wayixia_track_button_click(this);
     if(Q.$('wayixia-screenshot-image')) {
       extension.download_image(Q.$('wayixia-screenshot-image').src);
     }
@@ -227,7 +244,10 @@ Q.Ready(function() {
   Q.$('wayixia-title-bar').onmouseover=function() { this.style.background='#FF9900';}
   Q.$('wayixia-title-bar').onmouseout=function() { this.style.background='#2d2d2d';}
   Q.$('wayixia-title-bar').onmousedown=function() { this.style.background='#FF6600';}
-  Q.$('wayixia-title-bar').onclick=function(){ deactive();  }
+  Q.$('wayixia-title-bar').onclick=function(){ 
+    wayixia_track_event('deactive', 'topbar');
+    deactive();  
+  }
   initialize_screenshot();
   initialize();
   set_ui();
@@ -244,6 +264,11 @@ function back2page() {
 
 function display_images(tab_id, packet) {
   console.log('display_images called tab_id ->' + tab_id);
+  if(packet.track_from) {
+    wayixia_track_event("display_images", packet.track_from);
+  } else {
+    wayixia_track_event("display_images", "from_menu");  
+  }
   set_ui('images');
   source_tab_id = tab_id;
   if(content_load_ok) {
@@ -258,6 +283,7 @@ function display_images(tab_id, packet) {
 }
 
 function display_full_screenshot(tab_id, canvas_data) {
+  wayixia_track_event("display_full_screenshot", "from_menu");  
   set_ui('screenshot');
   source_tab_id = tab_id;
   var wayixia_container = Q.$('wayixia-list');
@@ -266,9 +292,11 @@ function display_full_screenshot(tab_id, canvas_data) {
   wayixia_container.innerHTML = '';
   wayixia_container.appendChild(img);
   merge_images(canvas_data, img);
+  Q.drag.attach_object(img, {self: true});
 }
 
 function display_screenshot(tab_id, image_data) {
+  wayixia_track_event("display_screenshot", "from_menu");  
   set_ui('screenshot');
   source_tab_id = tab_id;
   var wayixia_container = Q.$('wayixia-list');
@@ -277,6 +305,7 @@ function display_screenshot(tab_id, image_data) {
   wayixia_container.innerHTML = '';
   wayixia_container.appendChild(img);
   img.src = image_data;
+  Q.drag.attach_object(img, {self: true});
 }
 
 /* call background script end */

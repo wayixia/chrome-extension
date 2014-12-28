@@ -51,11 +51,6 @@
     "description": "200"
   },
   
-  "filterBy": {
-    "message": "Filter",
-    "description": "Filter"
-  },
-
   "filterWidth": {
     "message": "Width",
     "description": "Width"
@@ -87,18 +82,18 @@
   },
   
   "captureZoom": {
-    "message": "Zoom",
-    "description": "Zoom"
+    "message": "ZOOM",
+    "description": "ZOOM"
   },
   
   "orignalSize": {
-    "message": "Orignal",
-    "description": "Orignal"
+    "message": "1 : 1",
+    "description": "1 : 1"
   },
   
   "saveCapture": {
-    "message": "SaveCapture",
-    "description": "SaveCapture"
+    "message": "Save Capture",
+    "description": "Save Capture"
   },
 
   "infoAddBlock": {
