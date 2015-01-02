@@ -10,7 +10,7 @@ var content_load_ok = false;
 var g_screenshot_zoom = 100;
 var source_tab_id = null;
 var request_data = {imgs: null, data: null};
-
+var g_screenshot_dialog = null;
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
   return extension.is_block_image(url); 
@@ -23,6 +23,7 @@ function initialize () {
   var wayixia_images_loading = 0;
   var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
+
   
   var wayixia_images_box = new Q.images_box({container: 'wayixia-list', 
     on_item_changed: function(item, check) {
@@ -35,7 +36,7 @@ function initialize () {
     }
   });
 
-  new Q.checkbox({id:'wayixia-show-block',
+  var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {
       wayixia_track_button_click(Q.$('wayixia-show-block'));
       var visible = !checked;
@@ -67,6 +68,7 @@ function initialize () {
     wayixia_track_button_click(this);
     var box = new Q.MessageBox({
       title: locale_text('extName'),
+      wstyle: "q-attr-no-icon",
       content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('infoAddBlock')+'</div>',
       on_ok: function() {
         var remove_items = [];
@@ -77,7 +79,7 @@ function initialize () {
               var url = item.getAttribute('data-url');
               extension.block_image_add(url);
               blocked_images.push(url);
-	    }
+	          }
             block_item(item, true);
             accept_length--;
           }
@@ -138,7 +140,7 @@ function initialize () {
 
   // entry display images
   this.display_valid_images = function(imgs, data) {
-    // init data
+    // init datacheckbox_show_block.checked()
     var accept_images  = {};
     accept_length  = 0;
     blocked_images = [];
@@ -167,7 +169,8 @@ function initialize () {
     on_xscroll: function(v) {
       g_min_width = v*10;
       wayixia_images_box.each_item(function(item) {
-        wayixia_images_box.check_size(item, g_min_width, g_min_height);
+        if(!(checkbox_show_block.checked() && Q.hasClass(item, 'blocked')))
+          wayixia_images_box.check_size(item, g_min_width, g_min_height);
       });
       Q.$('wayixia-min-width').innerText = g_min_width + 'px';
     }
@@ -177,7 +180,8 @@ function initialize () {
     on_xscroll: function(v) { 
       g_min_height = v*10;
       wayixia_images_box.each_item(function(item) {
-        wayixia_images_box.check_size(item, g_min_width, g_min_height);
+        if(!(checkbox_show_block.checked() && Q.hasClass(item, 'blocked')))
+          wayixia_images_box.check_size(item, g_min_width, g_min_height);
       });
       Q.$('wayixia-min-height').innerText = g_min_height + 'px';
     }
@@ -196,7 +200,9 @@ function initialize () {
       deactive();
     }
   });
-
+  
+  // test code
+  //drag_screen_images_begin();
   content_load_ok = true;
   console.log('content is loaded');
 };
@@ -224,11 +230,11 @@ function initialize_screenshot() {
 
 function set_ui(name) {
   if(name == 'screenshot') {
-    Q.$('wayixia-toolbar').style.display = 'none';
-    Q.$('wayixia-toolbar-screenshot').style.display = '';
+    Q.$('wayixia-toolbar').style.visibility = 'hidden';
+    Q.$('wayixia-toolbar-screenshot').style.visibility = 'visible';
   } else {
-    Q.$('wayixia-toolbar').style.display = '';
-    Q.$('wayixia-toolbar-screenshot').style.display = 'none';
+    Q.$('wayixia-toolbar').style.visibility = 'visible';
+    Q.$('wayixia-toolbar-screenshot').style.visibility = 'hidden';
   }
 }
 
@@ -241,9 +247,6 @@ Q.Ready(function() {
   document.body.ondragstart  =function() { return false; }
   document.body.onselectstart=function() { return false; }
   Q.set_locale_text(locale_text);
-  Q.$('wayixia-title-bar').onmouseover=function() { this.style.background='#FF9900';}
-  Q.$('wayixia-title-bar').onmouseout=function() { this.style.background='#2d2d2d';}
-  Q.$('wayixia-title-bar').onmousedown=function() { this.style.background='#FF6600';}
   Q.$('wayixia-title-bar').onclick=function(){ 
     wayixia_track_event('deactive', 'topbar');
     deactive();  
@@ -257,6 +260,54 @@ function back2page() {
   if(source_tab_id) {
     chrome.tabs.update(source_tab_id, {selected: true});
   }
+}
+
+
+var scroll_loadding = null;
+function drag_screen_images_begin() {
+  
+  // create dialog of screen capture
+  g_screenshot_dialog = new Q.Dialog({
+    wstyle: "q-attr-no-title|q-attr-progress",
+    width: 500, height: 100,
+    title: Q.locale_text("extName"),
+    content: Q.$('wayixia-progress')
+  });
+  Q.$('wayixia-progress').style.visibility = "visible";
+  g_screenshot_dialog.domodal();
+  g_screenshot_dialog.center();
+  var w = Q.$("wayixia-progress-bar").offsetWidth;
+  scroll_loadding = new Q.slider({id: 'x-ctrl-loadding', min: 0, max: 100, value: 0, 
+    on_xscroll: function(v) {
+      Q.$("wayixia-progress-bar-thumb").style.width = (v*w/100)+'px';
+    }
+  });
+
+}
+
+function drag_screen_images_update(n, total) {
+  var v = n*scroll_loadding.max*1.0/total;
+  console.log("drag_screen_images_update ->" + v);
+  scroll_loadding.set_value(v);
+}
+
+function drag_screen_images_end() {
+  scroll_loadding.set_value(scroll_loadding.max);
+  (new Q.Animate({
+        tween: 'cubic',
+        ease: 'easyin',
+        max: 1000,
+        begin: 0,
+        duration: 100,
+        bind : function(x) {
+          console.log(x);
+          if(x == this.max) {
+            g_screenshot_dialog.end_dialog();
+          } else {
+            g_screenshot_dialog.wnd().style.opacity = ((this.max-x)*1.0) / this.max;
+          }
+        }
+  })).play();
 }
 
 
@@ -321,9 +372,14 @@ function merge_images(canvas_data, image_element) {
 
 function draw_image(canvas, canvas_data, n, image_element) {
   var screenshots = canvas_data.screenshots;
+  if(n == 0) {
+       drag_screen_images_begin();
+  }
+  drag_screen_images_update(n+1, screenshots.length);
   if(n >= screenshots.length ) {
     // draw completed
     image_element.src = canvas.toDataURL('image/png');
+    drag_screen_images_end();
   } else {
     console.log('draw '+n+' image');
     var draw_context = canvas.getContext("2d");
@@ -347,7 +403,7 @@ function draw_image(canvas, canvas_data, n, image_element) {
     memory_image.onload =  (function(ctx, m, l, t) { 
       return function() {
         console.log('image load ok');
-        ctx.drawImage(m,l,t); 
+        ctx.drawImage(m,l,t);
         draw_image(canvas, canvas_data, ++n, image_element);
       }
     })(draw_context, memory_image, x, y);

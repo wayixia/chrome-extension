@@ -2,12 +2,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title> __MSG_extName__ </title>
-<link href="wayixia.css" rel="stylesheet" type="text/css"/>
 <link href="Q.js/ui.css" rel="stylesheet" type="text/css"/>
+<link href="wayixia.css" rel="stylesheet" type="text/css"/>
 <script src="Q.js/Q.js"></script>
 <script src="Q.js/utils/json2.js"></script>
 <script src="Q.js/utils/stl.js"></script>
 <script src="Q.js/utils/ajax.js"></script>
+<script src="Q.js/utils/tween.js"></script>
 <script src="Q.js/ui/drag.js"></script>
 <script src="Q.js/ui/slider.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
@@ -24,6 +25,15 @@
        __MSG_extShortName__  <font style="color: #999;font-size: 18px;"> __MSG_extDescription__ </font>
     </div>
     <div id="wayixia-list"></div>
+    <div id="wayixia-progress">
+      <h4> Loading </h4>
+      <div id="wayixia-progress-bar">
+        <div id="wayixia-progress-bar-thumb"></div>
+      </div>
+      <div id="x-ctrl-loadding" class="q-slider x" style="display:none;width: 100px; margin-top: 10px;">
+        <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
+      </div>
+    </div>
     <div id="dummy-div" style="height: 0px;"></div>
   </div>
   <div id="wayixia-toolbar">
@@ -45,9 +55,9 @@
     <a id="wayixia-min-height">0px</a>
     <a id="wayixia-select-all" class="q-checkbox">__MSG_selectAll__</a>
     <a id="wayixia-show-block" class="q-checkbox checked"> __MSG_haveBlocked__(0) </a>
-    <a id="wayixia-add-block"> <button class="wayixia-ctrl-button">__MSG_addBlock__</button></a>
-    <a id="wayixia-local-download"> <button class="wayixia-ctrl-button">__MSG_download__</button> </a>
-    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="feedback" style="">__MSG_extFeedBack__</a>
+    <a id="wayixia-add-block" href="#" class="wayixia-ctrl-button">__MSG_addBlock__</a>
+    <a id="wayixia-local-download" href="#" class="wayixia-ctrl-button">__MSG_download__ </a>
+    <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com">__MSG_extFeedBack__</a>
   </div>
   <div id="wayixia-toolbar-screenshot">
     <a style="font-weight: bold; margin-left: 10px;">__MSG_captureZoom__</a>
@@ -57,12 +67,12 @@
       </div>
     </a>
     <a id="wayixia-screenshot-zoom">100%</a>
-    <a id="wayixia-screenshot-zoom100"> <button class="wayixia-ctrl-button">__MSG_orignalSize__</button> </a>
-    <a id="wayixia-screenshot-download"> <button class="wayixia-ctrl-button">__MSG_saveCapture__</button> </a>
-    <a id="wayixia-qq" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85" title="feedback" style="">__MSG_extFeedBack__</a>
+    <a id="wayixia-screenshot-zoom100" href="#" class="wayixia-ctrl-button">__MSG_orignalSize__ </a>
+    <a id="wayixia-screenshot-download" href="#" class="wayixia-ctrl-button">__MSG_saveCapture__ </a>
+    <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com">__MSG_extFeedBack__</a>
   </div>
-
 </div>
+
 </body>
 </html>
 

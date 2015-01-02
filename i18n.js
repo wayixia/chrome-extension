@@ -15,6 +15,8 @@ function locale_text(key, default_value) {
 
 function locale_text_node(textNode) {
   var value = textNode.nodeValue;
+  if(value == "") 
+    return;
   value = value.replace(/__MSG_(\w+)__/g, 
     function(w,w2,w3,w4) {
       return locale_text(w2);
@@ -39,7 +41,8 @@ function extract_document(e) {
   }
 }
 
-Q.Ready(function() {
+// fix page show slowly
+Q.addEvent(document, 'DOMContentLoaded', function() {
   // hook locale_text
   Q.set_locale_text(locale_text);
   extract_document(document.childNodes[0]);

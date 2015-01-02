@@ -8,8 +8,8 @@
 <script src="i18n.js"></script>
 <script src="popup.js"></script>
 </head>
-<body style="">
-<div class="contextmenu wayixia-menu">
+<body>
+<div id="wayixia-menu" class="contextmenu wayixia-menu">
 	<li id="wayixia-all-images"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 30px; font-size: 14px;text-indent:30px;">__MSG_menuDigImages__</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
 	<li id="wayixia-screenshot"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 30px; font-size: 14px;text-indent:30px;">__MSG_menuScreenshot__</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
 	<li id="wayixia-full-screenshot"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 30px; font-size: 14px;text-indent:30px;">__MSG_menuFullPageScreenshot__</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
@@ -17,5 +17,14 @@
 	<li class="seperator"><div style="float: left; display: block; width: 100%; height: 1px; line-height: 1px; margin: 3px 3px 3px 36px; padding: 0px; background: #CCC"></div></li>
   <li id="wayixia-aboutus"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="color: rgb(0, 0, 0);"><td style="width: 35px;">&nbsp;</td><td style="width: 100%; height: 24px; font-size: 14px;text-indent:30px;">__MSG_extAbout__</td><td style="width: 35px;">&nbsp;</td></tr></tbody></table></li>
 </div>
+
+<div id="wayixia-screen-capture">
+  <div id="wayixia-capture-progress">
+    __MSG_menuScreencapturing__<br>
+    <div id="wayixia-progress-bar" /></div>
+  </div>
+  <div id="wayixia-capture-warn">__MSG_menuWarnScreenshot__</div>
+</div>
+
 </body>
 </html>

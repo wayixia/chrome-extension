@@ -34,6 +34,7 @@ function on_click_wa_single(info, tab) {
 
 function on_click_wa_all(info, tab) {  
   chrome.tabs.sendRequest(tab.id, { type : "display-all-images"}, function(res) {
+    res = res || {};
     res.track_from = info.track_from;
     create_display_page(tab.id, res); 
   });
@@ -179,6 +180,7 @@ function focus_or_create_tab(url, func) {
       // lookup views
       var view = find_display_view(url);
       if(view) {
+        view.focus();
         func(view);
       }
     });

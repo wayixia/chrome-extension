@@ -51,6 +51,16 @@
     "description": "200"
   },
   
+  "menuWarnScreenshot": {
+    "message": "Warn: Do nothing util the screen capture end!",
+    "description": "Warn: Do nothing util the screen capture end!"
+  },
+  
+  "menuScreencapturing" : {
+    "message": "Screen Capturing...",
+    "description": "Screen Capturing..."
+  },
+
   "filterWidth": {
     "message": "Width",
     "description": "Width"
@@ -156,8 +166,8 @@
   },
 
   "extFeedBack": {
-    "message" : "Feedback",
-    "description" : "Feedback"
+    "message" : "Report a bug",
+    "description" : "Report a bug"
   },
 
   "saveOptions" : {

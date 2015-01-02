@@ -50,6 +50,16 @@
     "message": "150",
     "description": "150"
   },
+
+  "menuWarnScreenshot": {
+    "message": "PS: 在截屏操作结束之前，请不要做任何操作。",
+    "description": "PS: 在截屏操作结束之前，请不要做任何操作。"
+  },
+  
+  "menuScreencapturing": {
+    "message": "正在截屏中...",
+    "description": "正在截屏中..."
+  },
   
   "filterWidth": {
     "message": "宽度",
@@ -156,8 +166,8 @@
   },
 
   "extFeedBack": {
-    "message" : "反馈",
-    "description" : "反馈"
+    "message" : "报告错误",
+    "description" : "报告错误"
   },
 
   "saveOptions" : {

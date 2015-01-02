@@ -9,6 +9,7 @@ function init_about() {
     title: locale_text('extAbout'),
     width: 500,
     height: 200, 
+    wstyle: "q-attr-no-icon",
     content: Q.$('layer-about'),
     on_close: function() {window.close();},
     on_ok: function() {window.close();}
@@ -27,6 +28,7 @@ function init() {
   g_option_window = new Q.Dialog({
     width: 600,
     height: 430,
+    wstyle: "q-attr-no-icon",
     title: locale_text('extOptions'),
     content: Q.$('layer'),
     on_close: function() { window.close(); },
