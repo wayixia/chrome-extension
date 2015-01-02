@@ -18,11 +18,11 @@ function init(){
     
     chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
      function(tabs){
-       show_tips_full_screenshot();
+       //show_tips_full_screenshot();
        extension.on_click_screenshot(tabs[0]);
      }
     );
-    //deactive();
+    deactive();
   }
   
   Q.$('wayixia-full-screenshot').onclick = function() {

@@ -52,8 +52,8 @@
   },
   
   "menuWarnScreenshot": {
-    "message": "Warn: Do nothing util the screen capture end!",
-    "description": "Warn: Do nothing util the screen capture end!"
+    "message": "Warn: Do nothing util the full screen capture end!",
+    "description": "Warn: Do nothing util the full screen capture end!"
   },
   
   "menuScreencapturing" : {
@@ -215,6 +215,11 @@
     "description": " Cancel "
   },
 
+  "stringLoading" : {
+    "message": " Loading... ",
+    "description": " Loading... "
+  },
+  
   "dummy" : {
     "message": "",
     "description": ""

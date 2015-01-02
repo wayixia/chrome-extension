@@ -52,8 +52,8 @@
   },
 
   "menuWarnScreenshot": {
-    "message": "PS: 在截屏操作结束之前，请不要做任何操作。",
-    "description": "PS: 在截屏操作结束之前，请不要做任何操作。"
+    "message": "PS: 在全屏截屏操作结束之前，请不要做任何操作。",
+    "description": "PS: 在全屏截屏操作结束之前，请不要做任何操作。"
   },
   
   "menuScreencapturing": {
@@ -215,6 +215,11 @@
     "description": " 取消 "
   },
 
+  "stringLoading" : {
+    "message": " 正在加载中... ",
+    "description": " 正在加载中... "
+  },
+  
   "dummy" : {
     "message": "",
     "description": ""

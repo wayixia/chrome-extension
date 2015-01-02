@@ -350,13 +350,17 @@ function display_screenshot(tab_id, image_data) {
   wayixia_track_event("display_screenshot", "from_menu");  
   set_ui('screenshot');
   source_tab_id = tab_id;
+  
+  drag_screen_images_begin();
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');
   img.id = 'wayixia-screenshot-image';
   wayixia_container.innerHTML = '';
   wayixia_container.appendChild(img);
+  img.onload = img.onerror = Q.bind_handler(img, function() {  drag_screen_images_end(); });
   img.src = image_data;
   Q.drag.attach_object(img, {self: true});
+ 
 }
 
 /* call background script end */
