@@ -160,8 +160,10 @@ function download_image(url) {
 
   if(save_path) { 
     options.filename = save_path+'/'+filename;      
+  } else {
+    options.filename = filename;      
   }
-  options.filename = options.filename.replace(/[\\\/]+/, '/');
+  options.filename = options.filename.replace(/[\\\/]+/, '/').replace(/[:*?\"<>|]/, "-");
   chrome.downloads.download(options, function(id) {}); 
 }
 
