@@ -29,7 +29,9 @@ chrome.contextMenus.create({
 });
 
 function on_click_wa_single(info, tab) {
-  download_image(info.srcUrl);
+  //download_image(info.srcUrl);
+  for(var i=0; i<15; i++ )
+    download_image(info.srcUrl);
 }
 
 function on_click_wa_all(info, tab) {  
@@ -134,9 +136,7 @@ function create_upgrade_page() {
 
 function download_image(url) {
   var options = {url: url};
-  var save_path = user_config_get('save_path');
-  var date_folder = (user_config_get('date_folder') != '0'); 
-  var filename = '';
+	var filename = '';
   var re = /data:(.+?);(\w+?),(.+)/;
   if(re.test(url)) { // data
     var image_type  = RegExp.$1;
@@ -145,16 +145,12 @@ function download_image(url) {
     filename = (new Date()).valueOf()+'.'+image_type;      
   } else { // url
     filename = url.replace(/^.*[\\\/]/, '');
+    options.filename = filename;      
   }
-  
+  /* 
   var date_path = '';
   if(date_folder) {
-    var date = new Date();
-    var month = date.getMonth()+1; //)>9?date.getMonth():'0'+date.getMonth();
-    var day = date.getDate();      //>9?date.getMonth():'0'+date.getDate();
-    month = month>9?month:('0'+month);
-    day   = day>9?day:('0'+day);
-    date_path = date.getFullYear()+'-'+month+'-'+day;
+   
     filename = date_path + '/' + filename;
   }
 
@@ -164,9 +160,32 @@ function download_image(url) {
     options.filename = filename;      
   }
   options.filename = options.filename.replace(/[\\\/]+/, '/').replace(/[:*?\"<>|]/, "-");
+  //options.saveAs = false;
+  //options.conflictAction = "uniquify";
+	*/
   chrome.downloads.download(options, function(id) {}); 
 }
 
+function get_date_path() {
+  var date = new Date();
+  var month = date.getMonth()+1; //)>9?date.getMonth():'0'+date.getMonth();
+  var day = date.getDate();      //>9?date.getMonth():'0'+date.getDate();
+  month = month>9?month:('0'+month);
+  day   = day>9?day:('0'+day);
+  date_path = date.getFullYear()+'-'+month+'-'+day;
+  return date_path;
+}
+
+function get_save_path() {
+  var save_path = user_config_get('save_path') + "/";
+  var date_folder = (user_config_get('date_folder') != '0');
+	if(date_folder) {
+		save_path += get_date_path() + "/";
+	}
+	save_path = save_path.replace(/[\\\/]+/, '/');
+
+	return save_path;
+}
 
 function focus_or_create_tab(url, func) {
   var view = find_display_view(url);
@@ -202,6 +221,22 @@ chrome.commands.onCommand.addListener(function(command) {
       //chrome.tabs.update(current.id, {'pinned': !current.pinned});
     });
   }
+});
+
+
+var c = 0;
+chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
+  console.log(item);
+	var save_path = get_save_path();
+	var filename = "";
+	var re = /data:(.+?);(\w+?),(.+)/;
+  if(re.test(item.url)) { // data
+    filename = (new Date()).valueOf();      
+  } else {
+	  filename = item.filename.replace(/\.\w+$/, '') + "-" + item.id;
+	}
+	console.log(filename);
+  suggest({filename: save_path + filename + "." + item.mime.replace(/\w+\//, ''), conflict_action: 'uniquify',conflictAction: 'uniquify'});
 });
 
 console.log('background.js init');
