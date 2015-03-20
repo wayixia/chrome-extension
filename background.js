@@ -108,7 +108,8 @@ function find_display_view(url) {
   var views = chrome.extension.getViews();
   for(var i=0; i < views.length; i++) {
     var view = views[i];
-    if(view.location.href == url) {
+    var view_url = view.location.protocol + "//"+view.location.host+view.location.pathname;
+    if(view_url == url) {
       return view;
     }
   }
@@ -136,33 +137,6 @@ function create_upgrade_page() {
 
 function download_image(url) {
   var options = {url: url};
-	var filename = '';
-  var re = /data:(.+?);(\w+?),(.+)/;
-  if(re.test(url)) { // data
-    var image_type  = RegExp.$1;
-    image_type = image_type.replace(/image\//, '.');
-    var d = new Date();
-    filename = (new Date()).valueOf()+'.'+image_type;      
-  } else { // url
-    filename = url.replace(/^.*[\\\/]/, '');
-    options.filename = filename;      
-  }
-  /* 
-  var date_path = '';
-  if(date_folder) {
-   
-    filename = date_path + '/' + filename;
-  }
-
-  if(save_path) { 
-    options.filename = save_path+'/'+filename;      
-  } else {
-    options.filename = filename;      
-  }
-  options.filename = options.filename.replace(/[\\\/]+/, '/').replace(/[:*?\"<>|]/, "-");
-  //options.saveAs = false;
-  //options.conflictAction = "uniquify";
-	*/
   chrome.downloads.download(options, function(id) {}); 
 }
 
@@ -224,7 +198,6 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 
 
-var c = 0;
 chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
   console.log(item);
 	var save_path = get_save_path();
@@ -233,7 +206,8 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
   if(re.test(item.url)) { // data
     filename = (new Date()).valueOf();      
   } else {
-	  filename = item.filename.replace(/\.\w+$/, '') + "-" + item.id;
+    // replace ilegal char
+    filename = item.filename.replace(/\.\w+$/, '').replace(/[:*?\"<>|]/, "-") + "-" + item.id;
 	}
 	console.log(filename);
   suggest({filename: save_path + filename + "." + item.mime.replace(/\w+\//, ''), conflict_action: 'uniquify',conflictAction: 'uniquify'});
