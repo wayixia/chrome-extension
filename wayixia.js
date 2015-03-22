@@ -23,8 +23,7 @@ function initialize () {
   var wayixia_images_loading = 0;
   var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
-
-  
+ 
   var wayixia_images_box = new Q.images_box({container: 'wayixia-list', 
     on_item_changed: function(item, check) {
       if(item.style.display == '') { 
@@ -35,6 +34,9 @@ function initialize () {
       return (item.style.display != 'none');
     }
   });
+
+  Q.$('wayixia-view').onclick = function(evt) {return false;}
+  var view = new Q.dropdownlist({render: 'wayixia-select-view', wstyle: 'wayixia-menu'});
 
   var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {

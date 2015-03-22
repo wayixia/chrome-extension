@@ -13,9 +13,12 @@
 <script src="Q.js/ui/slider.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
 <script src="Q.js/ui/checkbox.js"></script>
+<script src="Q.js/ui/contextmenu.js"></script>
+<script src="Q.js/ui/dropdownlist.js"></script>
+<script src="Q.js/ui/images-box.js"></script>
 <script src="tracker.js"></script>
 <script src="i18n.js"></script>
-<script src="images_box.js"></script>
+<!--script src="images_box.js"></script-->
 <script src="wayixia.js"></script>
 </head>
 <body style="-moz-user-select:none;-webkit-user-select: none;">
@@ -58,6 +61,13 @@
     <a id="wayixia-add-block" href="#" class="wayixia-ctrl-button">__MSG_addBlock__</a>
     <a id="wayixia-local-download" href="#" class="wayixia-ctrl-button">__MSG_download__ </a>
     <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com">__MSG_extFeedBack__</a>
+    <a id="wayixia-view" target="_blank" href="#">
+      <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">
+      <option value="size_small">小图(100x100)</option>
+      <option value="size_normal">中图(200x100)</option>
+      <option value="size_large">大图(500x300)</option>
+      </select>
+    </a>
   </div>
   <div id="wayixia-toolbar-screenshot">
     <a style="font-weight: bold; margin-left: 10px;">__MSG_captureZoom__</a>

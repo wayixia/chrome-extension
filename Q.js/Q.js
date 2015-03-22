@@ -152,8 +152,8 @@
   }
 
   Q.removeClass = function(element, remove_class) {
-    var arr = element.className.split(/\s+/);
-    var arr2= remove_class.split(/\s+/);
+    var arr = (element.className+'').split(/\s+/);
+    var arr2= (remove_class+'').split(/\s+/);
     var arr3= [];
     for(var i=0;i < arr.length; i++) {
       var remove = false;
@@ -203,6 +203,15 @@
     return { width : w, height : h,  left : l,  top : t  };
   };
 
+  Q.absPositionEx = function(element) {
+    var rect = element.getBoundingClientRect();
+    var l= rect.left+document.documentElement.scrollLeft;
+　　var t =rect.top+document.documentElement.scrollTop;
+    var w =rect.width;
+    var h =rect.height;
+
+    return { width : w, height : h,  left : l,  top : t  };
+  }
   // get scroll info
   Q.scrollInfo = function() {
     var t, l, w, h;
@@ -261,6 +270,34 @@
     return js;
   };
 
+  Q.load_module = function(src, oncomplete) {
+    var header = document.getElementsByTagName("head")[0];
+    var s = document.createElement("script");  
+    s.type = "text/javascript";
+    s.src = src;
+    // 对于IE浏览器，使用readystatechange事件判断是否载入成功  
+    // 对于其他浏览器，使用onload事件判断载入是否成功  
+    s.done = false;
+    s.onload = s.onreadystatechange = (function() {
+      if( !this.done && (!this.readyState || this.readyState == "loaded" || this.readyState == "complete"))
+      {
+        this.done = true;
+        oncomplete(true);
+        this.onload = this.onreadystatechange = null; // Handle memory leak in IE
+        header.removeChild( this );
+      }
+    });
+    
+    s.onerror = (function() { 
+      // Handle memory leak in IE
+      this.onload = this.onreadystatechange = null;
+      header.removeChild(this); 
+      oncomplete(false);
+    });
+        
+    // 获取head结点，并将<script>插入到其中  
+    header.appendChild(s);
+  }
   // Javascript Loader
   function jsloader() {
     var scripts = document.getElementsByTagName("script");  
@@ -301,33 +338,9 @@
     if(re2.test(url)) {
       url = RegExp.$1 + '';
       url = url.replace(/\./g, '/')+'.js';
-      // 创建script结点,并将其属性设为外联JavaScript文件  
-      var s = document.createElement("script");  
-      s.type = "text/javascript";
-      s.src = _libdir+'/'+url;
-
-      // 对于IE浏览器，使用readystatechange事件判断是否载入成功  
-      // 对于其他浏览器，使用onload事件判断载入是否成功  
-      s.done = false;
-      s.onload = s.onreadystatechange = (function() {
-        if( !this.done && (!this.readyState || this.readyState == "loaded" || this.readyState == "complete"))
-        {
-          this.done = true;
-          async_load_js(header, ar);
-          // Handle memory leak in IE
-          this.onload = this.onreadystatechange = null;
-          header.removeChild( this );
-        }
-      });
-      s.onerror = (function() { 
-        // Handle memory leak in IE
-        this.onload = this.onreadystatechange = null;
-        header.removeChild(this); 
+      Q.load_module(_libdir+'/'+url, function(isok) {
         async_load_js(header, ar);
       });
-        
-      // 获取head结点，并将<script>插入到其中  
-      header.appendChild(s);
     } else {
       async_load_js(header, ar);
     }
@@ -349,18 +362,9 @@
     // 兼容ff，ie的鼠标按键值
     Q.LBUTTON  = 0;
     Q.MBUTTON  = 1;
-      
-    // 解析地址页面的查询字段
-    var querystring = location.search.toString();
-    querystring = querystring.substring(1, querystring.length);
-    var queryMap = querystring.split('&');
-    for(var i=0; i < queryMap.length; i++) {
-      var t = queryMap[i].split('=');
-      if(t.length != 2) { continue; }
-      _querystring[t[0]] = t[1];
-    }
   }
     
+  // 解析地址页面的查询字段
   var query = location.search.slice(1).split('&');
   for(var i=0; i < query.length; i++) {
     var values = query[i].split('=');
