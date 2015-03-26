@@ -36,7 +36,13 @@ function initialize () {
   });
 
   Q.$('wayixia-view').onclick = function(evt) {return false;}
-  var view = new Q.dropdownlist({render: 'wayixia-select-view', wstyle: 'wayixia-menu'});
+  var view = new Q.dropdownlist({ 
+    render: 'wayixia-select-view', 
+    wstyle: 'wayixia-menu',
+    on_change: function(text, value) {
+      wayixia_images_box.set_style(value);
+    }  
+  });
 
   var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {
@@ -248,6 +254,7 @@ function deactive() {
 Q.Ready(function() {
   document.body.ondragstart  =function() { return false; }
   document.body.onselectstart=function() { return false; }
+  //document.body.oncontextmenu=function() { return false; }
   Q.set_locale_text(locale_text);
   Q.$('wayixia-title-bar').onclick=function(){ 
     wayixia_track_event('deactive', 'topbar');

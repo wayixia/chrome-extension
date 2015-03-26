@@ -9,7 +9,12 @@ Q.images_box = Q.extend({
 hwnd: null,
 __init__ : function(json) {
   json = json || {};
-  this.hwnd = Q.$(json.container);
+  var container = Q.$(json.container);
+  this.hwnd = document.createElement('div');
+  container.appendChild(this.hwnd);
+  this.hwnd.className = "q-images-box";
+
+  Q.$(json.container);
   this.on_item_changed = json.on_item_changed || function(item, checked) {};
   this.is_item_enabled = json.is_item_enabled || function(item) { return true; };
 },
@@ -20,10 +25,10 @@ create_element: function(config, init) {
   box.setAttribute('data-url', config.src);
   box.setAttribute('data-width', config.width);
   box.setAttribute('data-height', config.height);
-  box.className = 'wayixia-box';
-  box.innerHTML = '<span class="wayixia-info"> \
+  box.className = 'q-box-item';
+  box.innerHTML = '<span class="q-box-info"> \
     <span class="wh">'+config.width+'x'+config.height+'<span> </span> \
-    </span></span>';
+    </span>';
 
   this.hwnd.appendChild(box);
   var img = document.createElement('div');
@@ -36,6 +41,7 @@ create_element: function(config, init) {
   img.appendChild(a);
   var inner_img = document.createElement('img');
   a.appendChild(inner_img);
+  box.inner_img = inner_img;
 
   img.className = 'wayixia-image';
   a.href='javscript:void(0);';
@@ -85,6 +91,8 @@ select_all : function(checked) {
 set_check : function(item, checked) {
   if(!this.is_item_enabled(item))
       return;
+
+  Q.removeClass(item, "mouseover");
   if(checked == Q.hasClass(item, 'mouseselected'))
     return;
   if(checked)
@@ -94,6 +102,41 @@ set_check : function(item, checked) {
 
   this.on_item_changed(item, checked); 
 }, 
+
+set_style : function(new_class) {
+  Q.removeClass(this.hwnd, this.old_style);
+  this.old_style = new_class;
+  Q.addClass(this.hwnd, new_class);
+  this.each_item((function(o) { 
+    return function(i) {
+      o.on_item_size(i);
+    }; 
+  })(this))
+
+},
+
+on_item_size : function(box) {
+  var img = box.inner_img;
+  // filter image by size
+  var img_width = img.width;
+  var img_height = img.height;
+  var max_width = box.offsetWidth;
+  var max_height = box.offsetHeight;
+  var result = max_width * img_height - max_height * img_width;
+  var width = 0;
+  var height = 0;
+  if(result<0) {
+    //img.width = max_width;  // 宽度
+    width  = max_width;
+    height = (max_width*img_height)/(img_width*1.0);
+  } else {
+    //img.height = max_height;
+    height = max_height;
+    width  = (img_width*height)/(img_height*1.0);
+  }
+  var margin_top =  ((max_height-height)/2);
+  img.style.cssText = 'margin-top:'+margin_top+'px;width:'+width+'px;height:'+height+'px;';
+},
 
 //
 // Returns a function which will handle displaying information about the
@@ -150,6 +193,7 @@ check_size : function(item, min_width, min_height) {
   var height = item.getAttribute('data-height');
   item.style.display = ((width < min_width) || (height < min_height)) ? 'none':'';
 },
+
 
 copy_data : function(src_object) {
   var target_object = {}; 
