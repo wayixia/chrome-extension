@@ -32,23 +32,17 @@
   outline:0;background-image:none;-webkit-box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.325);box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.325);
 }
 
-#wayixia-title-bar #wayixia-btn-close {
-  float: right;
-  text-align: center;
-  text-indent:0;
-  padding: 0 10px;
-  font-weight: bold;
-  line-height: 45px;
-  background: transparent;
-}
-
-#wayixia-title-bar #wayixia-btn-close img {
-  margin:7px;
-}
-
 #wayixia-title-bar a {
   color: #999;
   text-decoration: none;
+}
+
+#wayixia-user-menu {
+  position: absolute;
+  right: 0px;
+  top: 0;
+  bottom:0;
+  width: 300px;
 }
 
 #wayixia-container, #wayixia-container * {
@@ -73,15 +67,18 @@
 }
 
 #wayixia-toolbar, #wayixia-toolbar-screenshot {
-  position:fixed;
-  top: 35px;
+  position:relative;
+  top: 38px;
   left: 0px;
   right: 0px;
-  height: 45px;
-  background-color: rgba(255, 255, 255,0.5);
-  box-shadow:0 1px 3px rgba(0,0,0,.3);
-  -moz-box-shadow:0 1px 3px rgba(0,0,0,.3);
-  -webkit-box-shadow:0 1px 3px rgba(0,0,0,.3)
+  height: 41px;
+  border-bottom: 1px solid #ebebeb;
+  /*background-colors: rgba(255, 255, 255,0.5);
+  background-color: transparent;
+  box-shadow:0 1px 12px rgba(0,0,0,.1);
+  -moz-box-shadow:0 1px 12px rgba(0,0,0,.1);
+  -webkit-box-shadow:0 1px 12px rgba(0,0,0,.1)
+  */  
 }
 
 #wayixia-toolbar-screenshot {
@@ -91,8 +88,8 @@
 #wayixia-toolbar a, #wayixia-toolbar-screenshot a {
   font-size: 16px;
   color: #777;
-  height: 30px;
-  line-height: 30px;
+  height: 28px;
+  line-height: 28px;
   text-decoration: none;
   margin-left: 5px;
   display:inline-block;
@@ -106,10 +103,9 @@
 {
   text-indent: 0px; 
   border: 0px solid #CCC;
-  height: 30px;
   font-size: 16px;
   color: #FFF;
-  padding: 0 10px;
+  padding: 0 15px;
   outline:0;
   background: #F90;
   border-radius: 3px;
@@ -304,9 +300,10 @@ a#wayixia-filter-icon {
   -moz-box-shadow:0 1px 15px rgba(0,0,0,.2);
   -webkit-box-shadow:0 1px 15px rgba(0,0,0,.2);
   min-width: 170px;
-  background-image: url(images/contextmenu/menuleft.gif);
+  background-image: none; 
   background-repeat: repeat-y;
   background-position: left top;
+  background-color: #FFF;
   z-index: 910000;
 }
 
@@ -330,7 +327,7 @@ a#wayixia-filter-icon {
 
 .q-contextmenu.wayixia-menu .q-item .q-item-title {
   line-height: 30px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .q-contextmenu.wayixia-menu .q-item:hover, 
@@ -340,18 +337,19 @@ a#wayixia-filter-icon {
 }
 
 .q-select.wayixia-menu {
-  height: 30px;
+  height: 25px;
   min-width: 50px;
-  font-size: 16px;
+  font-size: 14px;
+  padding-right: 30px;
   background: transparent;
 }
 
 .q-select.wayixia-menu {
-  background: transparent url(images/dropdown.png) right -5px no-repeat;
+  background: transparent url(images/dropdown.png) right -8px no-repeat;
 }
 
 .q-select.wayixia-menu.checked {
-  background: transparent url(images/dropdown.png) right -45px no-repeat;
+  background: transparent url(images/dropdown.png) right -48px no-repeat;
 }
 
 .q-images-box.size_1 .q-box-item {

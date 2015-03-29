@@ -174,7 +174,21 @@
     "message": "Save successfully!",
     "description": "Save successfully!!"
   },
- 
+
+  "viewTypeSize1" : {
+    "message": "Small  View",
+    "description": "Small View"
+  },
+  
+  "viewTypeSize2" : {
+    "message": "Normal View",
+    "description": "Normal View"
+  },
+
+  "viewTypeSize3" : {
+    "message": "Large  View",
+    "description": "Large View"
+  },
 
   "btnSave" : {
     "message": "Save",

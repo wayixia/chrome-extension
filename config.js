@@ -20,7 +20,7 @@ function user_config_load(data) {
 }
 
 function user_config_tostring() {
-  var config_names = ['save_path', 'date_folder'];
+  var config_names = ['save_path', 'date_folder', 'view_type'];
   var config = {};
   for(var i=0; i<config_names.length; i++) {
     var name = config_names[i];
@@ -59,5 +59,21 @@ function is_block_image(url) {
 
 function block_images_all() {
   return JSON.parse(localStorage.getItem('block_images')) || {};
+}
+
+function set_view_type(t) {
+  user_config_set('view_type', t);
+}
+
+function get_view_type() {
+  var type = user_config_get('view_type');
+  if( type == "size_1" 
+     || type == "size_2" 
+     || type == "size_3") 
+  {
+    return type;;
+  } 
+
+  return "size_2";
 }
 

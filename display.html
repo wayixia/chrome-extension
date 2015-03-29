@@ -26,8 +26,10 @@
   <div id="wayixia-container">
     <div id="wayixia-title-bar">
        __MSG_extShortName__  <font style="color: #999;font-size: 18px;"> __MSG_extDescription__ </font>
+       <div id="wayixia-user-menu"></div>
     </div>
-    <div id="wayixia-list"></div>
+    <div id="wayixia-list">
+    </div>
     <div id="wayixia-progress">
       <h4> __MSG_stringLoading__ </h4>
       <div id="wayixia-progress-bar">
@@ -44,14 +46,14 @@
     <a id="wayixia-filter-icon">&nbsp;</a>
     <a>__MSG_filterWidth__</a>
     <a>
-      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 100px; margin-top: 10px;">
+      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 100px; margin-top: 8px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-width">0px</a>
     <a>__MSG_filterHeight__</a>
     <a> 
-      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 100px; margin-top: 10px;">
+      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 100px; margin-top: 8px;">
         <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
       </div>
     </a>
@@ -63,9 +65,9 @@
     <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com" style="display: none;">__MSG_extFeedBack__</a>
     <a id="wayixia-view" target="_blank" href="#">
       <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">
-      <option value="size_1">小视图(100x100)</option>
-      <option value="size_2">中视图(200x100)</option>
-      <option value="size_3">大视图(500x300)</option>
+      <option value="size_1">__MSG_viewTypeSize1__(100x100)</option>
+      <option value="size_2">__MSG_viewTypeSize2__(200x200)</option>
+      <option value="size_3">__MSG_viewTypeSize3__(500x300)</option>
       </select>
     </a>
   </div>

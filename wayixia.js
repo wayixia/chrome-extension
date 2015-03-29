@@ -23,6 +23,7 @@ function initialize () {
   var wayixia_images_loading = 0;
   var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
+  var extension = chrome.extension.getBackgroundPage();
  
   var wayixia_images_box = new Q.images_box({container: 'wayixia-list', 
     on_item_changed: function(item, check) {
@@ -36,13 +37,20 @@ function initialize () {
   });
 
   Q.$('wayixia-view').onclick = function(evt) {return false;}
-  var view = new Q.dropdownlist({ 
+  var view_type = new Q.dropdownlist({ 
     render: 'wayixia-select-view', 
     wstyle: 'wayixia-menu',
     on_change: function(text, value) {
+      console.log("set view type -> " + value);
       wayixia_images_box.set_style(value);
+      extension.set_view_type(value);
     }  
   });
+
+  
+  console.log("set value " + extension.get_view_type());
+  view_type.set_value(extension.get_view_type());
+  wayixia_images_box.set_style(extension.get_view_type());
 
   var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {

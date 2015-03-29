@@ -175,6 +175,20 @@
     "description": "设置保存成功!"
   },
  
+  "viewTypeSize1" : {
+    "message": "小视图",
+    "description": "小视图"
+  },
+  
+  "viewTypeSize2" : {
+    "message": "中视图",
+    "description": "中视图"
+  },
+
+  "viewTypeSize3" : {
+    "message": "大视图",
+    "description": "大视图"
+  },
 
   "btnSave" : {
     "message": "保 存",
