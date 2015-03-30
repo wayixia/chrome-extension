@@ -67,7 +67,7 @@
 }
 
 #wayixia-toolbar, #wayixia-toolbar-screenshot {
-  position:relative;
+  position:fixed;
   top: 38px;
   left: 0px;
   right: 0px;
@@ -82,7 +82,7 @@
 }
 
 #wayixia-toolbar-screenshot {
-  visibility: hidden;
+  
 }
 
 #wayixia-toolbar a, #wayixia-toolbar-screenshot a {

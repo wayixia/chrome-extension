@@ -119,12 +119,12 @@ function create_display_page(context_tab_id,  res) {
 }
 
 function create_display_screenshot(context_tab_id,  res) {  
-  var manager_url = chrome.extension.getURL("display.html");
+  var manager_url = chrome.extension.getURL("screenshot.html");
   focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_screenshot(id, res) } })(context_tab_id, res));
 }
 
 function create_display_full_screenshot(context_tab_id,  res) {  
-  var manager_url = chrome.extension.getURL("display.html");
+  var manager_url = chrome.extension.getURL("screenshot.html");
   focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_full_screenshot(id, res) } })(context_tab_id, res));
 }
 
@@ -149,11 +149,17 @@ function get_date_path() {
 }
 
 function get_save_path() {
-  var save_path = user_config_get('save_path') + "/";
+  var save_path = user_config_get('save_path');
   var date_folder = (user_config_get('date_folder') != '0');
+  if(save_path != "") {
+    save_path += "/";
+  }
 	if(date_folder) {
-		save_path += get_date_path() + "/";
-	}
+    var date_path = get_date_path();
+    if(date_path != "") {
+		  save_path += "/";
+	  }
+  }
 	save_path = save_path.replace(/[\\\/]+/, '/');
 
 	return save_path;
@@ -197,18 +203,18 @@ chrome.commands.onCommand.addListener(function(command) {
 
 
 chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
-	var save_path = get_save_path();
-	var filename = "";
-	var re = /data:(.+?);(\w+?),(.+)/;
-  if(re.test(item.url)) { // data
-    filename = (new Date()).valueOf();      
-  } else {
-    // replace ilegal char
-    filename = item.filename.replace(/\.\w+$/, '').replace(/[:*?\"<>|]/, "-") + "-w" + item.id;
-	}
-
   // if downloaded not by wayixia, then use default
   if(item.byExtensionId == chrome.runtime.id) {
+	  var save_path = get_save_path();
+	  var filename = "";
+	  var re = /data:(.+?);(\w+?),(.+)/;
+    if(re.test(item.url)) { // data
+      filename = (new Date()).valueOf();      
+    } else {
+      // replace ilegal char
+      filename = item.filename.replace(/\.\w+$/, '').replace(/[:*?\"<>|]/, "-") + "-w" + item.id;
+	  }
+
     suggest({filename: save_path + filename + "." + item.mime.replace(/\w+\//, ''), conflict_action: 'uniquify',conflictAction: 'uniquify'});
   } else {
     //suggest({conflict_action: 'uniquify',conflictAction: 'uniquify'});
