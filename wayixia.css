@@ -118,16 +118,27 @@
   outline:0;background-image:none;-webkit-box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.225);box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.225);
 }
 
-#wayixia-toolbar a#wayixia-qq,
-#wayixia-toolbar-screenshot a#wayixia-qq,
+#wayixia-toolbar #wayixia-bugs,
+#wayixia-toolbar-screenshot #wayixia-bugs,
 #wayixia-toolbar a#wayixia-view,
 #wayixia-toolbar-screenshot a#wayixia-view 
 {
   float: right;
-  line-height: 30px;
+  line-height: 24px;
   height: 30px;
   margin: 10px;
   text-decoration: underline;
+}
+
+
+#wayixia-toolbar #wayixia-bugs,
+#wayixia-toolbar-screenshot #wayixia-bugs
+{
+  outline:0;
+  border: 0px;
+  height: 24px;
+  width: 24px;
+  background: transparent url(images/bug.tips.png) left top no-repeat;
 }
 
 #wayixia-screenshot-image {

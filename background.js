@@ -157,7 +157,7 @@ function get_save_path() {
 	if(date_folder) {
     var date_path = get_date_path();
     if(date_path != "") {
-		  save_path += "/";
+		  save_path += date_path + "/";
 	  }
   }
 	save_path = save_path.replace(/[\\\/]+/, '/');
