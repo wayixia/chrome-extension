@@ -73,7 +73,8 @@
   right: 0px;
   height: 41px;
   border-bottom: 1px solid #ebebeb;
-  /*background-colors: rgba(255, 255, 255,0.5);
+  background-color: #FCFCFC;
+  /*
   background-color: transparent;
   box-shadow:0 1px 12px rgba(0,0,0,.1);
   -moz-box-shadow:0 1px 12px rgba(0,0,0,.1);
@@ -134,126 +135,17 @@
 #wayixia-toolbar #wayixia-bugs,
 #wayixia-toolbar-screenshot #wayixia-bugs
 {
+  position: relative;
   outline:0;
   border: 0px;
   height: 24px;
-  width: 24px;
+  width: 28px;
   background: transparent url(images/bug.tips.png) left top no-repeat;
 }
 
 #wayixia-screenshot-image {
   position: absolute;
 }
-
-
-
-.wayixia-box {
-  position: relative;
-  padding: 0;
-  margin: 5;
-  float: left;
-  height: 200px;
-  width: 200px;
-  opacity: 1;
-  z-index: 10002;
-  text-align: center;
-  overflow: hidden;
-  margin:15px 0px 0 15px;
-  background:#FFF;
-  text-align:center;
-  box-shadow:0 1px 5px rgba(0,0,0,.3);
-  -moz-box-shadow:0 1px 5px rgba(0,0,0,.3);
-  -webkit-box-shadow:0 1px 5px rgba(0,0,0,.3) 
-}
-
-.wayixia-info
-{
-  position:absolute;
-  right:0;
-  bottom:0;
-  border-top-left-radius:5px;
-  background-color:#333;
-  padding:2px 4px 0;
-  color:#FFF;
-  opacity: 0.8;
-  z-index: 1;
-  font-size: 14px;
-}
-
-.wayixia-box:hover
-{ 
-  /*border:3px solid #F90; */
-}
-
-.wayixia-box:hover .wayixia-info
-{
-  background-color:#333;
-  color:#FFF;
-}
-
-.wayixia-box .wayixia-image {
-  border: none;
-  height: 200px;
-  width: 200px;
-  opacity: 1;
-  padding: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.wayixia-box .wayixia-image .image {
-  max-height: 200px;
-  max-width: 200px;
-  /*
-  width: auto !important;
-  height: auto !important;
-  */
-}
-
-.wayixia-box .wayixia-image a {
-  text-align: center;
-}
-
-.wayixia-box .wing-box {
-  display: none;
-  position:absolute;
-  left:10px;
-  top:70px;
-  right:10px;
-  bottom:0px; 
-  height:50px;
-  border-radius:5px;
-  border:1px solid #F1F1F1;
-  line-height:50px;
-  font-size:14px;
-  font-family:arial;
-  text-align:left;
-}
-
-
-.wayixia-box.mouseout, .select-mask {display:none;}
-
-.wayixia-box.mouseover .select-mask {
-  cursor: default;
-  display: block;
-  position:absolute;
-  left:0; top:0; right:0;bottom:0;
-  opacity: 0.5;
-  background: #FFF url(images/hover-picture.png) right top no-repeat;
-}
-
-.wayixia-box.mouseselected .select-mask 
-{
-  cursor: default;
-  display: block;
-  position:absolute;
-  left:0; top:0; right:0;bottom:0;
-  opacity: 0.8;
-  background: #FFF  url(images/selected-picture.png) right top no-repeat; 
-  /*#CFBAAA, #FF931E*/
-}
-
 
 a#wayixia-filter-icon {
   background: transparent url(images/filter.png) no-repeat left center;
@@ -362,6 +254,7 @@ a#wayixia-filter-icon {
 .q-select.wayixia-menu.checked {
   background: transparent url(images/dropdown.png) right -48px no-repeat;
 }
+
 
 .q-images-box.size_1 .q-box-item {
   width: 100px;
