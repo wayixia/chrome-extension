@@ -141,12 +141,20 @@
   height: 24px;
   width: 28px;
   background: transparent url(images/bug.tips.png) left top no-repeat;
+  opacity: 0.5;
+}
+
+#wayixia-toolbar #wayixia-bugs:hover,
+#wayixia-toolbar-screenshot #wayixia-bugs:hover
+{
+  #background-color: #FF0;
+  opacity: 1;
 }
 
 #wayixia-toolbar #wayixia-bugs-num {
   border: 1px solid white;
   width: 15px;
-  background-color:#f33;
+  background-color: #f3bf21;
   border-radius: 4px;
   color: #fff;
   font: bold 10px Arial;

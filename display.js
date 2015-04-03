@@ -113,7 +113,7 @@ function initialize () {
     wayixia_images_box.each_item(function(item) {
        if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
          var url = item.getAttribute('data-url');
-         extension.download_image(url);
+         extension.download_image(url, window);
        }
     });
   }

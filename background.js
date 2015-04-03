@@ -133,9 +133,17 @@ function create_upgrade_page() {
   focus_or_create_tab(manager_url, function(view) { });
 }
 
-function download_image(url) {
+var download_items = {};
+
+function download_image(url, view) {
   var options = {url: url};
-  chrome.downloads.download(options, function(id) {}); 
+  chrome.downloads.download(options, function(id) {
+    download_items[id] = {
+      url: url,
+      view: view
+    };
+    //  view.background_warning({});
+  }); 
 }
 
 function get_date_path() {
@@ -205,6 +213,7 @@ chrome.commands.onCommand.addListener(function(command) {
 chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
   // if downloaded not by wayixia, then use default
   if(item.byExtensionId == chrome.runtime.id) {
+    console.log(item.id + ":" + item.state)
 	  var save_path = get_save_path();
 	  var filename = "";
 	  var re = /data:(.+?);(\w+?),(.+)/;
@@ -218,6 +227,17 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
     suggest({filename: save_path + filename + "." + item.mime.replace(/\w+\//, ''), conflict_action: 'uniquify',conflictAction: 'uniquify'});
   } else {
     //suggest({conflict_action: 'uniquify',conflictAction: 'uniquify'});
+  }
+});
+
+chrome.downloads.onChanged.addListener(function(download) {
+  console.log(download);
+  var item = download_items[download.id];
+  if(item) {
+    if(download.error && item.view) {
+      item.view.background_warning(item);
+    }
+    delete download_items[download.id];
   }
 });
 
