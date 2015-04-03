@@ -143,6 +143,23 @@
   background: transparent url(images/bug.tips.png) left top no-repeat;
 }
 
+#wayixia-toolbar #wayixia-bugs-num {
+  border: 1px solid white;
+  width: 15px;
+  background-color:#f33;
+  border-radius: 4px;
+  color: #fff;
+  font: bold 10px Arial;
+  left: 13px;
+  height:15px;
+  line-height: 15px;
+  padding: 0 1px;
+  position: absolute;
+  text-align: center;
+  top: -5px;
+  visibility: hidden;
+}
+
 #wayixia-screenshot-image {
   position: absolute;
 }

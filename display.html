@@ -18,6 +18,7 @@
 <script src="Q.js/ui/images-box.js"></script>
 <script src="tracker.js"></script>
 <script src="i18n.js"></script>
+<script src="ui.js"></script>
 <script src="display.js"></script>
 </head>
 <body style="-moz-user-select:none;-webkit-user-select: none;">
@@ -50,20 +51,7 @@
     <a id="wayixia-local-download" href="#" class="wayixia-ctrl-button">__MSG_download__ </a>
     <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com" style="display: none;">__MSG_extFeedBack__</a>
     <button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
-      <span style="border: 1px solid white;
-width: 15px;
-background-color:#f33;
-border-radius: 4px;
-color: #fff;
-font: bold 10px Arial;
-left: 13px;
-height:15px;
-line-height: 15px;
-padding: 0 1px;
-position: absolute;
-text-align: center;
-top: -5px;
-z-index: 150;">N</span>
+      <span id="wayixia-bugs-num"></span>
     </button>
     <a id="wayixia-view" target="_blank" href="#">
       <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">

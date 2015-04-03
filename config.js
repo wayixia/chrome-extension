@@ -61,11 +61,11 @@ function block_images_all() {
   return JSON.parse(localStorage.getItem('block_images')) || {};
 }
 
-function set_view_type(t) {
+function view_type_set(t) {
   user_config_set('view_type', t);
 }
 
-function get_view_type() {
+function view_type() {
   var type = user_config_get('view_type');
   if( type == "size_1" 
      || type == "size_2" 
@@ -76,4 +76,16 @@ function get_view_type() {
 
   return "size_2";
 }
+
+// warnnings
+function warnnings_clear() {
+
+}
+
+function warnings_add(item) {}
+
+function warnnings() {
+  return [1];
+}
+
 

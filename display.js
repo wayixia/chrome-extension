@@ -42,14 +42,13 @@ function initialize () {
     on_change: function(text, value) {
       console.log("set view type -> " + value);
       wayixia_images_box.set_style(value);
-      extension.set_view_type(value);
+      extension.view_type_set(value);
     }  
   });
 
   
-  console.log("set value " + extension.get_view_type());
-  view_type.set_value(extension.get_view_type());
-  wayixia_images_box.set_style(extension.get_view_type());
+  view_type.set_value(extension.view_type());
+  wayixia_images_box.set_style(extension.view_type());
 
   var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
     onchange: function(checked) {
