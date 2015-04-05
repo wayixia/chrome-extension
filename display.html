@@ -24,11 +24,30 @@
 <body style="-moz-user-select:none;-webkit-user-select: none;">
 <div id="wayixia-overlay">
   <div id="wayixia-title-bar">
-     __MSG_extShortName__  <font style="color: #999;font-size: 18px;"> __MSG_extDescription__ </font>
+     __MSG_extShortName__     
+     <font style="color: #999;font-size: 16px;"> 
+       __MSG_extDescription__ 
+     </font>
+     <button class="wayixia-ctrl-button" id="wayixia-close"> 
+       __MSG_extCloseWindow__[ESC]
+     </button>
      <div id="wayixia-user-menu">
+        <button id="wayixia-help">
+          __MSG_extHelp__
+        </button>
+        <button id="wayixia-bugs">
+          &nbsp;<span id="wayixia-bugs-num"></span>
+        </button>
      </div>
   </div>
   <div id="wayixia-toolbar">
+    <a id="wayixia-view" target="_blank" href="#">
+      <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">
+      <option value="size_1">__MSG_viewTypeSize1__(100x100)</option>
+      <option value="size_2">__MSG_viewTypeSize2__(200x200)</option>
+      <option value="size_3">__MSG_viewTypeSize3__(500x300)</option>
+      </select>
+    </a>
     <!--a style="font-weight: bold;">__MSG_filterBy__</a-->
     <a id="wayixia-filter-icon">&nbsp;</a>
     <a>__MSG_filterWidth__</a>
@@ -47,19 +66,11 @@
     <a id="wayixia-min-height">0px</a>
     <a id="wayixia-select-all" class="q-checkbox">__MSG_selectAll__</a>
     <a id="wayixia-show-block" class="q-checkbox checked"> __MSG_haveBlocked__(0) </a>
-    <a id="wayixia-add-block" href="#" class="wayixia-ctrl-button">__MSG_addBlock__</a>
-    <a id="wayixia-local-download" href="#" class="wayixia-ctrl-button">__MSG_download__ </a>
-    <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com" style="display: none;">__MSG_extFeedBack__</a>
-    <button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
+    <!--button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
       <span id="wayixia-bugs-num"></span>
-    </button>
-    <a id="wayixia-view" target="_blank" href="#">
-      <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">
-      <option value="size_1">__MSG_viewTypeSize1__(100x100)</option>
-      <option value="size_2">__MSG_viewTypeSize2__(200x200)</option>
-      <option value="size_3">__MSG_viewTypeSize3__(500x300)</option>
-      </select>
-    </a>
+    </button-->
+    <button id="wayixia-add-block" href="#" class="wayixia-ctrl-button">__MSG_addBlock__</button>
+    <button id="wayixia-local-download" href="#" class="wayixia-ctrl-button">__MSG_download__ </button>
   </div>
   <div id="wayixia-container">
     <div id="wayixia-list">

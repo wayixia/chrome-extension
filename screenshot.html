@@ -20,8 +20,18 @@
 <body style="-moz-user-select:none;-webkit-user-select: none;">
 <div id="wayixia-overlay">
   <div id="wayixia-title-bar">
-     __MSG_extShortName__  <font style="color: #999;font-size: 18px;"> __MSG_extDescription__ </font>
-     <div id="wayixia-user-menu"></div>
+     __MSG_extShortName__     
+     <font style="color: #999;font-size: 16px;"> 
+       __MSG_extDescription__ 
+     </font>
+     <button class="wayixia-ctrl-button" id="wayixia-close"> 
+       __MSG_extCloseWindow__[ESC]
+     </button>
+     <div id="wayixia-user-menu">
+        <button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
+          <span id="wayixia-bugs-num"></span>
+        </button>
+     </div>
   </div>
   <div id="wayixia-toolbar-screenshot">
     <a style="font-weight: bold; margin-left: 10px;">__MSG_captureZoom__</a>
@@ -31,12 +41,9 @@
       </div>
     </a>
     <a id="wayixia-screenshot-zoom">100%</a>
-    <a id="wayixia-screenshot-zoom100" href="#" class="wayixia-ctrl-button">__MSG_orignalSize__ </a>
-    <a id="wayixia-screenshot-download" href="#" class="wayixia-ctrl-button">__MSG_saveCapture__ </a>
-    <a id="wayixia-qq" target="_blank" href="mailto:wayixia@gmail.com" style="display: none;">__MSG_extFeedBack__</a>
-    <button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
-      <span id="wayixia-bugs-num"></span>
-    </button>
+    &nbsp;
+    <button id="wayixia-screenshot-zoom100" href="#" class="wayixia-ctrl-button">__MSG_orignalSize__ </button>
+    <button id="wayixia-screenshot-download" href="#" class="wayixia-ctrl-button">__MSG_saveCapture__ </button>
   </div>
   <div id="wayixia-container">
     <div id="wayixia-list">

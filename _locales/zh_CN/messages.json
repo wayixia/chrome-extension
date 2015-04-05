@@ -19,6 +19,11 @@
     "description": "图片批量下载 | 网页截屏"
   },
  
+  "extCloseWindow": {
+    "message": "x 关闭窗口",
+    "description": "x 关闭窗口"
+  },
+ 
   "extAbout": {
     "message": "关于插件",
     "description": "关于插件"
@@ -87,8 +92,8 @@
   },
   
   "download": {
-    "message": "下载",
-    "description": "下载"
+    "message": "下载文件",
+    "description": "下载文件"
   },
   
   "captureZoom": {
@@ -165,10 +170,18 @@
     "description": "选 项"
   },
 
+  "extHelp": {
+    "message" : "帮助",
+    "description" : "帮助"
+  
+  },
+
+
   "extFeedBack": {
     "message" : "报告错误",
     "description" : "报告错误"
   },
+  
 
   "saveOptions" : {
     "message": "设置保存成功!",

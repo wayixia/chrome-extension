@@ -7,7 +7,6 @@
 
 var t = null;
 var content_load_ok = false;
-var source_tab_id = null;
 var request_data = {imgs: null, data: null};
 
 function is_block_image(url) {
@@ -19,8 +18,6 @@ function initialize () {
   var _this = t = this;
   var blocked_images = [];
   var accept_length  = 0;
-  var wayixia_images_loading = 0;
-  var wayixia_container = Q.$('wayixia-list');
   var wayixia_title_bar = Q.$('wayixia-title-bar');
   var extension = chrome.extension.getBackgroundPage();
  
@@ -73,7 +70,7 @@ function initialize () {
 
   var button_select_all = new Q.checkbox({id: 'wayixia-select-all',
     onchange: function(checked) {
-       wayixia_track_button_click(Q.$('wayixia-select-all'));
+      wayixia_track_button_click(Q.$('wayixia-select-all'));
       wayixia_images_box.select_all(checked);
     }  
   });
@@ -109,12 +106,8 @@ function initialize () {
 
   Q.$('wayixia-local-download').onclick=function() {
     wayixia_track_button_click(this);
-    var extension = chrome.extension.getBackgroundPage();
     wayixia_images_box.each_item(function(item) {
-       if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-         var url = item.getAttribute('data-url');
-         extension.download_image(url, window);
-       }
+      download_item(item);
     });
   }
   
@@ -126,6 +119,16 @@ function initialize () {
     } else {
       Q.removeClass(item, 'blocked');
       item.style.display = '';
+    }
+  }
+
+  function download_item(item) {
+    if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+      var extension = chrome.extension.getBackgroundPage();
+      var url = item.getAttribute('data-url');
+      extension.download_image(url, window);
+      Q.addClass(item, 'downloaded');
+      item.style.display = 'none';
     }
   }
 
@@ -221,32 +224,18 @@ function initialize () {
   console.log('content is loaded');
 };
 
-function deactive() {
-    back2page();
-    window.close();
-}
-
 Q.Ready(function() {
   document.body.ondragstart  =function() { return false; }
   document.body.onselectstart=function() { return false; }
   //document.body.oncontextmenu=function() { return false; }
   Q.set_locale_text(locale_text);
   Q.$('wayixia-title-bar').onclick=function(){ 
-    wayixia_track_event('deactive', 'topbar');
-    deactive();  
+    //wayixia_track_event('deactive', 'topbar');
+    //deactive();  
   }
   initialize();
   content_load_ok = true;
 });
-
-function back2page() {
-  if(source_tab_id) {
-    chrome.tabs.update(source_tab_id, {selected: true});
-  }
-}
-
-
-var scroll_loadding = null;
 
 /* call background script */
 
@@ -257,7 +246,7 @@ function display_images(tab_id, packet) {
   } else {
     wayixia_track_event("display_images", "from_menu");  
   }
-  source_tab_id = tab_id;
+  wayixia_source_tab_id = tab_id;
   if(content_load_ok) {
     console.log('recv request, content is loaded')
     t.display_valid_images(packet.imgs, packet.data)();

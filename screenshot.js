@@ -8,17 +8,10 @@
 var t = null;
 var content_load_ok = false;
 var g_screenshot_zoom = 100;
-var source_tab_id = null;
-var request_data = {imgs: null, data: null};
 var g_screenshot_dialog = null;
 
 function initialize () {
   var _this = t = this;
-  var blocked_images = [];
-  var accept_length  = 0;
-  var wayixia_images_loading = 0;
-  var wayixia_container = Q.$('wayixia-list');
-  var wayixia_title_bar = Q.$('wayixia-title-bar');
   var extension = chrome.extension.getBackgroundPage();
  
   // shortcut
@@ -52,28 +45,10 @@ function initialize () {
   content_load_ok = true;
 }
 
-function deactive() {
-    back2page();
-    window.close();
-}
-
 Q.Ready(function() {
-  document.body.ondragstart  =function() { return false; }
-  document.body.onselectstart=function() { return false; }
-  //document.body.oncontextmenu=function() { return false; }
   Q.set_locale_text(locale_text);
-  Q.$('wayixia-title-bar').onclick=function(){ 
-    wayixia_track_event('deactive', 'topbar');
-    deactive();  
-  }
   initialize();
 });
-
-function back2page() {
-  if(source_tab_id) {
-    chrome.tabs.update(source_tab_id, {selected: true});
-  }
-}
 
 
 var scroll_loadding = null;
@@ -126,7 +101,7 @@ function drag_screen_images_end() {
 
 function display_full_screenshot(tab_id, canvas_data) {
   wayixia_track_event("display_full_screenshot", "from_menu");  
-  source_tab_id = tab_id;
+  wayixia_source_tab_id = tab_id;
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');
   img.id = 'wayixia-screenshot-image';
@@ -138,7 +113,7 @@ function display_full_screenshot(tab_id, canvas_data) {
 
 function display_screenshot(tab_id, image_data) {
   wayixia_track_event("display_screenshot", "from_menu");  
-  source_tab_id = tab_id;
+  wayixia_source_tab_id = tab_id;
   drag_screen_images_begin();
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');

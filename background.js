@@ -138,10 +138,18 @@ var download_items = {};
 function download_image(url, view) {
   var options = {url: url};
   chrome.downloads.download(options, function(id) {
-    download_items[id] = {
-      url: url,
-      view: view
-    };
+    if(!id) {
+      view.background_warning({
+        error: chrome.runtime.lastError,
+        page: view.location,
+        url: url
+      });
+    } else {
+      download_items[id] = {
+        url: url,
+        view: view
+      };
+    }
     //  view.background_warning({});
   }); 
 }
@@ -231,11 +239,16 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
 });
 
 chrome.downloads.onChanged.addListener(function(download) {
-  console.log(download);
+  //console.log(download);
   var item = download_items[download.id];
   if(item) {
     if(download.error && item.view) {
-      item.view.background_warning(item);
+      item.error = download.error.current;
+      item.view.background_warning({
+        error: download.error.current,
+        page: item.view.location,
+        url: item.url,
+      });
     }
     delete download_items[download.id];
   }
