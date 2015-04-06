@@ -48,7 +48,7 @@ Q.Ready(function() {
   __GLOBALS.desktop.wnds   = new Q.LIST();  // popups windows
   __GLOBALS.desktop.active_child = null;
   __GLOBALS.explorer = new Q.UIApplication();
-  $CreateMaskLayer(__GLOBALS.desktop);
+  $CreateMaskLayer(__GLOBALS.desktop, "q-top-mask");
 }, true);
 
 
@@ -56,6 +56,7 @@ Q.Ready(function() {
  application base class
  manage the resources, i.e Q.Window
 ---------------------------------------------------------------------------*/
+
 Q.Application = Q.extend({
 id : -1,   // application id
 __init__ : function(params) {
@@ -79,6 +80,15 @@ __init__ : function(params) {
 
 add_window   : function(wndNode) { this.wnds_map.append(wndNode); },
 erase_window : function(wndNode) { this.wnds_map.erase(wndNode); },
+end : function() {
+  // close all windows
+  this.wnds_map.each(function(wndNode) {
+    delete wndNode.app;
+    wndNode.on_close = function() { return true; }
+    $BindWindowMessage(wndNode, MESSAGE.CLOSE)();
+  });
+  Q.Application.prototype.end.call(this); 
+}
 });
 
 //  Q.Application end
@@ -130,12 +140,15 @@ function $MaskWindow(wndNode, bmask) {
       document.body.style.overflow = layer_mask.body_style;
     }
   }
-  $GetMask(wndNode).style.display=(!!bmask)?'':'none'; 
+  layer_mask.style.display=(!!bmask)?'':'none'; 
 }
-function $CreateMaskLayer(wndNode) {
+
+function $CreateMaskLayer(wndNode, extra_style) {
   wndNode.layer_mask = document.createElement('DIV');
   wndNode.layer_mask.body_style = document.body.currentStyle.overflow;
   wndNode.layer_mask.className = 'q-window-mask alpha_1';
+  if(extra_style)
+    Q.addClass(wndNode.layer_mask, extra_style);
   wndNode.appendChild(wndNode.layer_mask);
   wndNode.layer_mask.style.display = 'none';
   wndNode.layer_mask.onmousedown = Q.bind_handler(wndNode, function(evt) { 
@@ -174,7 +187,7 @@ RootWindow (__GLOBALS.desktop)
 function $ActivateWindow(wndNode, zindex) {
   if(!$IsWindow(wndNode))
     return;
-  Q.printf("active window " + $GetTitleText(wndNode));
+  //Q.printf("active window " + $GetTitleText(wndNode));
   var defined_zindex = 0;
   if(!isNaN(zindex)) 
     defined_zindex = zindex;
@@ -192,6 +205,8 @@ function $ActivateWindow(wndNode, zindex) {
 function $SetWindowActive(wndNode, IsActive) {
   var active_child = wndNode;
   while(active_child) {
+    if(active_child.on_activate)
+      active_child.on_activate(IsActive);
     if(IsActive) {
       Q.removeClass(active_child, CONST.inactive_title);
     } else {
@@ -208,8 +223,9 @@ function $MaxizeWindow(wndNode){
   var parent_container = $GetContainerWindow(wndNode);
   var width, height;
   if( parent_container == document.body ) {
-    width = Math.max(document.body.clientWidth, document.body.scrollWidth);
-    height = Math.max(document.body.clientHeight, document.body.scrollHeight);
+    var workspace = Q.workspace();
+    width  = workspace.width;   //Math.max(document.body.clientWidth, document.body.scrollWidth);
+    height = workspace.height; //Math.max(document.body.clientHeight, document.body.scrollHeight);
   } else if( $IsWindow(parent_container) ) {
     width  = Math.max($GetClient(parent_container).clientWidth, $GetClient(parent_container).scrollWidth);
     height = Math.max($GetClient(parent_container).clientHeight, $GetClient(parent_container).scrollHeight);
@@ -265,8 +281,8 @@ function $FitWindow(wndNode) {
 -------------------------------------------------------------------*/
 
 function $SetWindowPosition(wndNode, left, top, width, height) {
-    $MoveTo(wndNode, left, top);
-    $ResizeTo(wndNode, width, height);
+  $MoveTo(wndNode, left, top);
+  $ResizeTo(wndNode, width, height);
 }
 
 function $SetWindowTitle(wndNode, title){
@@ -275,10 +291,11 @@ function $SetWindowTitle(wndNode, title){
 }
 
 function $SetActiveChild(wndNode, child)   { wndNode.active_child = child;  }
-function $SetWindowStatus(wndNode, status) { wndNode.status_type  = status; }
 function $SetWindowZIndex(wndNode, zIndex) { if( isNaN(parseInt(zIndex)) ) { return; } wndNode.style.zIndex = zIndex; }
-function $SetWindowStyle(wndNode, ws)    { Q.addClass(wndNode, ws); }
-function $RemoveWindowStyle(wndNode, ws) { Q.removeClass(wndNode, ws); }
+function $RemoveWindowStyle(wndNode, ws)   { Q.removeClass(wndNode, ws); }
+function $SetWindowStatus(wndNode, status) { 
+  wndNode.status_type  = status; 
+}
 
 function $MoveTo(wndNode, x, y){
   // save pos before moving
@@ -291,10 +308,7 @@ function $MoveTo(wndNode, x, y){
   wndNode.style.left = wndNode.nLeft + 'px';
 }
 
-function $ResizeTo(wndNode, width, height){
-  if(typeof(wndNode.onresize) == 'function') {
-    wndNode.onresize();
-  }
+function $ResizeTo(wndNode, width, height) {
   // save size before resize
   wndNode.rwidth = wndNode.nWidth;
   wndNode.rheight= wndNode.nHeight;
@@ -306,6 +320,9 @@ function $ResizeTo(wndNode, width, height){
   wndNode.nHeight = height;
   wndNode.style.width = width + 'px';
   wndNode.style.height = height + 'px';
+  
+  if(typeof(wndNode.on_size) == 'function') 
+    wndNode.on_size(width, height);
 }
 
 function $GetWindowClientHeight() {
@@ -409,14 +426,14 @@ var MESSAGE = {
 function $DefaultWindowProc(hwnd, msg, data) {
   switch(msg) {
   case MESSAGE.CREATE:
-    Q.printf('DefaultWindowProc MESSAGE.CREATE');
+    //Q.printf('DefaultWindowProc MESSAGE.CREATE');
     break;  
   case MESSAGE.MIN:
-    Q.printf('DefaultWindowProc MESSAGE.MIN');
+    //Q.printf('DefaultWindowProc MESSAGE.MIN');
     $MinimizeWindow(hwnd);
     break;
   case MESSAGE.MAX:
-    Q.printf('DefaultWindowProc MESSAGE.MAX');
+    //Q.printf('DefaultWindowProc MESSAGE.MAX');
     if($GetWindowStatus(hwnd) != CONST.SIZE_MAX) { 
       $MaxizeWindow(hwnd); 
     } else { 
@@ -424,13 +441,21 @@ function $DefaultWindowProc(hwnd, msg, data) {
     }
     break;
   case MESSAGE.CLOSE:
-    Q.printf('DefaultWindowProc MESSAGE.CLOSE');
-    $DestroyWindow(hwnd);
+    //Q.printf('DefaultWindowProc MESSAGE.CLOSE');
+    var destroy_window = true;
+    if(hwnd.on_close) 
+      destroy_window = hwnd.on_close();
+    
+    if(destroy_window === false) {
+      $ShowWindow(hwnd, false);
+    } else {
+      $DestroyWindow(hwnd);
+    }
     break;  
   
   case MESSAGE.ACTIVATE:
     {
-      Q.printf('DefaultWindowProc MESSAGE.ACTIVATE -> ' + $GetTitleText(hwnd));
+      //Q.printf('DefaultWindowProc MESSAGE.ACTIVATE -> ' + $GetTitleText(hwnd));
       var top_wnd = $GetTopZIndexWindow($GetDesktopWindow());
       var top_zindex = $GetWindowZIndex(top_wnd);
       var t = hwnd;
@@ -502,7 +527,7 @@ function $CreateWindowTitlebar(hwnd)  {
   })(hTitle, hwnd);
   //hTitle.ondblclick    = function() { Q.printf('WINDOW title dblclick');  }
 
-  hTitle.hIcon = document.createElement('IMG');
+  hTitle.hIcon = document.createElement('div');
   hTitle.hIcon.className = 'q-icon';
   hTitle.appendChild(hTitle.hIcon);
    
@@ -608,16 +633,26 @@ function $CreateWindow(parent_wnd, title, wstyle, pos_left, pos_top, width, heig
   // mask window
   $CreateMaskLayer(hwnd);
   
-  $SetWindowStyle(hwnd, wstyle);
+  Q.addClass(hwnd, wstyle);
   $BindWindowMessage(hwnd, MESSAGE.CREATE)();
   
   // render 
   container.appendChild(hwnd);
   Q.drag.attach_object(hwnd, {
     objects : [hwnd.hTitle, hwnd.hTitle.hTitleCtrlBar, hwnd.hTitle.hTitleContent],
+    onmove_begin: Q.bind_handler(hwnd, function(x, y) {
+      if($GetWindowStatus(this) != CONST.SIZE_MAX) 
+        if(hwnd.on_move_begin)
+          hwnd.on_move_begin(x, y);
+    }),
     onmove: Q.bind_handler(hwnd, function(x, y) {
       if($GetWindowStatus(this) != CONST.SIZE_MAX) 
         $MoveTo(this, x, y);
+    }),
+    onmove_end: Q.bind_handler(hwnd, function(x, y) {
+      if($GetWindowStatus(this) != CONST.SIZE_MAX) 
+        if(hwnd.on_move_end)
+          hwnd.on_move_end(x, y);
     }),
   });
   
@@ -645,7 +680,8 @@ function $DestroyWindow(wndNode) {
   parent_wnds.erase(wndNode); 
   // 删除渲染节点delete dom   
   wndNode.setAttribute('__QWindow', null);
-  wndNode.parentNode.removeChild(wndNode);
+  if(wndNode.parentNode) 
+    wndNode.parentNode.removeChild(wndNode);
   wndNode = 0;
 
   // 激活相邻窗口 
@@ -671,10 +707,10 @@ function $MakeResizable(obj) {
   function mousedown(evt){
     evt = evt || window.event;
     var status = $GetWindowStatus(obj);
-    //Q.printf('mousedown out' + status);
+    Q.printf('mousedown out' + status);
     if( (status != CONST.SIZE_MAX) && (evt.button == Q.LBUTTON) && obj.style.cursor)
     {
-      //Q.printf('mousedown in' + status);
+      Q.printf('mousedown in' + status);
       $SetWindowStatus(obj, CONST.SIZE_RESIZING);
       if(obj.setCapture)
         obj.setCapture();
@@ -688,7 +724,7 @@ function $MakeResizable(obj) {
     var status = $GetWindowStatus(obj);
     if( ( status != CONST.SIZE_MAX ) && ( status == CONST.SIZE_RESIZING ) && ( evt.button == Q.LBUTTON ) )
     {
-      //Q.printf('mouseup in '+status);
+      Q.printf('mouseup in '+status);
       $SetWindowStatus(obj, CONST.SIZE_NORMAL);
       if(obj.releaseCapture)
         obj.releaseCapture();
@@ -761,6 +797,28 @@ function $MakeResizable(obj) {
   }
 }
 
+
+// 用于获取指定q:id属性的元素
+function qid(p, q_id) {
+  function find_item(e) {
+    var r = null;
+    for (var i = 0; i < e.childNodes.length; i ++) {
+      var c = e.childNodes[i];
+      if(c.nodeType === Q.ELEMENT_NODE) {
+        if(c.getAttribute("q:id") == q_id) {
+          r = c;
+          break;
+        } else {
+          if(r = find_item(c))
+            break;
+        }
+      }
+    }
+    return r;
+  }
+  return find_item(p);
+}
+
 /*-----------------------------------------------------------------
  $ class Q.Window
  $ dialog base class
@@ -780,14 +838,20 @@ __init__ : function(config) {
   var parent_wnd= $GetDesktopWindow();
   if(config.parent instanceof Q.Window) 
     parent_wnd = config.parent.wnd() || $GetDesktopWindow();
-  this.hwnd = $CreateWindow(parent_wnd, title, config.wstyle, left, top, width, height);  
+  this.hwnd = $CreateWindow(parent_wnd, title, config.wstyle, left, top, width, height, config.app);
   this.set_content(config.content);
+  this.hwnd.on_size     = Q.bind_handler(this, config.on_size || function(w, h) {});
+  this.hwnd.on_activate = Q.bind_handler(this, config.on_activate || function(activate) {});
+  this.hwnd.on_move_begin = Q.bind_handler(this, config.on_move_begin || function(x,y) {});
+  this.hwnd.on_move     = Q.bind_handler(this, config.on_move || function(x, y) {});
+  this.hwnd.on_move_end = Q.bind_handler(this, config.on_move_end || function(x, y) {});
+  this.hwnd.on_close    = Q.bind_handler(this, config.on_close || function() { return true; });
+  Q.bind_handler(this, config.on_create || function() {})();
 },
 
 wnd : function() { return this.hwnd; },
 set_window_proc : function(new_window_proc) { return $SetWindowProc(this.hwnd, new_window_proc); },
 set_zindex : function(zIndex) { $SetWindowZIndex(this.hwnd, zIndex); },
-
 set_content : function(HTMLContent) {
   HTMLContent = HTMLContent || "";
   if(HTMLContent && HTMLContent.nodeType == Q.ELEMENT_NODE) {
@@ -797,9 +861,13 @@ set_content : function(HTMLContent) {
     $GetClient(this.hwnd).innerHTML = HTMLContent;
   }
 },
+add_style: function(ws)    { Q.addClass(this.hwnd, ws);        },
+remove_style: function(ws) { Q.removeClass(this.hwnd, ws);     },
 show : function(isVisible) { $ShowWindow(this.hwnd, isVisible) },
-center : function()        { $CenterWindow(this.hwnd); },
+center : function()        { $CenterWindow(this.hwnd);         },
+activate : function()      { $BindWindowMessage(this.hwnd, MESSAGE.ACTIVATE)(); },
 adjust : function()        { $FitWindow(this.hwnd); },
+item: function(q_id)       { return qid($GetClient(this.hwnd), q_id); },
 });
 
 /*-----------------------------------------------------------------
@@ -815,7 +883,6 @@ __init__ : function(config) {
   config.wstyle += "|" + CONST.fixed;
   config.wstyle += "|" +CONST.no_min;
   config.wstyle += "|" +CONST.no_max;
-  this.on_close = config.on_close || function() {};
   var buttons = [];
   if(config.buttons instanceof Array) {
     config.wstyle +="|" + CONST.with_bottom;
@@ -839,7 +906,6 @@ __init__ : function(config) {
 window_proc : function(msgid, json) {
   switch(msgid) {
   case MESSAGE.CLOSE:
-    this.on_close();
     if(this.hwnd.modal_prev) {
       $MaskWindow(this.hwnd.modal_prev, false);
       this.hwnd.modal_prev.modal_next = null;
@@ -867,7 +933,7 @@ add_bottom_button : function(text, className, lpfunc) {
 },
 
 domodal : function(wndNode) {
-  Q.printf('domodal window');
+  //Q.printf('domodal window');
   if($IsNull(wndNode)) {
     wndNode = $GetActiveChild($GetDesktopWindow());
     if($IsNull(wndNode)) {
@@ -881,6 +947,9 @@ domodal : function(wndNode) {
   this.show(true);
   $ResizeTo(this.hwnd, this.hwnd.nWidth, this.hwnd.nHeight);
   this.center();
+  if($IsDesktopWindow(wndNode)) {
+    this.set_zindex(100001);
+  }
 },
  
 end_dialog : function(code) {
@@ -920,9 +989,75 @@ __init__: function(config) {
       onclick: Q.bind_handler(this, function() { this.on_cancel() && this.end_dialog(CONST.IDCANCEL); })})   
   }
   Q.Dialog.prototype.__init__.call(this, config);
-  this.domodal();
-  this.adjust();
-  this.center();
+  this.domodal(config.parent);
+  //this.adjust();
+  //this.center();
 }
 }); // Q.MessageBox
+
+/* wndx template */
+Q.ui = Q.extend({
+ui_iframe: null,
+__init__: function(json) {
+  json = json || {};
+  this.ui_iframe = document.createElement("IFRAME");
+  this.ui_iframe.src=json.src;
+  this.ui_iframe.onload = function() {    
+    json.oncomplete(true);
+  }
+  
+  this.ui_iframe.onerror= function() {
+    json.oncomplete(false);
+    document.body.removeChild(this);
+  }
+  this.ui_iframe.style.display = "none";
+  this.ui_iframe.src=json.src;
+  document.body.appendChild(this.ui_iframe);
+},
+
+template: function(id) {
+  var doc = this.ui_iframe.contentDocument || this.ui_iframe.contentWindow.document;
+  var tpl = doc.getElementById(id);
+  if(tpl)
+    return tpl.cloneNode(true);
+
+  return null;
+},
+
+bind_css : function() {
+  // get ui style
+	var heads = document.getElementsByTagName("head");
+  var doc = this.ui_iframe.contentDocument || this.ui_iframe.contentWindow.document;
+  for(var i=0; i < doc.styleSheets.length; i++) {
+    var sheet =doc.styleSheets[i];
+    if(!sheet) // no <style>
+      return;
+    var style;
+    if(sheet.ownerNode.innerHTML == "" && (!!sheet.href)) {
+      // link
+      style=document.createElement("link");
+	    style.setAttribute("type", "text/css");
+	    style.setAttribute("rel", "stylesheet");
+	    style.setAttribute("href", sheet.href);
+    } else {
+      var cssText = sheet.ownerNode.innerHTML;
+      style=document.createElement("style");
+	    style.setAttribute("type", "text/css");
+	    if(style.styleSheet){// IE
+		    style.styleSheet.cssText = cssText;
+	    } else {// w3c
+		    var textNode = doc.createTextNode(cssText);
+		    style.appendChild(textNode);
+	    }
+    }
+	  if(heads.length)
+		  heads[0].appendChild(style);
+	  else
+		  document.documentElement.appendChild(style);
+  } // for
+
+},
+
+}); // end of Q.ui
+
 

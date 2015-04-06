@@ -67,13 +67,6 @@ button:hover.wayixia-ctrl-button
   text-decoration: none;
 }
 
-#wayixia-title-bar #wayixia-close {
-  margin-top: 4px;
-  padding: 3px;
-  font-size: 14px;
-   
-}
-
 /* wayixia user menu */
 
 #wayixia-user-menu {
@@ -93,7 +86,7 @@ button:hover.wayixia-ctrl-button
   margin-right: 3px;
   background-color: transparent;
   color: #999;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 
@@ -102,10 +95,15 @@ button:hover.wayixia-ctrl-button
   cursor: hand;
 }
 
+button#wayixia-close {
+  display: none;
+}
+
 #wayixia-help {
 
 }
 
+/*
 #wayixia-help.q-active, button#wayixia-help:hover {
   background-color: #F8F8F8;
   color: #000;
@@ -113,6 +111,8 @@ button:hover.wayixia-ctrl-button
   -moz-box-shadow:0 1px 12px rgba(0,0,0,.1);
   -webkit-box-shadow:0 1px 12px rgba(0,0,0,.1)
 }
+*/
+
 
 #wayixia-bugs
 {
@@ -120,6 +120,10 @@ button:hover.wayixia-ctrl-button
   background: transparent url(images/bug.tips.png) left 10px no-repeat;
   width: 28px;
   opacity: 0.9;
+}
+
+button#wayixia-bugs {
+  margin-right: 10px;
 }
 
 #wayixia-bugs:hover
@@ -130,18 +134,18 @@ button:hover.wayixia-ctrl-button
 
 #wayixia-bugs-num {
   border: 1px solid white;
-  width: 15px;
+  width: 13px;
   background-color: #f3bf21;
   border-radius: 4px;
   color: #fff;
   font: bold 10px Arial;
   left: 13px;
-  height:15px;
+  height:13px;
   line-height: 15px;
   padding: 0 1px;
   position: absolute;
   text-align: center;
-  top: -5px;
+  top: 5px;
   visibility: hidden;
 }
 

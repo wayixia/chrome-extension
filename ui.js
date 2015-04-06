@@ -2,30 +2,70 @@
 var wayixia_errors = [];
 var wayixia_source_tab_id = null;
 var wayixia_help_menu = null;
-var g_report_window = null;
+var wayixia_report_window = null;
+var wayixia_ui_wndx = null;
 
 Q.Ready(function() {
 
 document.body.ondragstart  =function() { return false; }
 document.body.onselectstart=function() { return false; }
+// set locale
+Q.set_locale_text(locale_text);
+
 Q.$('wayixia-close').onclick = function(evt) {
   deactive();
 }
 
-//Q.$('wayixia-bugs-num').style.vi = '';
+/*
+Q.$('wayixia-title-bar').onclick=function(){ 
+  wayixia_track_event('deactive', 'topbar');
+  deactive();  
+}
+
+Q.$('wayixia-user-menu').onmousedown = function(evt) {
+  evt = evt || window.event;
+  evt.cancelBubbule = true;
+  evt.returnValue = false;
+  return true;
+}
+*/
+
 Q.$('wayixia-bugs').onclick = function(evt) {
   console.log('test');
-  g_about_window = new Q.Dialog({
-    title: locale_text('extFeedback'),
-    width: 500,
-    height: 200, 
-    wstyle: "q-attr-no-icon",
-    content:  wayixia_errors, //Q.$('layer-about'),
-    on_close: function() { delete g_about_window; g_about_window = null; },
-    on_ok: function() { return false; }
-  });
+  ui(function(t) {
+    var tpl = t.template('wndx-errors');
+    var item_tpl = t.template('wndx-item-errors');
+    // i18n 
+    extract_document(tpl);
+    wayixia_report_window = new Q.Dialog({
+      title: locale_text('extFeedback'),
+      width: 500,
+      height: 500, 
+      wstyle: "q-attr-no-icon",
+      content:  tpl, //wayixia_errors, //Q.$('layer-about'),
+      on_create: function() {
+        // init dialog
+        var d = this;
+        var list = d.item('list');
+        var item = qid(item_tpl, 'item');
+        for(var i=0; i < wayixia_errors.length; i++) {
+          var list_item = item.cloneNode(true);
+          var url = qid(list_item, 'url');
+          url.innerText = wayixia_errors[i].url;
+          var err = qid(list_item, 'info');
+          err.innerText = wayixia_errors[i].error;
+          list.appendChild(list_item);
+        }
+      },
+      on_close: function() { delete wayixia_report_window; wayixia_report_window = null; },
+      buttons: [
+        {text: " 提 交 ", onclick : function() { return true; }},
+        {text: " 取 消 ", style: "syscancelbtn", onclick : function() { return true; }},
+      ]
+    });
 
-  g_about_window.domodal();
+    wayixia_report_window.domodal();
+  });
 }
 
 Q.$('wayixia-bugs').title = locale_text('extFeedback'); //"feedback & suggestions to us.";
@@ -43,7 +83,7 @@ wayixia_help_menu = new class_menu({
 }); 
 
 var menu_suggest = new class_menuitem({
-  text: "建议反馈",
+  text: "帮助中心",
   callback : function(menuitem) {
   }
 });
@@ -85,3 +125,19 @@ function back2page() {
     chrome.tabs.update(wayixia_source_tab_id, {selected: true});
   }
 }
+
+function ui(f) {
+  if(wayixia_ui_wndx) {
+    f(wayixia_ui_wndx);
+  } else {
+    wayixia_ui_wndx = new Q.ui({src: 'wndx_template.html', oncomplete:  function(ok) {
+      if(ok) {
+        // bind css style from template file
+        wayixia_ui_wndx.bind_css();
+        f(wayixia_ui_wndx);
+      } else
+        Q.printf('Load template of wndx failed. File is not exists.');
+    }});
+  }
+}
+

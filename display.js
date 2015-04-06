@@ -18,7 +18,6 @@ function initialize () {
   var _this = t = this;
   var blocked_images = [];
   var accept_length  = 0;
-  var wayixia_title_bar = Q.$('wayixia-title-bar');
   var extension = chrome.extension.getBackgroundPage();
  
   var wayixia_images_box = new Q.images_box({container: 'wayixia-list', 
@@ -225,14 +224,8 @@ function initialize () {
 };
 
 Q.Ready(function() {
-  document.body.ondragstart  =function() { return false; }
-  document.body.onselectstart=function() { return false; }
   //document.body.oncontextmenu=function() { return false; }
   Q.set_locale_text(locale_text);
-  Q.$('wayixia-title-bar').onclick=function(){ 
-    //wayixia_track_event('deactive', 'topbar');
-    //deactive();  
-  }
   initialize();
   content_load_ok = true;
 });

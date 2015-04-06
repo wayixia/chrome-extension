@@ -1,0 +1,158 @@
+<!DOCTYPE>
+<html>
+<head>
+<title>wayixia app ui powered by Q.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+.wndx-container {
+  position: relative;
+  height: 300px;
+  width: 500px;
+  border: 1px outset #CCC;
+}
+
+
+#wndx-errors {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+
+
+#layer-about {
+  margin: auto;
+  padding: 10px;
+  font-size: 16px;
+  visibility: hidden;
+}
+
+#layer-about {
+  line-height: 16px;
+}
+
+#layer,#layer-block-images {
+  visibility:hidden;
+  position: absolute;
+  left: 0; top:0;
+  right: 0; bottom: 30;
+}
+
+.layer {
+  line-height: 30px;
+  font-size: 16px;
+  padding: 10px;
+  overflow:auto;
+}
+
+#layer-block-images #wayixia-container {
+  top: 0;
+}
+
+.error-list {
+  background-color: #F8F8F8;
+  height: 250px;
+  overflow: auto;
+  border: 1px solid #CCC;
+  padding: 3px;
+}
+
+.error-list li {
+  list-style: none;
+  text-indent: 0px;
+}
+
+.error-list li p {
+  font-size: 14px;
+  margin: 0px;
+  padding:0;
+  line-height: 22px;
+}
+
+.error-list li .url {
+  font-size: 16px;
+}
+
+.error-list li .info {
+  font-size: 16px;
+  color: #999;
+}
+
+.user-message {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #CCC;
+  background-colors: #F8F8F8;
+  outline: 0;
+}
+
+.error-type {
+  width: 100%;
+  height: 25px;
+}
+
+</style>
+
+</head>
+<body >
+
+
+<div class="wndx-container">
+<div id="wndx-errors" class="layer">
+<!--b> 错误信息:</b> （<font color="#999">__MSG_savePathAttention__</font>）<br-->
+  <p><select q:id="error-type" class="error-type">
+  <option>没有采集到任何图片</option>
+  <option>采集不到我想要的图片</option>
+  <option>下载图片失败</option>
+  <option>截屏失败</option>
+  </select></p>
+  
+  <div q:id="list" class="error-list"></div> 
+  <a q:id="with-message" class="q-checkbox">附言:</a>
+  <br>
+  <textarea q:id="message" class="user-message"></textarea>
+  <br>
+  <!--
+  <b>__MSG_blockImageManage__</b><br>
+  <button id="manager_block_images" size="50">__MSG_openBlockImages__</button> <br>
+  <br>
+  <b>__MSG_shortcut__</b><br>
+  1. __MSG_digImage__（<font color="#999">Ctrl+Q</font>）<br>
+  2. __MSG_closeExtensionWindow__（<font color="#999">ESC</font>）<br-->
+
+</div>
+</div>
+
+<br>
+<br>
+
+<div class="wndx-container">
+<div id="wndx-item-errors" class="error-list">
+<li q:id="item">
+  <p q:id="url" class="url" />xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+  <p q:id="info" class="info">xxx</p>  
+</li>
+<li>
+  <p q:id="url" />xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+  <p q:id="info">错误: xxx</p>  
+</li>
+<li>
+  <p q:id="url" />xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+  <p q:id="info">错误: xxx</p>  
+</li>
+</div>
+</div>
+
+
+<br>
+<br>
+
+<div id="wndx-ctrl" >
+  <div class="q-thumb" style="height:16px; width: 16px;margin:0 7px;"></div>
+</div>
+
+</body>
+</html>
