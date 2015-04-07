@@ -16,6 +16,16 @@ Q.$('wayixia-close').onclick = function(evt) {
   deactive();
 }
 
+// shortcut
+Q.addEvent(document, 'keyup', function(evt) {
+  var evt = evt || window.event;
+  var kcode = evt.which || evt.keyCode;
+  if(kcode == 27) {// ESC
+    wayixia_track_event('deactive', 'shortcut-ESC');
+    deactive();
+  }
+});
+
 /*
 Q.$('wayixia-title-bar').onclick=function(){ 
   wayixia_track_event('deactive', 'topbar');
@@ -31,7 +41,6 @@ Q.$('wayixia-user-menu').onmousedown = function(evt) {
 */
 
 Q.$('wayixia-bugs').onclick = function(evt) {
-  console.log('test');
   ui(function(t) {
     var tpl = t.template('wndx-errors');
     var item_tpl = t.template('wndx-item-errors');
@@ -39,27 +48,37 @@ Q.$('wayixia-bugs').onclick = function(evt) {
     extract_document(tpl);
     wayixia_report_window = new Q.Dialog({
       title: locale_text('extFeedback'),
-      width: 500,
-      height: 500, 
+      width: 350,
+      height: 350, 
       wstyle: "q-attr-no-icon",
-      content:  tpl, //wayixia_errors, //Q.$('layer-about'),
+      content:  tpl,
+      on_close: function() { delete wayixia_report_window; wayixia_report_window = null; },
       on_create: function() {
         // init dialog
         var d = this;
-        var list = d.item('list');
-        var item = qid(item_tpl, 'item');
-        for(var i=0; i < wayixia_errors.length; i++) {
-          var list_item = item.cloneNode(true);
-          var url = qid(list_item, 'url');
-          url.innerText = wayixia_errors[i].url;
-          var err = qid(list_item, 'info');
-          err.innerText = wayixia_errors[i].error;
-          list.appendChild(list_item);
+        d.email = d.item('email');
+        d.type  = d.item('type');
+        d.message = d.item('message');
+        if(wayixia_errors.length > 0) {
+          // set error message
+          d.type.value = "下载图片失败";
+          d.type.disabled = true;
+          Q.$('wayixia-bugs-num').style.visibility = 'hidden';
+          Q.$('wayixia-bugs').title = locale_text('extFeedback');  //"feedback & suggestions to us.";
         }
       },
-      on_close: function() { delete wayixia_report_window; wayixia_report_window = null; },
       buttons: [
-        {text: " 提 交 ", onclick : function() { return true; }},
+        { text: " 提 交 ", 
+          onclick : function() {
+            var d = wayixia_report_window;
+            var uri  = wayixia_request_data.data.pageUrl || "null";
+            var type = d.type.value;
+            var message = d.message.value;
+            var email = d.email.value;
+            alert("uri: " + uri + "; \ntype:" + type + "; \nmessage: " + message + "; \nemail: " + email + ";");
+            return false; 
+          }
+        },
         {text: " 取 消 ", style: "syscancelbtn", onclick : function() { return true; }},
       ]
     });
@@ -109,7 +128,7 @@ function background_warning(o) {
     Q.$('wayixia-bugs').title = wayixia_errors.length + " download items failed, report a bug to us.";
     
   } else {
-    Q.$('wayixia-bugs-num').style.display = 'hidden';
+    Q.$('wayixia-bugs-num').style.visibility = 'hidden';
     Q.$('wayixia-bugs').title = locale_text('extFeedback');  //"feedback & suggestions to us.";
   }
 }

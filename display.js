@@ -7,7 +7,7 @@
 
 var t = null;
 var content_load_ok = false;
-var request_data = {imgs: null, data: null};
+var wayixia_request_data = {imgs: [], data: {}};
 
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
@@ -203,23 +203,10 @@ function initialize () {
     }
   });
   
-  if(request_data.imgs) {
-    _this.display_valid_images(request_data.imgs, request_data.data)();
+  if(wayixia_request_data.imgs) {
+    _this.display_valid_images(wayixia_request_data.imgs, wayixia_request_data.data)();
   }
 
-  // shortcut
-  Q.addEvent(document, 'keyup', function(evt) {
-    var evt = evt || window.event;
-    var kcode = evt.which || evt.keyCode;
-    if(kcode == 27) {// ESC
-      wayixia_track_event('deactive', 'shortcut-ESC');
-      deactive();
-    }
-  });
-  
-  // test code
-  //drag_screen_images_begin();
-  //content_load_ok = true;
   console.log('content is loaded');
 };
 
@@ -240,13 +227,13 @@ function display_images(tab_id, packet) {
     wayixia_track_event("display_images", "from_menu");  
   }
   wayixia_source_tab_id = tab_id;
+  wayixia_request_data.imgs = packet.imgs;
+  wayixia_request_data.data = packet.data;
   if(content_load_ok) {
     console.log('recv request, content is loaded')
     t.display_valid_images(packet.imgs, packet.data)();
   } else {
     console.log('content is loadding' + packet)
-    request_data.imgs = packet.imgs;
-    request_data.data = packet.data;
     initialize();
   }
 }

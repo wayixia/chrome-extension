@@ -194,8 +194,8 @@ button#wayixia-bugs {
 #wayixia-toolbar a, #wayixia-toolbar-screenshot a {
   font-size: 16px;
   color: #000;
-  height: 28px;
-  line-height: 28px;
+  height: 26px;
+  line-height: 26px;
   text-decoration: none;
   margin-left: 5px;
   display:inline-block;
@@ -205,8 +205,9 @@ button#wayixia-bugs {
 a#wayixia-view
 {
   float: right;
-  margin: 10px 5px 7px 10px;
+  margin: 0 10px 0 0;
   text-decoration: underline;
+  height:42px;
 }
 /* */
 
@@ -305,7 +306,7 @@ a#wayixia-filter-icon {
 }
 
 .q-select.wayixia-menu {
-  height: 25px;
+  height: 42px;
   min-width: 50px;
   font-size: 15px;
   font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;

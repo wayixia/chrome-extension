@@ -87,13 +87,13 @@
   },
 
   "addBlock": {
-    "message": "屏蔽",
-    "description": "屏蔽"
+    "message": "屏蔽图片",
+    "description": "屏蔽图片"
   },
   
   "download": {
-    "message": "下载文件",
-    "description": "下载文件"
+    "message": "下载图片",
+    "description": "下载图片"
   },
   
   "captureZoom": {

@@ -81,9 +81,9 @@
   color: #999;
 }
 
-.user-message {
+.error-message {
   width: 100%;
-  height: 60px;
+  height: 100px;
   border: 1px solid #CCC;
   background-colors: #F8F8F8;
   outline: 0;
@@ -102,27 +102,24 @@
 
 <div class="wndx-container">
 <div id="wndx-errors" class="layer">
-<!--b> 错误信息:</b> （<font color="#999">__MSG_savePathAttention__</font>）<br-->
-  <p><select q:id="error-type" class="error-type">
+  <b> 类型:</b>
+  <!--（<font color="#999">__MSG_savePathAttention__</font>）--><br>
+  <select q:id="type" class="error-type">
+  <option value="" selected>请选择类型:</option>
   <option>没有采集到任何图片</option>
   <option>采集不到我想要的图片</option>
   <option>下载图片失败</option>
   <option>截屏失败</option>
-  </select></p>
+  <option value="-1">其它...</option>
+  </select>
+  <br/>
+  <b> 描述:</b><br>
+  <textarea q:id="message" class="error-message"></textarea>
   
-  <div q:id="list" class="error-list"></div> 
-  <a q:id="with-message" class="q-checkbox">附言:</a>
-  <br>
-  <textarea q:id="message" class="user-message"></textarea>
-  <br>
-  <!--
-  <b>__MSG_blockImageManage__</b><br>
-  <button id="manager_block_images" size="50">__MSG_openBlockImages__</button> <br>
-  <br>
-  <b>__MSG_shortcut__</b><br>
-  1. __MSG_digImage__（<font color="#999">Ctrl+Q</font>）<br>
-  2. __MSG_closeExtensionWindow__（<font color="#999">ESC</font>）<br-->
-
+  <div q:id="list" class="error-list" style="display: none;"></div> 
+  <b>电子邮件(*):</b><br/>
+  <input q:id="email" style="width:100%; height: 25px;" type="text" />
+  <br/>
 </div>
 </div>
 
