@@ -71,11 +71,15 @@ Q.$('wayixia-bugs').onclick = function(evt) {
         { text: " 提 交 ", 
           onclick : function() {
             var d = wayixia_report_window;
-            var uri  = wayixia_request_data.data.pageUrl || "null";
-            var type = d.type.value;
-            var message = d.message.value;
-            var email = d.email.value;
-            alert("uri: " + uri + "; \ntype:" + type + "; \nmessage: " + message + "; \nemail: " + email + ";");
+            var props = {};
+            props.uri  = wayixia_request_data.data.pageUrl || "null";
+            props.type = d.type.value;
+            props.message = d.message.value;
+            props.email = d.email.value;
+            alert(Q.json_encode(props));
+            wayixia_bugs_service.report_a_bug(props, function(r) {
+              console.log(r);
+            })
             return false; 
           }
         },

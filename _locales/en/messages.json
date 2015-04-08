@@ -165,6 +165,11 @@
     "description": "Options"
   },
 
+  "extHelp" : {
+    "message": "Help",
+    "description": "Help"
+  },
+  
   "extFeedBack": {
     "message" : "Report a bug",
     "description" : "Report a bug"
