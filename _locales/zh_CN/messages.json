@@ -230,6 +230,10 @@
     "description": " 是 "
   },
 
+  "qSubmit" : {
+    "message": " 提 交 ",
+    "description": " 提 交 "
+  },
 
   "qNo" : {
     "message": " 否 ",
@@ -246,7 +250,54 @@
     "message": " 正在加载中... ",
     "description": " 正在加载中... "
   },
+ 
+  "stringChooseAnBugType" : {
+    "message": " 请选择一种错误类型... ",
+    "description": " 请选择一种错误类型... "
+  },
   
+  "stringInvalidEmailFormat" : {
+    "message": " 无效的EMail格式 ",
+    "description": " 无效的EMail格式 "
+  },
+
+  "stringErrorType" : {
+    "message": " 类型 ",
+    "description": " 类型 "
+  },
+
+  "stringErrorDescription" : {
+    "message": " 描述 ",
+    "description": " 描述 "
+  },
+
+  "stringEMail" : {
+    "message": " 邮件地址 ",
+    "description": " 邮件地址 "
+  },
+
+  "stringGetNoneImage" : {
+    "message": " 没有采集到任何图片 ",
+    "description": " 没有采集到任何图片 "
+  },
+
+  "stringGetUnwantedImage" : {
+    "message": " 采集不到我想要的图片 ",
+    "description": " 采集不到我想要的图片 "
+  },
+  "stringDownloadImageFailed" : {
+    "message": " 下载图片失败 ",
+    "description": " 下载图片失败 "
+  },
+  "stringScreenshotFailed" : {
+    "message": " 截屏失败 ",
+    "description": " 截屏失败 "
+  },
+  "stringErrorOther" : {
+    "message": " 其它... ",
+    "description": " 其它... "
+  },
+
   "dummy" : {
     "message": "",
     "description": ""

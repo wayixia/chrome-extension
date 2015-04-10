@@ -14,16 +14,6 @@ function initialize () {
   var _this = t = this;
   var extension = chrome.extension.getBackgroundPage();
  
-  // shortcut
-  Q.addEvent(document, 'keyup', function(evt) {
-    var evt = evt || window.event;
-    var kcode = evt.which || evt.keyCode;
-    if(kcode == 27) {// ESC
-      wayixia_track_event('deactive', 'shortcut-ESC');
-      deactive();
-    }
-  });
-  
   var e_zoom = new Q.slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
     on_xscroll: function(v) {
       g_screenshot_zoom = v;
@@ -81,14 +71,9 @@ function drag_screen_images_update(n, total) {
 
 function drag_screen_images_end() {
   scroll_loadding.set_value(scroll_loadding.max);
-  (new Q.Animate({
-        tween: 'cubic',
-        ease: 'easyin',
-        max: 1000,
-        begin: 0,
-        duration: 100,
+  (new Q.Animate({ tween: 'cubic', ease: 'easyin',
+        max: 1000, begin: 0, duration: 100,
         bind : function(x) {
-          console.log(x);
           if(x == this.max) {
             g_screenshot_dialog.end_dialog();
           } else {

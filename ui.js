@@ -9,6 +9,7 @@ Q.Ready(function() {
 
 document.body.ondragstart  =function() { return false; }
 document.body.onselectstart=function() { return false; }
+
 // set locale
 Q.set_locale_text(locale_text);
 
@@ -25,20 +26,6 @@ Q.addEvent(document, 'keyup', function(evt) {
     deactive();
   }
 });
-
-/*
-Q.$('wayixia-title-bar').onclick=function(){ 
-  wayixia_track_event('deactive', 'topbar');
-  deactive();  
-}
-
-Q.$('wayixia-user-menu').onmousedown = function(evt) {
-  evt = evt || window.event;
-  evt.cancelBubbule = true;
-  evt.returnValue = false;
-  return true;
-}
-*/
 
 Q.$('wayixia-bugs').onclick = function(evt) {
   ui(function(t) {
@@ -64,26 +51,39 @@ Q.$('wayixia-bugs').onclick = function(evt) {
           d.type.value = "下载图片失败";
           d.type.disabled = true;
           Q.$('wayixia-bugs-num').style.visibility = 'hidden';
-          Q.$('wayixia-bugs').title = locale_text('extFeedback');  //"feedback & suggestions to us.";
+          Q.$('wayixia-bugs').title = locale_text('extFeedback');
         }
       },
       buttons: [
-        { text: " 提 交 ", 
+        { text: Q.locale_text('qSubmit'), 
           onclick : function() {
             var d = wayixia_report_window;
             var props = {};
-            props.uri  = wayixia_request_data.data.pageUrl || "null";
+
+            if(props.type == "") {
+              alert(Q.locale_text('stringChooseAnBugType'));
+              d.type.focus();
+              return;
+            }
+
+            var expr_email = /^(?:\w+\.?)*\w+@(?:\w+\.)*\w+$/;
+            if(!expr_email.test(d.email.value)) {
+              alert(Q.locale_text('stringInvalidEmailFormat'));
+              d.email.focus();
+              return false;
+           }
+            props.uri = wayixia_request_data.data.pageUrl || "null";
             props.type = d.type.value;
             props.message = d.message.value;
             props.email = d.email.value;
-            alert(Q.json_encode(props));
+            props.useragent = navigator.userAgent;
             wayixia_bugs_service.report_a_bug(props, function(r) {
-              console.log(r);
+              dismiss(d);
             })
             return false; 
           }
         },
-        {text: " 取 消 ", style: "syscancelbtn", onclick : function() { return true; }},
+        {text: Q.locale_text('qCancel'), style: "syscancelbtn", onclick : function() { return true; }},
       ]
     });
 
@@ -93,6 +93,7 @@ Q.$('wayixia-bugs').onclick = function(evt) {
 
 Q.$('wayixia-bugs').title = locale_text('extFeedback'); //"feedback & suggestions to us.";
 
+/*
 // init drop menu
 wayixia_help_menu = new class_menu({
   style: "wayixia-menu", 
@@ -118,7 +119,7 @@ wayixia_help_menu.hide();
 Q.$('wayixia-help').onclick = function(evt) {
   wayixia_help_menu.showElement(this, evt);
 }
-
+*/
 
 });
 
@@ -162,5 +163,19 @@ function ui(f) {
         Q.printf('Load template of wndx failed. File is not exists.');
     }});
   }
+}
+
+function dismiss(d) {
+  (new Q.Animate({ 
+    tween: 'cubic', ease: 'easyin',
+    max: 1000, begin: 0, duration: 100,
+    bind : function(x) {
+      if(x == this.max) {
+        d.end_dialog();
+      } else {
+        d.wnd().style.opacity = ((this.max-x)*1.0) / this.max;
+      }
+    }
+  })).play();
 }
 

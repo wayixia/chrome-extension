@@ -30,7 +30,7 @@ call : function(method, params, f) {
 
 var bugs_service = service.extend({
 __init__: function(json) {
-  json = {api: "http://wayixia.com/?mod=bugs&inajax=true&action="};
+  json = {api: "http://api.wayixia.com/?mod=bugs&inajax=true&action="};
   service.prototype.__init__.call(this, json);
 },
 
