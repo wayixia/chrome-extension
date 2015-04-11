@@ -4,6 +4,7 @@ var wayixia_source_tab_id = null;
 var wayixia_help_menu = null;
 var wayixia_report_window = null;
 var wayixia_ui_wndx = null;
+var wayixia_request_data = {imgs: [], data: {}};
 
 Q.Ready(function() {
 
@@ -60,7 +61,7 @@ Q.$('wayixia-bugs').onclick = function(evt) {
             var d = wayixia_report_window;
             var props = {};
 
-            if(props.type == "") {
+            if(d.type.value == "") {
               alert(Q.locale_text('stringChooseAnBugType'));
               d.type.focus();
               return;

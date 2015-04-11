@@ -7,7 +7,6 @@
 
 var t = null;
 var content_load_ok = false;
-var wayixia_request_data = {imgs: [], data: {}};
 
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
