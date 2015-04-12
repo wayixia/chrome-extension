@@ -7,7 +7,7 @@
 https://chrome.google.com/webstore/detail/ahajhopfbfpekcljjjppolcmapaidldc
 
 
-#v1.10:
+#v.1.10:
 ##Features
 * New style for you.
 * View type (select tye type what would you like).
