@@ -8,11 +8,10 @@ var plugin_name  = chrome.i18n.getMessage('menuDigImages');
 var block_images = {};
 
 // check new version for helper
-//if(user_config_is_new()) {
-//  // display new features of wayixia extension
-//  console.log('this is help!');
-//  //create_upgrade_page();
-//}
+if(user_config_is_new()) {
+  // display new features of wayixia extension
+  create_upgrade_page();
+}
 
 // create context menu
 var contexts = ["page", "image", "selection","editable","link","video","audio"];
@@ -53,7 +52,7 @@ function on_click_screenshot(tab) {
     setTimeout(function() {
       chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {  
         chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
-          create_display_screenshot(tab.id, screenshotUrl); 
+          create_display_screenshot(tab.id, screenshotUrl, tab.url); 
         });
       });
     }, 1000);
@@ -98,7 +97,7 @@ function capture_page_task(tab, max, pos, canvas) {
 function screenshot_end(tab, canvas) {
   console.log('capture end');
   chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
-    create_display_full_screenshot(tab.id, canvas); 
+    create_display_full_screenshot(tab.id, canvas, tab.url); 
   });
 }
 
@@ -118,18 +117,18 @@ function create_display_page(context_tab_id,  res) {
   focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_images(id, res) } })(context_tab_id, res));
 }
 
-function create_display_screenshot(context_tab_id,  res) {  
+function create_display_screenshot(context_tab_id,  res, url) {  
   var manager_url = chrome.extension.getURL("screenshot.html");
-  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_screenshot(id, res) } })(context_tab_id, res));
+  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_screenshot(id, res, url) } })(context_tab_id, res));
 }
 
-function create_display_full_screenshot(context_tab_id,  res) {  
+function create_display_full_screenshot(context_tab_id,  res, url) {  
   var manager_url = chrome.extension.getURL("screenshot.html");
-  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_full_screenshot(id, res) } })(context_tab_id, res));
+  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_full_screenshot(id, res, url) } })(context_tab_id, res));
 }
 
 function create_upgrade_page() {  
-  var manager_url = 'http://wayixia.com/chrome/features.html#v.'+chrome.runtime.getManifest().version;
+  var manager_url = chrome.extension.getURL("upgrade.html")+'#v.'+chrome.runtime.getManifest().version;
   focus_or_create_tab(manager_url, function(view) { });
 }
 

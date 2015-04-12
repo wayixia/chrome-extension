@@ -38,6 +38,7 @@ function initialize () {
       console.log("set view type -> " + value);
       wayixia_images_box.set_style(value);
       extension.view_type_set(value);
+      wayixia_track_button_click(Q.$('wayixia-view'), value);
     }  
   });
 
@@ -76,9 +77,9 @@ function initialize () {
   Q.$('wayixia-add-block').onclick=function() {
     wayixia_track_button_click(this);
     var box = new Q.MessageBox({
-      title: locale_text('extName'),
+      title: Q.locale_text('extName'),
       wstyle: "q-attr-no-icon",
-      content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('infoAddBlock')+'</div>',
+      content: '<div style="margin:auto; padding:20px;font-size:14px;">'+Q.locale_text('infoAddBlock')+'</div>',
       on_ok: function() {
         var remove_items = [];
         var extension = chrome.extension.getBackgroundPage();
@@ -131,8 +132,8 @@ function initialize () {
   }
 
   function update_ui_count() {
-    Q.$('wayixia-show-block').innerText = locale_text('haveBlocked') + '('+blocked_images.length+')';
-    Q.$('wayixia-select-all').innerText = locale_text('selectAll') + '('+accept_length+')';
+    Q.$('wayixia-show-block').innerText = Q.locale_text('haveBlocked') + '('+blocked_images.length+')';
+    Q.$('wayixia-select-all').innerText = Q.locale_text('selectAll') + '('+accept_length+')';
   }
 
   function init_block_image_items(blocked_images) {
@@ -155,6 +156,8 @@ function initialize () {
 
   // entry display images
   this.display_valid_images = function(imgs, data) {
+    // clear errors
+    clear_errors();
     // init datacheckbox_show_block.checked()
     var accept_images  = {};
     accept_length  = 0;

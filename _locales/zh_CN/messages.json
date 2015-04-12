@@ -19,11 +19,6 @@
     "description": "图片批量下载 | 网页截屏"
   },
  
-  "extCloseWindow": {
-    "message": "x 关闭窗口",
-    "description": "x 关闭窗口"
-  },
- 
   "extAbout": {
     "message": "关于插件",
     "description": "关于插件"
@@ -177,9 +172,9 @@
   },
 
 
-  "extFeedBack": {
-    "message" : "报告错误",
-    "description" : "报告错误"
+  "extReportABug": {
+    "message" : "报告一个错误",
+    "description" : "报告一个错误"
   },
   
 
@@ -277,27 +272,35 @@
   },
 
   "stringGetNoneImage" : {
-    "message": " 没有采集到任何图片 ",
+    "message": "没有采集到任何图片",
     "description": " 没有采集到任何图片 "
   },
 
   "stringGetUnwantedImage" : {
-    "message": " 采集不到我想要的图片 ",
-    "description": " 采集不到我想要的图片 "
-  },
-  "stringDownloadImageFailed" : {
-    "message": " 下载图片失败 ",
-    "description": " 下载图片失败 "
-  },
-  "stringScreenshotFailed" : {
-    "message": " 截屏失败 ",
-    "description": " 截屏失败 "
-  },
-  "stringErrorOther" : {
-    "message": " 其它... ",
-    "description": " 其它... "
+    "message": "采集不到我想要的图片",
+    "description": "采集不到我想要的图片"
   },
 
+  "stringDownloadImageFailed" : {
+    "message": "下载图片失败",
+    "description": "下载图片失败"
+  },
+  
+  "stringScreenshotFailed" : {
+    "message": "截屏失败",
+    "description": "截屏失败"
+  },
+  
+  "stringErrorOther" : {
+    "message": "其它...",
+    "description": "其它..."
+  },
+
+  "stringDownloadError" : {
+    "message": "下载错误",
+    "description": "下载错误"
+  },
+  
   "dummy" : {
     "message": "",
     "description": ""

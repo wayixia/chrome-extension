@@ -1,7 +1,7 @@
 {
   "extName" : {
-    "message" : "Batch Image Download/Full Screen Capture",
-    "description": "Batch Image Download/Full Screen Capture"
+    "message" : "Batch Image Download.Full Screen Capture",
+    "description": "Batch Image Downloa.Full Screen Capture"
   },
   
   "extShortName" : {
@@ -145,8 +145,8 @@
 
 
   "digImage" : {
-    "message": "Gather images",
-    "description": "Gather images"
+    "message": "Dig images",
+    "description": "Dig images"
   },
 
   "closeExtensionWindow" : {
@@ -170,7 +170,7 @@
     "description": "Help"
   },
   
-  "extFeedBack": {
+  "extReportABug": {
     "message" : "Report a bug",
     "description" : "Report a bug"
   },
@@ -222,6 +222,10 @@
     "description": " YES "
   },
 
+  "qSubmit" : {
+    "message": " Submit ",
+    "description": " Submit "
+  },
 
   "qNo" : {
     "message": " NO ",
@@ -237,6 +241,61 @@
   "stringLoading" : {
     "message": " Loading... ",
     "description": " Loading... "
+  },
+  
+  "stringChooseAnBugType" : {
+    "message": " Please choose an error type... ",
+    "description": " Please choose an error type... "
+  },
+  
+  "stringInvalidEmailFormat" : {
+    "message": " Invalid email address ",
+    "description": " Invalid email address "
+  },
+
+  "stringErrorType" : {
+    "message": " Error type ",
+    "description": " Error type "
+  },
+
+  "stringErrorDescription" : {
+    "message": " Description ",
+    "description": " Description "
+  },
+
+  "stringEMail" : {
+    "message": " Mail Address ",
+    "description": " Mail Address "
+  },
+
+  "stringGetNoneImage" : {
+    "message": "None image was get",
+    "description": "None image was get"
+  },
+
+  "stringGetUnwantedImage" : {
+    "message": "Images is not wanted",
+    "description": "Images is not wanted"
+  },
+  
+  "stringDownloadImageFailed" : {
+    "message": "Download images failed",
+    "description": "Download images failed"
+  },
+  
+  "stringScreenshotFailed" : {
+    "message": "Screen Capture failed",
+    "description": "Screen Capture failed"
+  },
+  
+  "stringErrorOther" : {
+    "message": "Other...",
+    "description": "Other..."
+  },
+  
+  "stringDownloadError" : {
+    "message": "files download error.",
+    "description": "files download error."
   },
   
   "dummy" : {

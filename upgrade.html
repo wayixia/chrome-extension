@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title> __MSG_extName__ </title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link type="text/css" rel="stylesheet" href="Q.js/ui.css"/>
+<script src="Q.js/Q.js"></script>
+<script src="i18n.js"></script>
+<style>
+<!--
+
+body {
+  margin:0; 
+  padding:0; 
+  height:100%;
+  background: #F1F1F1; /*  urls(http://s1.wayixia.com/64e05114-553c-4b34-97b5-a7f1082e1698) no-repeat;  */
+  overflow: auto;
+  /*font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;*/
+  font-size: 14px;
+  overflow-y: scroll;
+}
+
+p {
+  margin:0;
+  padding:0;
+}
+
+#header {
+  background: #FFF;
+  width: 784px;
+  margin: 0 auto;
+  padding: 10px 0;
+  height: 65px;
+
+  box-shadow:0 1px 3px rgba(5,5,5,.3);
+  -moz-box-shadow:0 1px 3px rgba(5,5,5,.3);
+  -webkit-box-shadow:0 1px 3px rgba(5,5,5,.3);
+}
+
+#main-menu { border: 0px solid red; height: 120px; font-family:arial, sans-serif; font-size: 14px; }
+#logo {
+  float: left; 
+  height:65px; 
+  line-height: 65px;
+  text-indent: 70px;
+  font-size: 32px;
+  color: #333;
+  width: 220px;
+  font-weight: bold;
+  background: transparent url(icon48.png) no-repeat 20px center;
+}
+
+#user-title-bar {
+  position:fixed; 
+  left:0;top:0;right:0; 
+  height: 43px;
+  z-index:1000;
+  background:##1e1e1e;
+  color:#FFF;
+  text-align:left;
+  /*box-shadow: 0 -1px 0 #e1e1e1 inset,0 0 16px rgba(0,0,0,.15);*/
+}
+
+#body  {
+  width: 784px;
+  margin: 0 auto;
+  height: auto;
+  min-height: 500px;
+  position:relative;
+  background: #FFF;
+  background: #FFF url({$app:theme}/fbg.gif) repeat-x left top ;
+  box-shadow:0 1px 3px rgba(5,5,5,.3);
+  -moz-box-shadow:0 1px 3px rgba(5,5,5,.3);
+  -webkit-box-shadow:0 1px 3px rgba(5,5,5,.3);
+}
+
+#footer {
+  margin: 0 auto;
+  width: 784px;
+  height: 30px;
+  line-height: 20px;
+  font-size: 1.3em;
+  color: #000;
+  text-align:center;
+  border-top: 0px solid #CCC;
+}
+
+/* style */
+.fixed-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.q-inplace {
+  background-color: transparent;
+}
+
+
+.panel {
+  position:relative;
+}
+
+.panel .column-left {
+  position: relative;
+  width: 760px;
+}
+
+.panel .column-line {
+  border-left: 1px solid #F0F0F0;
+  border-right: 0px solid #e1e1e1;
+  position: absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  display: none;
+}
+
+.panel .column-right {
+  float: right;
+  display: none;
+  width: 264px;
+}
+
+.clear-both {
+  clear: both;
+}
+
+#description {
+  padding: 0px 15px;
+}
+
+/* right panel */
+#box-download {
+  display: none;
+  margin: 0 auto; 
+  width: 232px; 
+  background: #F8F8F8;
+  color: #333;
+  padding: 5px;
+  text-align: center;
+  line-height: 35px;
+  border: 1px solid #EEE;
+}
+
+#box-download h3 {
+  font-weight: normal;
+  padding:0;
+  margin:0;
+}
+
+#box-chrome-install {
+  font-weight: normal;
+  margin: 0 auto; 
+  width: 232px; 
+  background: #F8F8F8;
+  color: #333;
+  padding: 5px;
+  line-height: 35px;
+  border: 1px solid #EEE;
+}
+
+#box-chrome-install a {
+  padding:0;
+  margin:0;
+  background: url({$app:theme}/chrome_webstore_ongray_32.png) no-repeat left top;
+  text-indent: 40px;
+  color: #515151;
+  display: inline-block;
+  font-weight: normal;
+  text-decoration: none;
+  text-indent: 35px;
+  font-size: 1.3em;
+}
+
+/* left panel */
+.news-item {
+  padding: 0 20px;
+  line-height: 26px;
+  font-size: 1.3em;
+}
+
+.news-item h3 {
+  font-weight: normal;
+  margin: 5px 0;
+  color: #3d9af9;
+}
+
+.news-item .date {
+  color: #999;
+  font-size: 14px;
+}
+
+.news-item img {
+  float:left; 
+  width: 250px; 
+  height: 168px; 
+  margin-right: 8px;
+  margin-top: 6px;
+  box-shadow:0 1px 3px rgba(5,5,5,.3);
+  -moz-box-shadow:0 1px 3px rgba(5,5,5,.3);
+  -webkit-box-shadow:0 1px 3px rgba(5,5,5,.3)
+}
+-->
+</style>
+
+<script>
+<!--
+function auto_size() {
+  if(document.body.offsetHeight == document.documentElement.clientHeight ) {
+    Q.$('footer').className = "fixed-footer"
+  } else {
+    Q.$('footer').className = ""
+  }   
+}
+
+Q.Ready(function() {
+  auto_size();
+  Q.addEvent(window, 'size', auto_size);
+});  
+
+-->
+</script>
+</head>
+<body>
+<div id="header">
+  <div id="main-menu">
+    <div id="logo">wayixia</div>
+    <!--br>An useful tool for batch images download and full screen capture from web page!-->
+    <br>
+  </div>
+</div>
+<div id="body">
+  <div class="panel" id="slider">&nbsp;</div>
+  <div class="panel">
+    <div class="column-right">
+      <!--div id="box-download"> 
+        <h3>Lasted Version: v.1.7</h3> 
+        <a href="#">Download</a>
+      </div>
+      <div id="box-chrome-install"> 
+        <a href="https://chrome.google.com/webstore/detail/batch-image-dig-full-page/ahajhopfbfpekcljjjppolcmapaidldc" target="_blank">Install From Chrome Web Store </a> 
+      </div-->
+    </div>
+    <div class="column-left"> 
+      <div class="column-line"></div>
+      <div class="news-item">
+        <h3 style="background-color: #FF0;"> version 1.10 is available </h3>
+        <p class="date"> 2015-04-12 </p>
+        <p class="description"> 
+          <img src="http://img0.bdstatic.com/img/image/shouye/xinshouye/mingxing1229.jpg" style="display: none;"/> 
+          <b>Features</b><br/>
+          <li> New style for you.</li>
+          <li> View type (select tye type what would you like).</li>
+          <li> Report a Bug easily. </li>
+          <li> Performance optimization(Display images or screenshot fast). </li>
+          
+          <br>
+          <br>
+          <b> Bugs Fixed </b>
+          <li> fixed Batch download with duplicate filenames </li>
+          <br>
+      </div>
+      <div class="clear-both"></div>
+      <br>
+      <div class="news-item">
+        <h3> What is wayixia? </h3>
+        <p class="date"> 2014-12-31 </p>
+        <p class="description"> 
+          <img src="images/item.png" style="display: ;"/> An useful tool for batch download images and full screen capture of web page. It can help us to dig all of images(include the css background and iframe's image) or take a full screen capture of the web page you visitied. Batch download the selected images or save the full screenshot.  One Button All Of Images.</p>
+      </div>
+      <div class="clear-both"></div>
+      <br>
+    <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+    </div>
+  </div>
+  <div class="clear-both"></div>
+  <br>
+</div>
+<br>
+<div id="footer">
+  <p>
+    2015&copy;wayixia.com
+  </p>
+</div>
+</body
+</html>
+
+

@@ -18,7 +18,6 @@ function init(){
     
     chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
      function(tabs){
-       //show_tips_full_screenshot();
        extension.on_click_screenshot(tabs[0]);
      }
     );

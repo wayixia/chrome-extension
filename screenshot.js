@@ -84,9 +84,10 @@ function drag_screen_images_end() {
 }
 
 
-function display_full_screenshot(tab_id, canvas_data) {
+function display_full_screenshot(tab_id, canvas_data, url) {
   wayixia_track_event("display_full_screenshot", "from_menu");  
   wayixia_source_tab_id = tab_id;
+  wayixia_request_data.data.pageUrl = url;
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');
   img.id = 'wayixia-screenshot-image';
@@ -96,9 +97,10 @@ function display_full_screenshot(tab_id, canvas_data) {
   Q.drag.attach_object(img, {self: true});
 }
 
-function display_screenshot(tab_id, image_data) {
+function display_screenshot(tab_id, image_data, url) {
   wayixia_track_event("display_screenshot", "from_menu");  
   wayixia_source_tab_id = tab_id;
+  wayixia_request_data.data.pageUrl = url;
   drag_screen_images_begin();
   var wayixia_container = Q.$('wayixia-list');
   var img = document.createElement('img');
@@ -108,7 +110,6 @@ function display_screenshot(tab_id, image_data) {
   img.onload = img.onerror = Q.bind_handler(img, function() {  drag_screen_images_end(); });
   img.src = image_data;
   Q.drag.attach_object(img, {self: true});
- 
 }
 
 /* call background script end */
