@@ -4,17 +4,15 @@ var wayixia_source_tab_id = null;
 var wayixia_help_menu = null;
 var wayixia_report_window = null;
 var wayixia_ui_wndx = null;
+var wayixia_request_data = {imgs: [], data: {}};
 
 Q.Ready(function() {
 
 document.body.ondragstart  =function() { return false; }
 document.body.onselectstart=function() { return false; }
+
 // set locale
 Q.set_locale_text(locale_text);
-
-Q.$('wayixia-close').onclick = function(evt) {
-  deactive();
-}
 
 // shortcut
 Q.addEvent(document, 'keyup', function(evt) {
@@ -26,28 +24,19 @@ Q.addEvent(document, 'keyup', function(evt) {
   }
 });
 
-/*
-Q.$('wayixia-title-bar').onclick=function(){ 
-  wayixia_track_event('deactive', 'topbar');
-  deactive();  
-}
 
-Q.$('wayixia-user-menu').onmousedown = function(evt) {
-  evt = evt || window.event;
-  evt.cancelBubbule = true;
-  evt.returnValue = false;
-  return true;
-}
-*/
+if(Q.$('wayixia-bugs')) {
 
+Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');
 Q.$('wayixia-bugs').onclick = function(evt) {
+  wayixia_track_event('report_a_bug', 'report_a_bug');
   ui(function(t) {
     var tpl = t.template('wndx-errors');
     var item_tpl = t.template('wndx-item-errors');
     // i18n 
     extract_document(tpl);
     wayixia_report_window = new Q.Dialog({
-      title: locale_text('extFeedback'),
+      title: Q.locale_text('extReportABug'),
       width: 350,
       height: 350, 
       wstyle: "q-attr-no-icon",
@@ -61,29 +50,42 @@ Q.$('wayixia-bugs').onclick = function(evt) {
         d.message = d.item('message');
         if(wayixia_errors.length > 0) {
           // set error message
-          d.type.value = "下载图片失败";
+          d.type.value = Q.locale_text("stringDownloadImageFailed");
           d.type.disabled = true;
           Q.$('wayixia-bugs-num').style.visibility = 'hidden';
-          Q.$('wayixia-bugs').title = locale_text('extFeedback');  //"feedback & suggestions to us.";
+          Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');
         }
       },
       buttons: [
-        { text: " 提 交 ", 
+        { text: Q.locale_text('qSubmit'), 
           onclick : function() {
             var d = wayixia_report_window;
             var props = {};
-            props.uri  = wayixia_request_data.data.pageUrl || "null";
+
+            if(d.type.value == "") {
+              alert(Q.locale_text('stringChooseAnBugType'));
+              d.type.focus();
+              return;
+            }
+
+            var expr_email = /^[a-zA-Z0-9\-\.]+@[0-9a-zA-Z\-]+\.\w+$/;
+            if(!expr_email.test(d.email.value)) {
+              alert(Q.locale_text('stringInvalidEmailFormat'));
+              d.email.focus();
+              return false;
+           }
+            props.uri = wayixia_request_data.data.pageUrl || "null";
             props.type = d.type.value;
             props.message = d.message.value;
             props.email = d.email.value;
-            alert(Q.json_encode(props));
+            props.useragent = navigator.userAgent;
             wayixia_bugs_service.report_a_bug(props, function(r) {
-              console.log(r);
+              dismiss(d);
             })
             return false; 
           }
         },
-        {text: " 取 消 ", style: "syscancelbtn", onclick : function() { return true; }},
+        {text: Q.locale_text('qCancel'), style: "syscancelbtn", onclick : function() { return true; }},
       ]
     });
 
@@ -91,8 +93,10 @@ Q.$('wayixia-bugs').onclick = function(evt) {
   });
 }
 
-Q.$('wayixia-bugs').title = locale_text('extFeedback'); //"feedback & suggestions to us.";
+} // Q.$('wayixia-bugs')
 
+
+/*
 // init drop menu
 wayixia_help_menu = new class_menu({
   style: "wayixia-menu", 
@@ -118,22 +122,20 @@ wayixia_help_menu.hide();
 Q.$('wayixia-help').onclick = function(evt) {
   wayixia_help_menu.showElement(this, evt);
 }
-
+*/
 
 });
 
 function background_warning(o) {
-  //var extension = chrome.extension.getBackgroundPage();
-  //var warnnings = extension.warnnings();
   wayixia_errors.push(o);
   if(wayixia_errors.length > 0) {
     Q.$('wayixia-bugs-num').style.visibility = 'visible';
     Q.$('wayixia-bugs-num').innerText = (wayixia_errors.length>9)?'N':wayixia_errors.length;
-    Q.$('wayixia-bugs').title = wayixia_errors.length + " download items failed, report a bug to us.";
+    Q.$('wayixia-bugs').title = wayixia_errors.length + ' ' + Q.locale_text('stringDownloadError') ;
     
   } else {
     Q.$('wayixia-bugs-num').style.visibility = 'hidden';
-    Q.$('wayixia-bugs').title = locale_text('extFeedback');  //"feedback & suggestions to us.";
+    Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');  //"feedback & suggestions to us.";
   }
 }
 
@@ -163,4 +165,72 @@ function ui(f) {
     }});
   }
 }
+
+function dismiss(d) {
+  (new Q.Animate({ 
+    tween: 'cubic', ease: 'easyin',
+    max: 1000, begin: 0, duration: 100,
+    bind : function(x) {
+      if(x == this.max) {
+        d.end_dialog();
+      } else {
+        d.wnd().style.opacity = ((this.max-x)*1.0) / this.max;
+      }
+    }
+  })).play();
+}
+
+function clear_errors() {
+  wayixia_errors = [];
+  Q.$('wayixia-bugs-num').style.visibility = 'hidden';
+  Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');
+}
+
+///////////////// wayixia service ////////////////////////////////////
+
+
+var service = Q.extend({
+api: null, 
+__init__: function(json) {
+  json = json || {};
+  this.api = json.api;
+},
+
+call : function(method, params, f) {
+  var invalid_data = -2;
+  Q.Ajax({
+    command: this.api + method,
+    data: params,
+    oncomplete : function(xmlhttp) {
+      var res = Q.json_decode(xmlhttp.responseText);
+      if(!res)
+        f(invalid_data, {});
+      else
+        f(res.header, res.data);
+    },
+    onerror : function(xmlhttp) {
+      f(xmlhttp.status, {});
+    }
+  });
+
+},
+
+});
+
+
+var bugs_service = service.extend({
+__init__: function(json) {
+  json = {api: "http://api.wayixia.com/?mod=bugs&inajax=true&action="};
+  service.prototype.__init__.call(this, json);
+},
+
+report_a_bug : function(props, f) {
+  this.call("report_a_bug", {props: props}, f);
+},
+
+});
+
+var wayixia_bugs_service = new bugs_service;
+
+///////////////// wayixia service end/////////////////////////////////
 

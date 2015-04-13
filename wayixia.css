@@ -100,7 +100,7 @@ button#wayixia-close {
 }
 
 #wayixia-help {
-
+  visibility: hidden;
 }
 
 /*

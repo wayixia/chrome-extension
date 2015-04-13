@@ -5,3 +5,14 @@
 
 插件安装地址：
 https://chrome.google.com/webstore/detail/ahajhopfbfpekcljjjppolcmapaidldc
+
+
+#v.1.10:
+##Features
+* New style for you.
+* View type (select tye type what would you like).
+* Report a Bug easily.
+* Performance optimization(Display images or screenshot fast).
+
+##Bugs fixed:
+* fixed Batch download with duplicate filenames

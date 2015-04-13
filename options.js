@@ -8,7 +8,7 @@ function init_about() {
   g_about_window = new Q.MessageBox({
     title: locale_text('extAbout'),
     width: 500,
-    height: 200, 
+    height: 350, 
     wstyle: "q-attr-no-icon",
     content: Q.$('layer-about'),
     on_close: function() {window.close();},

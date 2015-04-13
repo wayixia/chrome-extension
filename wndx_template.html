@@ -102,22 +102,22 @@
 
 <div class="wndx-container">
 <div id="wndx-errors" class="layer">
-  <b> 类型:</b>
+  <b> __MSG_stringErrorType__(*):</b>
   <!--（<font color="#999">__MSG_savePathAttention__</font>）--><br>
   <select q:id="type" class="error-type">
-  <option value="" selected>请选择类型:</option>
-  <option>没有采集到任何图片</option>
-  <option>采集不到我想要的图片</option>
-  <option>下载图片失败</option>
-  <option>截屏失败</option>
-  <option value="-1">其它...</option>
+  <option value="" selected>__MSG_stringChooseAnBugType__</option>
+  <option>__MSG_stringGetNoneImage__</option>
+  <option>__MSG_stringGetUnwantedImage__</option>
+  <option>__MSG_stringDownloadImageFailed__</option>
+  <option>__MSG_stringScreenshotFailed__</option>
+  <option>__MSG_stringErrorOther__</option>
   </select>
   <br/>
-  <b> 描述:</b><br>
+  <b> __MSG_stringErrorDescription__:</b><br>
   <textarea q:id="message" class="error-message"></textarea>
   
   <div q:id="list" class="error-list" style="display: none;"></div> 
-  <b>电子邮件(*):</b><br/>
+  <b>__MSG_stringEMail__(*):</b><br/>
   <input q:id="email" style="width:100%; height: 25px;" type="text" />
   <br/>
 </div>
@@ -150,6 +150,34 @@
 <div id="wndx-ctrl" >
   <div class="q-thumb" style="height:16px; width: 16px;margin:0 7px;"></div>
 </div>
+
+<div class="wndx-container">
+
+<div id="wndx-options">
+  <form action="#" q:id="options-form">
+  <b> __MSG_savePath__</b>（<font color="#999">__MSG_savePathAttention__</font>）<br> 
+  <input id="save_path" size="50"> <br>
+  <a id="date_folder" class="q-checkbox">__MSG_saveWithDateFolder__</a>
+  <br>
+  <br>
+  <b>__MSG_blockImageManage__</b><br>
+  <button id="manager_block_images" size="50">__MSG_openBlockImages__</button> <br>
+  <br>
+  <b>__MSG_shortcut__</b><br>
+  1. __MSG_digImage__（<font color="#999">Ctrl+Q</font>）<br>
+  2. __MSG_closeExtensionWindow__（<font color="#999">ESC</font>）<br>
+  </form>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
 
 </body>
 </html>
