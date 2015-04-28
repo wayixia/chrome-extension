@@ -13,20 +13,32 @@ function filter_rules_get(url) {
     var path = RegExp.$2;
     var rule = rules[domain];
     var re2 = new RegExp(rule.rule);
-    result_url = result_url.replace(re2, 
+    var arr = result_url.matchreplace(re2,  
       function(w,w2,w3,w4) {
-        if(w2 == 'width') {
-          return pre_width;
-        } else if(w2=='height') {
-          return (item.height * pre_width) / (item.width*1.0); 
-        }
-       
+        
         return rule[w2];
       }
     );  
   }
 
+  /*
+  function test(){   
+  var str = "";
+  for(var i=0;i<arguments.length;i++){   
+    str += ("第"+(i+1)+"个参数的值："+arguments[i]) + "\n"; 
+  }
+  alert(str)
+}   
+//var reg=new RegExp("\\d","g");   
+//var str="abd1afa4sdf";   
+//str.replace(reg,test);   
 
+var s = "http://ww2.sinaimg.cn/bmiddle/855834d5jw1erlg2u1mnnj20xc18gags.jpg"
+var re = new RegExp("\\w+:\\/\\/([a-zA-Z0-9\\-\\.]+)\\/(\\w+)(\\/.*)", "ig");
+var re2 = new RegExp("\\w+(:\\/\\/)([a-zA-Z0-9\\-\\.]+)\\/(\\w+)(\\/.*)", "ig");
+alert(re.test(s))
+s.replace(re, test);
+  */
 
   return result_url;
 
