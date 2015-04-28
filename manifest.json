@@ -11,7 +11,7 @@
    },
    "content_scripts": [ 
      {
-      "js": [ "content.js" ],
+      "js": [ "config.js", "urls_filter.js", "content.js" ],
       "matches": [ "http://*/*", "https://*/*" ],
       "run_at": "document_end"
      } 
