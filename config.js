@@ -88,3 +88,11 @@ function warnnings() {
   return [1];
 }
 
+function filter_rule_enable(b) {
+  user_config_set('filter_rule_enable', b);
+}
+
+function filter_rule_is_enabled() {
+  return !!user_config_get('filter_rule_enable');
+}
+
