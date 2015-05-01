@@ -300,7 +300,24 @@
     "message": "下载错误",
     "description": "下载错误"
   },
+
+  "filterRulesEnable" : {
+    "message": "开启智能挖图",
+    "description": "开启智能挖图"
+  },
   
+  "filterRulesWarning" : {
+    "message": "开启后，根据规则智能采集网站大图片",
+    "description": ""
+  },
+  
+  "openFilterRules" : {
+    "message": "规则设置",
+    "description": "规则设置"
+  },
+
+  
+
   "dummy" : {
     "message": "",
     "description": ""

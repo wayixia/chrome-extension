@@ -24,7 +24,7 @@ Q.addEvent(document, 'keyup', function(evt) {
   }
 });
 
-
+// display and screenshot view
 if(Q.$('wayixia-bugs')) {
 
 Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');

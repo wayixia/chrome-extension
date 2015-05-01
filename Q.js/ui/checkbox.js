@@ -13,14 +13,15 @@ Q.checkbox = Q.extend({
     json = json || {}
     this.hwnd = Q.$(json.id);
     this.onchange = json.onchange || function(id) {}
-    this.hwnd.onclick = function() {  _this.set_check(!_this.checked()); }
+    this.hwnd.onclick = function() {  _this.set_checked(!_this.checked()); }
+    this.set_checked(!!json.checked);
   },
 
   checked : function() {
     return Q.hasClass(this.hwnd, "checked");
   },
 
-  set_check : function(checked) {
+  set_checked : function(checked) {
     if(this.checked() == checked) 
       return;
     if(checked) {

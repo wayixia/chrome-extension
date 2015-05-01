@@ -89,10 +89,10 @@ function warnnings() {
 }
 
 function filter_rule_enable(b) {
-  user_config_set('filter_rule_enable', b);
+  user_config_set('filter_rule_enable', b?1:0);
 }
 
 function filter_rule_is_enabled() {
-  return !!user_config_get('filter_rule_enable');
+  return parseInt(user_config_get('filter_rule_enable'), 10);
 }
 
