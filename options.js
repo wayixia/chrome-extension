@@ -117,30 +117,46 @@ function block_images_remove() {
 
 function display_filter_rules() {
   ui(function(t) {
-    var tpl = t.template('wndx-errors');
-    var item_tpl = t.template('wndx-item-errors');
+    var tpl = t.template('wndx-filter-rules');
     // i18n 
     extract_document(tpl);
-    wayixia_report_window = new Q.Dialog({
-      title: Q.locale_text('extReportABug'),
-      width: 350,
+    filter_rules_window = new Q.Dialog({
+      title: '智能规则列表',
+      width: 600,
       height: 350, 
       wstyle: "q-attr-no-icon",
       content:  tpl,
-      on_close: function() { delete wayixia_report_window; wayixia_report_window = null; },
+      on_close: function() { delete filter_rules_window; filter_rules_window = null; },
       on_create: function() {
         // init dialog
         var d = this;
-        d.email = d.item('email');
-        d.type  = d.item('type');
-        d.message = d.item('message');
-        if(wayixia_errors.length > 0) {
-          // set error message
-          d.type.value = Q.locale_text("stringDownloadImageFailed");
-          d.type.disabled = true;
-          Q.$('wayixia-bugs-num').style.visibility = 'hidden';
-          Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');
-        }
+        
+        var store = new Q.store({
+          datasource: [
+            {url: 'abc', date: '2014-12-11'},
+            {url: 'abc', date: '2014-12-11'},
+            {url: 'abc', date: '2014-12-11'},
+            {url: 'abc', date: '2014-12-11'},
+            {url: 'abc', date: '2014-12-11'},
+            {url: 'abc', date: '2014-12-11'},
+            {url: 'abc', date: '2014-12-11'}
+          ]
+        });
+        d.table = new Q.table({ 
+          title: "Q.table标题栏",
+          wstyle: "q-attr-no-title",
+          container: d.item('list'),
+          columns: [
+            { name: 'url', title: '名称', align:'left', fixed: true, width: 400, isHTML: true, renderer : function(record) {return record['url'];}, },
+            { name: 'date', title: '操作', align:'left', fixed: true, width: 198, isHTML: true, renderer : function(record) {return record['date'];}, }
+          ],
+          store: store,
+          row_onclick : function(row) {
+            var url = this.get_text(row, "url");
+          },
+          row_onmouseover : function(row) {},
+          row_onmouseout : function(row) {},
+        });
       },
       buttons: [
         { text: Q.locale_text('qSubmit'), 
@@ -160,22 +176,18 @@ function display_filter_rules() {
               d.email.focus();
               return false;
            }
-            props.uri = wayixia_request_data.data.pageUrl || "null";
-            props.type = d.type.value;
-            props.message = d.message.value;
-            props.email = d.email.value;
-            props.useragent = navigator.userAgent;
             wayixia_bugs_service.report_a_bug(props, function(r) {
               dismiss(d);
             })
             return false; 
           }
         },
-        {text: Q.locale_text('qCancel'), style: "syscancelbtn", onclick : function() { return true; }},
+        {text: Q.locale_text('qCancel'), style: "syscancelbtn", onclick : function() { return true; }}
       ]
     });
 
-    wayixia_report_window.domodal();
+    filter_rules_window.domodal();
+    filter_rules_window.table.autosize();
   });
 
 
