@@ -121,8 +121,8 @@ function display_filter_rules() {
     // i18n 
     extract_document(tpl);
     filter_rules_window = new Q.Dialog({
-      title: '智能规则列表',
-      width: 600,
+      title: Q.locale_text('filterRulesList'),
+      width: 400,
       height: 350, 
       wstyle: "q-attr-no-icon",
       content:  tpl,
@@ -131,24 +131,20 @@ function display_filter_rules() {
         // init dialog
         var d = this;
         
+        var filter_rules = chrome.extension.getBackgroundPage().filter_rule_get();
+        var rules = [];
+        for(var name in filter_rules.rules) {
+          rules.push(filter_rules.rules[name]);
+        }
         var store = new Q.store({
-          datasource: [
-            {url: 'abc', date: '2014-12-11'},
-            {url: 'abc', date: '2014-12-11'},
-            {url: 'abc', date: '2014-12-11'},
-            {url: 'abc', date: '2014-12-11'},
-            {url: 'abc', date: '2014-12-11'},
-            {url: 'abc', date: '2014-12-11'},
-            {url: 'abc', date: '2014-12-11'}
-          ]
+          datasource: rules
         });
         d.table = new Q.table({ 
-          title: "Q.table标题栏",
+          title: Q.locale_text('filterRulesList'), 
           wstyle: "q-attr-no-title",
           container: d.item('list'),
           columns: [
-            { name: 'url', title: '名称', align:'left', fixed: true, width: 400, isHTML: true, renderer : function(record) {return record['url'];}, },
-            { name: 'date', title: '操作', align:'left', fixed: true, width: 198, isHTML: true, renderer : function(record) {return record['date'];}, }
+            { name: 'url', title: Q.locale_text('colName'), align:'left', fixed: true, width: 398, isHTML: true, renderer : function(record) {return record['name'];} }
           ],
           store: store,
           row_onclick : function(row) {
@@ -159,30 +155,7 @@ function display_filter_rules() {
         });
       },
       buttons: [
-        { text: Q.locale_text('qSubmit'), 
-          onclick : function() {
-            var d = wayixia_report_window;
-            var props = {};
-
-            if(d.type.value == "") {
-              alert(Q.locale_text('stringChooseAnBugType'));
-              d.type.focus();
-              return;
-            }
-
-            var expr_email = /^[a-zA-Z0-9\-\.]+@[0-9a-zA-Z\-]+\.\w+$/;
-            if(!expr_email.test(d.email.value)) {
-              alert(Q.locale_text('stringInvalidEmailFormat'));
-              d.email.focus();
-              return false;
-           }
-            wayixia_bugs_service.report_a_bug(props, function(r) {
-              dismiss(d);
-            })
-            return false; 
-          }
-        },
-        {text: Q.locale_text('qCancel'), style: "syscancelbtn", onclick : function() { return true; }}
+        {text: Q.locale_text('btnClose'), style: "syscancelbtn", onclick : function() { return true; }}
       ]
     });
 

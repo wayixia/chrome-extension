@@ -34,7 +34,7 @@ function get_document_images(doc) {
   var imgs = doc.getElementsByTagName('img');
   var links = [].slice.apply(imgs);
   links = links.map(function(element) {
-    return {src: urls_filter(element.src)};
+    return {src: element.src};
   });
   
   var all = document.all;
@@ -49,7 +49,6 @@ function get_document_images(doc) {
       }
       if(url !="" && /^url\(/.test(url)) {
         url =url.replace(/^url\(/, '').replace(/\)$/, '');       
-        url = urls_filter(url);
         links.push({src: url});
       }
     }

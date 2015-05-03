@@ -311,12 +311,20 @@
     "description": ""
   },
   
-  "openFilterRules" : {
+  "filterRulesList" : {
+    "message": "智能规则列表",
+    "description": "智能规则列表"
+  }, 
+
+  "filterRulesSetting" : {
     "message": "规则设置",
     "description": "规则设置"
-  },
+  }, 
 
-  
+  "colName" : {
+    "message": "名称",
+    "description": "名称"
+  },
 
   "dummy" : {
     "message": "",

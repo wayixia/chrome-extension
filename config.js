@@ -88,11 +88,44 @@ function warnnings() {
   return [1];
 }
 
+// set/get version of filter rules
+function filter_rule_version() {
+  if(arguments.length > 1) {
+    var v = parseInt(arguments[0], 10);
+    if(!isNaN(v)) {
+      user_config_set('filter_rule_version', v);
+    }
+  } else {
+    return user_config_get('filter_rule_version');
+  }
+}
+
+// enable/disable filter rule
 function filter_rule_enable(b) {
   user_config_set('filter_rule_enable', b?1:0);
 }
 
+// filter rule is enabled
 function filter_rule_is_enabled() {
-  return parseInt(user_config_get('filter_rule_enable'), 10);
+  var enabled = user_config_get('filter_rule_enable'); 
+  return (parseInt(enabled, 10) != 0);
 }
+
+function filter_rule_get() {
+  return JSON.parse(user_config_get('filter_rules'));
+}
+
+function filter_rule_set(rules) {
+  var rules_config = filter_rule_get();
+  if(typeof rules_config != "object")
+    rules_config = {version: 0, rules: {}};
+  for(var name in rules) {
+    rules_config.rules[name] = rules[name];
+  }
+  user_config_set('filter_rules', JSON.stringify(rules_config));
+}
+
+
+
+
 

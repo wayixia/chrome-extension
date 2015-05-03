@@ -165,9 +165,13 @@ function initialize () {
 
     if(!imgs)
       return;
+    var filter_rule_is_enabled = extension.filter_rule_is_enabled();
+    var filter_rules = extension.filter_rule_get();
     //filter image duplicated
     for(var i=0; i < imgs.length ; i++) {
       var url = imgs[i].src;
+      if(filter_rule_is_enabled)
+        url = urls_filter(url, filter_rules.rules);
       if(url && (accept_images[url] == undefined) ) {
         var blocked = _this.is_block_image(url);
         accept_images[url] = blocked;

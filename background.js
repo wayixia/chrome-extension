@@ -13,6 +13,37 @@ if(user_config_is_new()) {
   create_upgrade_page();
 }
 
+setTimeout(function() {
+  var http_call = new XMLHttpRequest();
+  http_call.onreadystatechange = function() {
+    if (this.readyState==4)
+    {  // 4 = "loaded"
+      if (this.status==200)
+      {// 200 = OK
+        //console.log(this.responseText);
+        try {
+        var rules = JSON.parse(this.responseText);
+        if(rules) {
+          console.log(rules);
+          filter_rule_version(rules.version);
+          filter_rule_set(rules.rules);
+        }
+        } catch(e) {
+          console.log(e);
+        }
+      }
+      else
+      {
+        console.log("Problem retrieving XML data");
+      }
+    }
+  } 
+
+  http_call.open("GET", "http://wayixia.com/filter-rules.json", true);
+  http_call.send(null);
+
+}, 1000)
+
 // create context menu
 var contexts = ["page", "image", "selection","editable","link","video","audio"];
 chrome.contextMenus.create({
