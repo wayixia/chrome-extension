@@ -90,7 +90,7 @@ function warnnings() {
 
 // set/get version of filter rules
 function filter_rule_version() {
-  if(arguments.length > 1) {
+  if(arguments.length > 0) {
     var v = parseInt(arguments[0], 10);
     if(!isNaN(v)) {
       user_config_set('filter_rule_version', v);
@@ -112,13 +112,21 @@ function filter_rule_is_enabled() {
 }
 
 function filter_rule_get() {
-  return JSON.parse(user_config_get('filter_rules'));
+  var rules_config = JSON.parse(user_config_get('filter_rules'));
+  if(rules_config && (typeof rules_config == "object")) {
+  } else {
+    rules_config = {version: 0, rules: {}};
+  }
+  if(rules_config.version === undefined || isNaN(rules_config.version))
+    rules_config.version = 0;
+
+  if(rules_config.rules === undefined)
+    rules_config.rules = {};
+  return rules_config; 
 }
 
 function filter_rule_set(rules) {
   var rules_config = filter_rule_get();
-  if(typeof rules_config != "object")
-    rules_config = {version: 0, rules: {}};
   for(var name in rules) {
     rules_config.rules[name] = rules[name];
   }
