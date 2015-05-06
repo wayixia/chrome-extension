@@ -96,7 +96,7 @@ Q.$('wayixia-bugs').onclick = function(evt) {
 } // Q.$('wayixia-bugs')
 
 
-/*
+
 // init drop menu
 wayixia_help_menu = new class_menu({
   style: "wayixia-menu", 
@@ -110,8 +110,9 @@ wayixia_help_menu = new class_menu({
 }); 
 
 var menu_suggest = new class_menuitem({
-  text: "帮助中心",
+  text: "常见问题",
   callback : function(menuitem) {
+    window.open("http://wayixia.com/chrome/faq");
   }
 });
 
@@ -122,7 +123,7 @@ wayixia_help_menu.hide();
 Q.$('wayixia-help').onclick = function(evt) {
   wayixia_help_menu.showElement(this, evt);
 }
-*/
+
 
 });
 
