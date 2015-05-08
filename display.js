@@ -19,7 +19,7 @@ function initialize () {
   var accept_length  = 0;
   var extension = chrome.extension.getBackgroundPage();
  
-  var wayixia_images_box = new Q.images_box({container: 'wayixia-list', 
+  var wayixia_images_box = new Q.images_box({id: 'wayixia-list', 
     on_item_changed: function(item, check) {
       if(item.style.display == '') { 
         update_ui_count();
@@ -27,6 +27,18 @@ function initialize () {
     },
     is_item_enabled: function(item) {
       return (item.style.display != 'none');
+    },
+    on_item_dblclick : function(item) {
+      var imgs = [];
+      wayixia_images_box.each_item(function(item2) {
+        if(item2.style.display == '') {
+          imgs.push({
+            src: item2.getAttribute('data-url')
+          });
+        }
+      });
+
+      album_player_display(item.getAttribute('data-url'), imgs);
     }
   });
 
@@ -35,7 +47,6 @@ function initialize () {
     render: 'wayixia-select-view', 
     wstyle: 'wayixia-menu',
     on_change: function(text, value) {
-      console.log("set view type -> " + value);
       wayixia_images_box.set_style(value);
       extension.view_type_set(value);
       wayixia_track_button_click(Q.$('wayixia-view'), value);
@@ -215,6 +226,22 @@ function initialize () {
 
   console.log('content is loaded');
 };
+
+var g_album_player = null;
+
+function album_player_display(url, imgs) {
+  if(!g_album_player) {
+    ui(function(t) {
+      var tpl = t.template('album-view');
+      document.body.appendChild(tpl);
+      g_album_player= new Q.album_player(); 
+      g_album_player.render(url, imgs); 
+    }); 
+  } else {
+    g_album_player.render(url, imgs); 
+  }
+}
+
 
 Q.Ready(function() {
   //document.body.oncontextmenu=function() { return false; }

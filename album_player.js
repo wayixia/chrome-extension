@@ -96,10 +96,8 @@ Q.album_player = Q.extend({
   current_image_id : 0,
   current_image_url : 0,
   images_data : null,
-  album_list_api: null,
   __init__ : function(config) {
     config = config || {};
-    this.album_list_api = config.album_list_api;
     // main view
     this.hwnd = Q.$('album-view');
     this.image_container = Q.$('image-container');
@@ -122,14 +120,14 @@ Q.album_player = Q.extend({
     Q.$('toolbar-restore').onclick   = Q.bind_handler(this, function() { this.image_view.style.zoom = 1});
     Q.$('toolbar-direction').onclick = Q.bind_handler(this, function() { right_rotate(this.image_view); });
     Q.$('toolbar-favorite').onclick  = Q.bind_handler(this, function() { 
-        var o = Q.$('toolbar-favorite');
-        var add = (o.className != "checked");
-        api_image_favorite(this.current_image_id, add?"add":"remove", function(ok) {
-          o.className=(ok && add)?"checked":"";
-        });
+        //var o = Q.$('toolbar-favorite');
+        //var add = (o.className != "checked");
+        //api_image_favorite(this.current_image_id, add?"add":"remove", function(ok) {
+        //  o.className=(ok && add)?"checked":"";
+        //});
     });
-    Q.$('toolbar-share').onclick      = Q.bind_handler(this, function() { api_share2sina(this.current_image_url)});
-    Q.addEvent(window, 'resize', Q.bind_handler(this, this.on_resize));
+    //Q.$('toolbar-share').onclick      = Q.bind_handler(this, function() { api_share2sina(this.current_image_url)});
+    //Q.addEvent(window, 'resize', Q.bind_handler(this, this.on_resize));
     Q.addEvent(this.image_container, 'mousewheel', Q.bind_handler(this, this.on_mousewheel));
     Q.addEvent(document, 'keyup', Q.bind_handler(this, this.on_keyup));
     Q.addEvent(this.image_container, 'mouseover', Q.bind_handler(this, this.on_mouseover));
@@ -220,8 +218,9 @@ Q.album_player = Q.extend({
     Q.$('image-loadding').style.visibility = 'hidden';
   },
 
-  render : function(url, id, album_id) {
+  render_ : function(id) {
     var _this = this;
+    var url = this.images_data[id].src;
     if(this.image_view.src ==  url)
       return;
     this.current_image_id = id;
@@ -234,7 +233,6 @@ Q.album_player = Q.extend({
       _this.display = true;
       _this.hwnd.style.visibility = 'visible';
       _this.move(_this.width);
-      _this.load_album_images(album_id, id);
       (new Q.Animate({
         tween: 'cubic',
         ease: 'easyin',
@@ -295,59 +293,48 @@ Q.album_player = Q.extend({
     this.hwnd.style.right = -x + 'px'
   },
 
-  load_album_images : function(album_id, id) {
-    var _this = this;
-    if(_this.album_id == album_id) {
-       _this.select_album_item(id);
-    } else {
-      _this.album_id = album_id;
-      Q.Ajax({
-        //command: "http://wayixia.com/?mod=api&action=album-image-list&inajax=true&id="+album_id,    
-        command: _this.album_list_api +''+album_id,    
-        oncomplete: function(xmlhttp) {
-          _this.render_album_list(xmlhttp.responseText);
-          _this.select_album_item(id);
-        }
-      });
-    } 
+  render : function(url, imgs) {
+    this.render_album_list(imgs);
+    this.render_(this.url2id(url));
+    //this.select_album_item(url);
+  },
+  
+  url2id : function(url) {
+    for(var id in this.images_data) {
+      if(this.images_data[id].src == url)
+        return id;
+    }
+
+    return 0;
   },
 
-  render_album_list : function(json_string) {
-    var _this = this;
-    var res = Q.json_decode(json_string);
-    var images = res.data.images;
-    var tpl = res.data.tpl;
-    
-    for(var i=0; i < images.length; i++) {
-      _this.create_item_with_template(this.image_list, images[i], tpl);
+  render_album_list : function(imgs) {
+    for(var i=0; i < imgs.length; i++) {
+      this.create_item_with_template(this.image_list, imgs[i], i);
     }
   },
 
-  create_item_with_template : function(container, item, tpl) {
-    var _this = this;
+  create_item_with_template : function(container, item, i) {
+    var element = document.createElement('LI');
+    element.className = "item";
+    element.id="album-item-" + i;
+    element.onclick = (function(z) { return function(evt) {
+      z.render_(i);
+    }})(this, i);
     var pre_width = 192;
+    var tpl = "<a href=\"#\" onclick=\"return false;\"><img src=\"[[src]]\" width=\"96\" height=\"80\"><\/a>"
     tpl = tpl.replace(/\[\[(\w+)\]\]/ig, 
       function(w,w2,w3,w4) {
-        if(w2 == 'width') {
-          return pre_width;
-        } else if(w2=='height') {
-          return (item.height * pre_width) / (item.width*1.0); 
-        }
-       
-        if(_this.item_callback) {
-          return _this.item_callback(w2, item);
-        }
         return item[w2];
       }
     );
-    container.innerHTML += tpl;
-    _this.images_data[item.id] = item;
+    element.innerHTML = tpl;
+    container.appendChild(element);
+    this.images_data[i] = item;
   },
 
   select_album_item : function(id) {
     this.update_image_info(id);
-    //console.log("album list scrollWidth == offsetWidth: " + this.image_list.scrollWidth + ', ' +this.image_list.offsetWidth);
-
     var item = Q.$('album-item-'+id);
     if(item == this.image_selected)
       return;
@@ -385,7 +372,7 @@ Q.album_player = Q.extend({
   image_next : function() {
     var item = null;
     if(!this.image_selected) {
-      item = _this.image_list_container.firstChild;
+      item = this.image_list_container.firstChild;
     } else if(!this.image_selected.nextElementSibling) {
       return;
     } else {

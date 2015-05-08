@@ -179,6 +179,26 @@
     return false;
   }
 
+  Q.click = function(element, click, dblclick) {
+    element = Q.$(element);
+    element.onclick = (function(r) { return function(evt) {
+    if(r.__clickonce__) {
+      r.__clickonce__ = false;
+      clearTimeout(r.t);
+      if(dblclick)
+        dblclick(r);
+    } else {
+      r.__clickonce__ = true;
+      r.t = setTimeout((function(b) { return function() { 
+      b.__clickonce__ = false; 
+      if(click) 
+        click(r); 
+    }})(r), 200);
+    }
+    return false;
+  }})(element);
+ 
+  }
   // default locale_text
   Q.locale_text = function(lang, default_value) {
     return default_value;
