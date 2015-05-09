@@ -92,9 +92,6 @@ Q.album_player = Q.extend({
   width: 0,
   old_overflow: null,
   old_scrolltop: 0,
-  album_id: 0,
-  current_image_id : 0,
-  current_image_url : 0,
   images_data : null,
   __init__ : function(config) {
     config = config || {};
@@ -127,7 +124,7 @@ Q.album_player = Q.extend({
         //});
     });
     //Q.$('toolbar-share').onclick      = Q.bind_handler(this, function() { api_share2sina(this.current_image_url)});
-    //Q.addEvent(window, 'resize', Q.bind_handler(this, this.on_resize));
+    Q.addEvent(window, 'resize', Q.bind_handler(this, this.on_resize));
     Q.addEvent(this.image_container, 'mousewheel', Q.bind_handler(this, this.on_mousewheel));
     Q.addEvent(document, 'keyup', Q.bind_handler(this, this.on_keyup));
     Q.addEvent(this.image_container, 'mouseover', Q.bind_handler(this, this.on_mouseover));
@@ -165,7 +162,7 @@ Q.album_player = Q.extend({
     } else if(kcode === 37) {
       this.image_prev();
     } else if(kcode === 27) {
-      this.close();
+      //this.close();
     }
   },
 
@@ -223,13 +220,12 @@ Q.album_player = Q.extend({
     var url = this.images_data[id].src;
     if(this.image_view.src ==  url)
       return;
-    this.current_image_id = id;
-    this.current_image_url = url;
     this.image_view.style.zoom = 1; 
     this.image_view.src = url;
     reset_rotate(this.image_view);
     Q.$('image-loadding').style.visibility = 'visible';
     if(!_this.display) {
+      _this.select_album_item(id);
       _this.display = true;
       _this.hwnd.style.visibility = 'visible';
       _this.move(_this.width);
@@ -262,25 +258,25 @@ Q.album_player = Q.extend({
       Q.$('image-url').innerText = "地址: " + this.src;
       Q.$('image-size').innerText= "大小: " + this.width + " x " + this.height + " pixels";
     }
-    update_size.src = 'http://'+img.server+'/'+img.file_name;       
+    update_size.src = img.src;       
   },
 
   close : function() {
     var _this = this;
-    _this.display = !_this.display;
-    _this.move(_this.width);
+    this.display = !this.display;
+    this.move(this.width);
     (new Q.Animate({
       tween: 'Cubic',
       ease: 'easyIn',
       max: _this.width,
       begin: 0,
       duration: 25,
-      bind : function(x) {
+      bind : (function(_this) { return function(x) {
         _this.move(x);
         if(x >= _this.width) {
           _this.image_view.src = '';
         }
-      }
+      }})(this)
     })).play();
   },
 
@@ -294,9 +290,14 @@ Q.album_player = Q.extend({
   },
 
   render : function(url, imgs) {
-    this.render_album_list(imgs);
-    this.render_(this.url2id(url));
-    //this.select_album_item(url);
+    this.image_selected = null;
+    this.image_list.innerHTML = '';
+    this.images_data = {};
+    for(var i=0; i < imgs.length; i++) {
+      this.create_item_with_template(this.image_list, imgs[i], i);
+    }
+    var id = this.url2id(url);
+    this.render_(id);
   },
   
   url2id : function(url) {
@@ -310,7 +311,7 @@ Q.album_player = Q.extend({
 
   render_album_list : function(imgs) {
     for(var i=0; i < imgs.length; i++) {
-      this.create_item_with_template(this.image_list, imgs[i], i);
+      this.create_item_with_template(this.image_list, imgs[i], i+1);
     }
   },
 
@@ -322,7 +323,7 @@ Q.album_player = Q.extend({
       z.render_(i);
     }})(this, i);
     var pre_width = 192;
-    var tpl = "<a href=\"#\" onclick=\"return false;\"><img src=\"[[src]]\" width=\"96\" height=\"80\"><\/a>"
+    var tpl = "<a href=\"#\"><img src=\"[[src]]\" width=\"96\" height=\"80\"><\/a>"
     tpl = tpl.replace(/\[\[(\w+)\]\]/ig, 
       function(w,w2,w3,w4) {
         return item[w2];
@@ -335,22 +336,22 @@ Q.album_player = Q.extend({
 
   select_album_item : function(id) {
     this.update_image_info(id);
-    var item = Q.$('album-item-'+id);
-    if(item == this.image_selected)
+    var box_item = Q.$('album-item-'+id);
+    if(box_item == this.image_selected)
       return;
 
     if(this.image_selected) 
       this.image_selected.className = "item";
     
-    this.image_selected = item;
-    item.className = 'item selected';
+    this.image_selected = box_item;
+    box_item.className = 'item selected';
     // load image info
     this.load_image_info();
 
     if(this.image_list_container.scrollWidth > this.image_list_container.offsetWidth) {
       var _this = this;
       var scroll_left = _this.image_list_container.scrollLeft;
-      var width = (item.offsetLeft-scroll_left) - (this.image_list_container.offsetWidth-item.offsetWidth)/2;
+      var width = (box_item.offsetLeft-scroll_left) - (this.image_list_container.offsetWidth-box_item.offsetWidth)/2;
       // scroll view
       (new Q.Animate({
         tween: 'Cubic',

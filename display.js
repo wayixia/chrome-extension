@@ -169,6 +169,7 @@ function initialize () {
   this.display_valid_images = function(imgs, data) {
     // clear errors
     clear_errors();
+    clear_album_player();
     // init datacheckbox_show_block.checked()
     var accept_images  = {};
     accept_length  = 0;
@@ -240,6 +241,11 @@ function album_player_display(url, imgs) {
   } else {
     g_album_player.render(url, imgs); 
   }
+}
+
+function clear_album_player() {
+  if(g_album_player)
+    g_album_player.close();
 }
 
 

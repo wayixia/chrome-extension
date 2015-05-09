@@ -31,7 +31,6 @@ create_element: function(config, init) {
   // init box
   box.innerHTML = '<span class="q-box-info"> \
     <span class="wh">'+config.width+'x'+config.height+' </span> \
-    <span class="orig">&nbsp;</span> \
     </span>';
   // image container
   var img_container = document.createElement('div');

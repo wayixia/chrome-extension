@@ -28,10 +28,28 @@
   var _delayDOMReady = [];
 
   // string prototype
-  String.prototype.trim      = function() { return this.replace(/(^\s*)|(\s*$)/g, ""); }
-　String.prototype.trim_left = function() { return this.replace(/(^\s*)/g,""); }
-  String.prototype.trim_right= function() { return this.replace(/(\s*$)/g,""); }
-  
+  String.prototype.trim      = function() { 
+    return this.replace(/(^\s*)|(\s*$)/g, ""); 
+  }
+　String.prototype.trim_left = function() { 
+    return this.replace(/(^\s*)/g,""); 
+  }
+  String.prototype.trim_right= function() { 
+    return this.replace(/(\s*$)/g,""); 
+  }
+ 
+  // fix Object.create not defined error
+  if (!Object.create) {
+    Object.create = function(proto, props) {
+      if (typeof props !== "undefined") {
+        throw "The multiple-argument version of Object.create is not provided";
+    }
+    function ctor() { }
+      ctor.prototype = proto;
+      return new ctor();
+    };
+  }
+
   // 基于prototype的继承实现
   // 警告：调用父类的（被重载的）同名函数调用需要借助parent_class.prototype.method.call(this, arguments);
   var CLASS = function() {};
@@ -76,7 +94,9 @@
   };
 
   // enable/disable debug
-  Q.setdebug = function(output) { Q._DEBUG.stdoutput = output; }
+  Q.setdebug = function(output) { 
+    Q._DEBUG.stdoutput = output; 
+  }
 
   // print debug info to 'stdoutput' element
   Q.printf = function(message) {
@@ -92,15 +112,16 @@
   // get Element from dom cache if exists
   Q.$ = function(id, bOverride) {
     if(typeof(id) != 'string') { return id; }
-    var element = null;
-    if(!_domcache[id] || bOverride) {
+    if(id && id.nodeType === Q.ELEMENT_NODE)
+      return id;
+    var element = _domcache[id];
+    if(!element || bOverride || (element.parentElement === null)) {
       element = document.getElementById(id);
       if(element) {
         _domcache[id] = element;
       }
-    } else {
-      element = _domcache[id];
     }
+    
     return element;
   };
 
@@ -367,18 +388,35 @@
   }
 
   // get Browser
-  Q.agent   = function() { return navigator.userAgent.toLowerCase(); }
-  Q.isW3C   = function() { return document.getElementById ? true:false; }
-  Q.isIE    = function() { var a = Q.agent(); return ((a.indexOf("msie") != -1) && (a.indexOf("opera") == -1) && (a.indexOf("omniweb") == -1)); }
-  Q.isOpera = function() { return Q.agent().indexOf("opera") != -1; }
-  Q.isNS6   = function() { return Q.isW3C() && (navigator.appName=="Netscape"); }
+  Q.agent   = function() { 
+    return navigator.userAgent.toLowerCase(); 
+  }
+  Q.isW3C   = function() { 
+    return document.getElementById ? true:false; 
+  }
+  Q.isIE    = function() { 
+    var a = Q.agent(); 
+    return ((a.indexOf("msie") != -1) && (a.indexOf("opera") == -1) && (a.indexOf("omniweb") == -1)); 
+  }
+  Q.isOpera = function() { 
+    return Q.agent().indexOf("opera") != -1; 
+  }
+  Q.isNS6   = function() { 
+    return Q.isW3C() && (navigator.appName=="Netscape"); 
+  }
 
   // get Browser
   //为Firefox下的DOM对象增加innerText属性
   if(Q.isNS6()) { //firefox innerText define
-    HTMLElement.prototype.__defineGetter__("innerText",    function() { return this.textContent; });
-    HTMLElement.prototype.__defineSetter__("innerText",    function(sText) { this.textContent=sText; });
-    HTMLElement.prototype.__defineGetter__("currentStyle", function () { return this.ownerDocument.defaultView.getComputedStyle(this, null); });
+    HTMLElement.prototype.__defineGetter__("innerText", function() { 
+      return this.textContent; 
+    });
+    HTMLElement.prototype.__defineSetter__("innerText", function(sText) { 
+      this.textContent=sText; 
+    });
+    HTMLElement.prototype.__defineGetter__("currentStyle", function () { 
+      return this.ownerDocument.defaultView.getComputedStyle(this, null); 
+    });
     // 兼容ff，ie的鼠标按键值
     Q.LBUTTON  = 0;
     Q.MBUTTON  = 1;
