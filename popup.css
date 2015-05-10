@@ -26,8 +26,8 @@ body {
 }
 
 .wayixia-menu li:hover, .wayixia-menu li:hover td {
-  background-color: #F90;
-  color: #FFF;
+  background-color: #EEE; 
+  color: #000;
 }
 
 .wayixia-menu li:hover.seperator {

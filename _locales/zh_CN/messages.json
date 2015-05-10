@@ -132,11 +132,10 @@
     "description": "屏蔽图片管理"
   },
 
-  "openBlockImages" : {
-    "message": "打开图片管理",
-    "description": "打开图片管理"
+  "setting" : {
+    "message": "设置",
+    "description": ""
   },
-
 
   "shortcut" : {
     "message": "快捷键",
@@ -167,10 +166,13 @@
 
   "extHelp": {
     "message" : "帮助",
-    "description" : "帮助"
-  
+    "description" : ""
   },
 
+  "extHelpFAQ": {
+    "message" : "常见问题",
+    "description" : ""
+  },
 
   "extReportABug": {
     "message" : "报告一个错误",
@@ -267,8 +269,8 @@
   },
 
   "stringEMail" : {
-    "message": " 邮件地址 ",
-    "description": " 邮件地址 "
+    "message": " 电子邮件 ",
+    "description": " 电子邮件 "
   },
 
   "stringGetNoneImage" : {
@@ -301,6 +303,17 @@
     "description": "下载错误"
   },
 
+  "closeAfterDownload" : {
+    "message": "下载完成后自动关闭采集窗口",
+    "description": ""
+  },
+  
+  "closeAfterDownloadTips" : {
+    "message": "开启选项后，点击下载按钮后，采集页面自动关闭，请谨慎使用",
+    "description": ""
+  },
+
+
   "filterRulesEnable" : {
     "message": "开启智能挖图",
     "description": "开启智能挖图"
@@ -316,14 +329,24 @@
     "description": "智能规则列表"
   }, 
 
-  "filterRulesSetting" : {
-    "message": "规则设置",
-    "description": "规则设置"
-  }, 
-
   "colName" : {
     "message": "名称",
     "description": "名称"
+  },
+
+  "stringTitle" : {
+    "message" : "标题",
+    "description": ""
+  },
+
+  "stringAddress" : {
+    "message" : "地址",
+    "description": ""
+  },
+
+  "stringSize" : {
+    "message" : "大小",
+    "description": ""
   },
 
   "dummy" : {

@@ -10,6 +10,7 @@
 <script src="Q.js/utils/ajax.js"></script>
 <script src="Q.js/ui/drag.js"></script>
 <script src="Q.js/ui/wndx-1-0-2.js"></script>
+<script src="Q.js/ui/contextmenu.js"></script>
 <script src="Q.js/ui/checkbox.js"></script>
 <script src="Q.js/ui/images-box.js"></script>
 <script src="Q.js/ui/table.js"></script>
@@ -34,7 +35,7 @@
   visibility:hidden;
   position: absolute;
   left: 0; top:0;
-  right: 0; bottom: 30;
+  right: 0; bottom: 0;
 }
 
 #layer {
@@ -62,11 +63,14 @@
   <a id="date_folder" class="q-checkbox">__MSG_saveWithDateFolder__</a>
   <br>
   <br>
-  <b>__MSG_blockImageManage__</b><br>
-  <button id="manager_block_images" size="50">__MSG_openBlockImages__</button> <br>
+  <!--b class="q-checkbox" id="close_after_download">__MSG_closeAfterDownload__</b>（<font color="#999">__MSG_closeAfterDownloadWarning__</font>）
   <br>
+  <br-->
   <b class="q-checkbox" id="filter_rules_enable">__MSG_filterRulesEnable__</b>（<font color="#999">__MSG_filterRulesWarning__</font>）<br>
-  <button id="manager_filter_rules" size="50">__MSG_filterRulesSetting__</button> <br>
+  <button id="manager_filter_rules" size="50">__MSG_setting__</button> <br>
+  <br>
+  <b>__MSG_blockImageManage__</b><br>
+  <button id="manager_block_images" size="50">__MSG_setting__</button> <br>
   <br>
   <b>__MSG_shortcut__</b><br>
   1. __MSG_digImage__（<font color="#999">Ctrl+Q</font>）<br>

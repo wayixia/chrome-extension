@@ -262,6 +262,67 @@ a#wayixia-filter-icon {
   -webkit-box-shadow:0 1px 15px rgba(0,0,0,.2)
 }
 
+/* simple os window */
+.q-window {
+  background-color: transparent;
+  border:1px solid #AAA;
+  /*
+  border: 7px solid rgba(17,17,17,0.5);
+  border-top-width: 7px; */
+  border-radius: 3px;
+  border-radius: 3px;
+}
+
+.q-window .q-icon {
+  background-image: url(images/icon.png);
+  left: 0;
+}
+
+.q-window .q-title {
+  background-color: #74a9c5; /*rgba(255, 153,0,1.0);*/
+}
+
+.q-window .q-window-client,
+.q-window .q-bottom-bar
+{
+  background: #FFF;
+}
+
+.q-window .q-bottom-bar
+{
+  height: 38px;
+  line-height: 38px;
+}
+
+.q-window.q-attr-with-bottom .q-window-client { bottom: 39px; }
+
+.q-window .q-title-content {
+  font-size:16px;
+  line-height: 28px;
+  left: 21px;
+}
+
+
+
+.q-window .sysbtn,
+.q-window .syscancelbtn
+{
+  /*background-color: #57af00;*/
+  background-color: #bdccd4;
+  border: 0px solid #999;
+  outline: 0;
+  border-radius: 3px;
+  border-radius: 3px;
+  height: 30px;
+  margin-top:4px;
+  color: #000;
+}
+
+.q-window .syscancelbtn {
+  background-color: #EEE;
+  color: #000;
+}
+
 
 /* start menu */
 

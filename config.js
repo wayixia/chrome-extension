@@ -6,8 +6,12 @@ function user_config_is_new() {
   var current_version = user_config_get('wayixia_version');
   console.log(current_version + ' -> ' + chrome.runtime.getManifest().version);
   var result = (parseFloat(current_version, 10) < parseFloat(chrome.runtime.getManifest().version, 10));
-  user_config_set('wayixia_version', chrome.runtime.getManifest().version);
+  //user_config_set('wayixia_version', chrome.runtime.getManifest().version);
   return result;
+}
+
+function user_config_version_ok() {
+  user_config_set('wayixia_version', chrome.runtime.getManifest().version);
 }
 
 function user_config_load(data) {

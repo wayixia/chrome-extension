@@ -239,6 +239,7 @@
 }
 
 #toolbar a#toolbar-favorite {
+  display: none;
   background: transparent url(images/album_toolbar.png) -112px -6px no-repeat;
 }
 
@@ -252,6 +253,14 @@
 
 #toolbar a:hover#toolbar-share {
   background: transparent url(images/album_toolbar.png) -162px -56px no-repeat;
+}
+
+#toolbar a#toolbar-download {
+  background: transparent url(images/album_toolbar.png) -212px -6px no-repeat;
+}
+
+#toolbar a:hover#toolbar-download {
+  background: transparent url(images/album_toolbar.png) -212px -56px no-repeat;
 }
 
 .user-profile{*zoom:1; display: none;}

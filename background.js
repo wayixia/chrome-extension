@@ -15,11 +15,9 @@ if(user_config_is_new()) {
 
 setTimeout(function() {
   var http_call = new XMLHttpRequest();
-  http_call.onreadystatechange = function() {
-    if (this.readyState==4)
-    {  // 4 = "loaded"
-      if (this.status==200)
-      {// 200 = OK
+  http_call.onreadystatechange = (function(callee) { return function() {
+    if (this.readyState==4) {  // 4 = "loaded"
+      if (this.status==200) { // 200 = OK
         //console.log(this.responseText);
         try {
         var rules = JSON.parse(this.responseText);
@@ -31,17 +29,15 @@ setTimeout(function() {
         } catch(e) {
           console.log(e);
         }
+      } else {
+        console.log("Problem retrieving data");
       }
-      else
-      {
-        console.log("Problem retrieving XML data");
-      }
+      // update per hour
+      setTimeout(callee, 60*60*1000);
     }
-  } 
-
+  }})(arguments.callee); 
   http_call.open("GET", "http://wayixia.com/filter-rules.json", true);
   http_call.send(null);
-
 }, 1000)
 
 // create context menu
@@ -158,9 +154,11 @@ function create_display_full_screenshot(context_tab_id,  res, url) {
   focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_full_screenshot(id, res, url) } })(context_tab_id, res));
 }
 
+/** show features of the extension */
 function create_upgrade_page() {  
   var manager_url = chrome.extension.getURL("upgrade.html")+'#v.'+chrome.runtime.getManifest().version;
   focus_or_create_tab(manager_url, function(view) { });
+  user_config_version_ok();
 }
 
 var download_items = {};

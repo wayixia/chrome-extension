@@ -69,7 +69,7 @@ function init_setting() {
   // block images
   Q.$('manager_block_images').onclick = function() {
     wayixia_track_button_click(this);
-    g_block_images_box = new Q.images_box({container: 'wayixia-list'});
+    g_block_images_box = new Q.images_box({id: 'wayixia-list'});
     var extension = chrome.extension.getBackgroundPage();
     var block_images = extension.block_images_all();
     g_block_images_box.display_images(block_images, {})();  

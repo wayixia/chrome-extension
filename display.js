@@ -170,6 +170,8 @@ function initialize () {
     // clear errors
     clear_errors();
     clear_album_player();
+    this.e_width.set_value(0);
+    this.e_height.set_value(0);
     // init datacheckbox_show_block.checked()
     var accept_images  = {};
     accept_length  = 0;
@@ -197,27 +199,27 @@ function initialize () {
     return wayixia_images_box.display_images(accept_images, data, init_block_image_items(blocked_images));
   }
 
-  var g_min_width = 0;
-  var g_min_height= 0; 
-  var e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
+  this.g_min_width = 0;
+  this.g_min_height= 0; 
+  this.e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) {
       g_min_width = v*10;
       wayixia_images_box.each_item(function(item) {
         if(!(checkbox_show_block.checked() && Q.hasClass(item, 'blocked')))
-          wayixia_images_box.check_size(item, g_min_width, g_min_height);
+          wayixia_images_box.check_size(item, t.g_min_width, t.g_min_height);
       });
-      Q.$('wayixia-min-width').innerText = g_min_width + 'px';
+      Q.$('wayixia-min-width').innerText = t.g_min_width + 'px';
     }
   });
   
-  var e_height = new Q.slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
+  this.e_height = new Q.slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) { 
-      g_min_height = v*10;
+      t.g_min_height = v*10;
       wayixia_images_box.each_item(function(item) {
         if(!(checkbox_show_block.checked() && Q.hasClass(item, 'blocked')))
-          wayixia_images_box.check_size(item, g_min_width, g_min_height);
+          wayixia_images_box.check_size(item, t.g_min_width, t.g_min_height);
       });
-      Q.$('wayixia-min-height').innerText = g_min_height + 'px';
+      Q.$('wayixia-min-height').innerText = t.g_min_height + 'px';
     }
   });
   
@@ -228,6 +230,24 @@ function initialize () {
   console.log('content is loaded');
 };
 
+/** 开放平台接口 */
+function api_share2sina(image_src) {
+  var json = {
+    url: wayixia_request_data.data.pageUrl,
+    type:'3',
+    count:'1', /**是否显示分享数，1显示(可选)*/
+    appkey:'59191755', /**您申请的应用appkey,显示分享来源(可选)*/
+    title: wayixia_request_data.data.title, /**分享的文字内容(可选，默认为所在页面的title)*/
+    pic: image_src, /**分享图片的路径(可选)*/
+    ralateUid:'', /**关联用户的UID，分享微博会@该用户(可选)*/
+    language:'zh_cn', /**设置语言，zh_cn|zh_tw(可选)*/
+    dpc:1
+  }
+
+  window.open("http://service.weibo.com/share/share.php?url=" + json.url + "&appkey=" + json.appkey + "&title=" + json.title + "&pic=" + json.pic + "&ralateUid=" + json.ralateUid + "&language=" + json.language, "_blank", "width=615,height=505")
+}
+
+/** 图册播放器 */
 var g_album_player = null;
 
 function album_player_display(url, imgs) {
@@ -235,7 +255,16 @@ function album_player_display(url, imgs) {
     ui(function(t) {
       var tpl = t.template('album-view');
       document.body.appendChild(tpl);
-      g_album_player= new Q.album_player(); 
+      g_album_player= new Q.album_player({
+        share : function(src) {
+          api_share2sina(src); 
+        },
+        
+        download : function(src) {
+          var extension = chrome.extension.getBackgroundPage();
+          extension.download_image(src, window);
+        }
+      }); 
       g_album_player.render(url, imgs); 
     }); 
   } else {
@@ -249,15 +278,14 @@ function clear_album_player() {
 }
 
 
+/** 挖图界面初始化 */
 Q.Ready(function() {
-  //document.body.oncontextmenu=function() { return false; }
   Q.set_locale_text(locale_text);
   initialize();
   content_load_ok = true;
 });
 
-/* call background script */
-
+/** chrome插件接口，background页调用 */
 function display_images(tab_id, packet) {
   console.log('display_images called tab_id ->' + tab_id);
   if(packet.track_from) {
@@ -266,6 +294,10 @@ function display_images(tab_id, packet) {
     wayixia_track_event("display_images", "from_menu");  
   }
   wayixia_source_tab_id = tab_id;
+
+  packet = packet || {};
+  packet.imgs = packet.imgs || [];
+  packet.data = packet.data || {};
   wayixia_request_data.imgs = packet.imgs;
   wayixia_request_data.data = packet.data;
   if(content_load_ok) {
@@ -277,5 +309,4 @@ function display_images(tab_id, packet) {
   }
 }
 
-/* call background script end */
 

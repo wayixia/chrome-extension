@@ -132,9 +132,9 @@
     "description": "Manage the blocked images"
   },
 
-  "openBlockImages" : {
-    "message": "Open",
-    "description": "Open"
+  "setting" : {
+    "message": "Setting",
+    "description": "Setting"
   },
 
 
@@ -170,6 +170,11 @@
     "description": "Help"
   },
   
+  "extHelpFAQ": {
+    "message" : "FAQ",
+    "description" : ""
+  },
+
   "extReportABug": {
     "message" : "Report a bug",
     "description" : "Report a bug"
@@ -297,7 +302,43 @@
     "message": "files download error.",
     "description": "files download error."
   },
+ 
+  "filterRulesEnable" : {
+    "message": "Intelligent big images",
+    "description": ""
+  },
   
+  "filterRulesWarning" : {
+    "message": "The big images will be dug by the filter rules when enabled.",
+    "description": ""
+  },
+  
+  "filterRulesList" : {
+    "message": "Rules list",
+    "description": ""
+  }, 
+
+  "colName" : {
+    "message": "Name",
+    "description": "Name"
+  },
+
+  "stringTitle" : {
+    "message" : "Title",
+    "description": ""
+  },
+
+  "stringAddress" : {
+    "message" : "URL",
+    "description": ""
+  },
+
+  "stringSize" : {
+    "message" : "Size",
+    "description": ""
+  },
+
+ 
   "dummy" : {
     "message": "",
     "description": ""

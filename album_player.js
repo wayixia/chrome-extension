@@ -78,6 +78,7 @@ function reset_rotate(o) {
   } 
 }
 
+
 /**
  * album player
  * @constructor 
@@ -116,14 +117,25 @@ Q.album_player = Q.extend({
     Q.$('album-close-button').onclick= Q.bind_handler(this, function() { this.close(); });
     Q.$('toolbar-restore').onclick   = Q.bind_handler(this, function() { this.image_view.style.zoom = 1});
     Q.$('toolbar-direction').onclick = Q.bind_handler(this, function() { right_rotate(this.image_view); });
-    Q.$('toolbar-favorite').onclick  = Q.bind_handler(this, function() { 
+    //Q.$('toolbar-favorite').onclick  = Q.bind_handler(this, function() { 
         //var o = Q.$('toolbar-favorite');
         //var add = (o.className != "checked");
         //api_image_favorite(this.current_image_id, add?"add":"remove", function(ok) {
         //  o.className=(ok && add)?"checked":"";
         //});
-    });
-    //Q.$('toolbar-share').onclick      = Q.bind_handler(this, function() { api_share2sina(this.current_image_url)});
+    //});
+    Q.$('toolbar-share').onclick = (function(z, f) { return function(evt) {
+      if(typeof f === 'function') {
+        f(z.image_view.src);
+      }
+    }})(this, config.share);
+    
+    Q.$('toolbar-download').onclick = (function(z, f) { return function(evt) {
+      if(typeof f === 'function') {
+        f(z.image_view.src);
+      }
+    }})(this, config.download);
+    
     Q.addEvent(window, 'resize', Q.bind_handler(this, this.on_resize));
     Q.addEvent(this.image_container, 'mousewheel', Q.bind_handler(this, this.on_mousewheel));
     Q.addEvent(document, 'keyup', Q.bind_handler(this, this.on_keyup));
@@ -203,7 +215,6 @@ Q.album_player = Q.extend({
   },
 
   image_ok : function() {
-    //Q.printf("width: "+this.image_view.width + ", height: " + this.image_view.height)          
     var pos_left = -(this.image_view.width - this.image_container.offsetWidth)/2;
     var pos_top  = -(this.image_view.height - (this.image_container.offsetHeight-this.image_list_container.offsetHeight))/2;
     this.image_view.style.left = pos_left + 'px';
@@ -252,29 +263,29 @@ Q.album_player = Q.extend({
     
     update_size.onload = function() {
       //Q.printf(this.width+":"+this.height);
-      Q.$('image-title').innerText = "标题: " + img.title;
+      Q.$('image-title').innerText = Q.locale_text("stringTitle", "标题") + ": " + img.title;
       Q.$('image-title').title = img.title;
       Q.$('image-url').title = this.src;
-      Q.$('image-url').innerText = "地址: " + this.src;
-      Q.$('image-size').innerText= "大小: " + this.width + " x " + this.height + " pixels";
+      Q.$('image-url').innerText = Q.locale_text("stringAddress", "地址") + ": " + this.src;
+      Q.$('image-size').innerText= Q.locale_text("stringSize", "大小") + ": " + this.width + " x " + this.height + " pixels";
     }
     update_size.src = img.src;       
   },
 
   close : function() {
-    var _this = this;
+    var _z = this;
     this.display = !this.display;
     this.move(this.width);
     (new Q.Animate({
       tween: 'Cubic',
       ease: 'easyIn',
-      max: _this.width,
+      max: _z.width,
       begin: 0,
       duration: 25,
-      bind : (function(_this) { return function(x) {
-        _this.move(x);
-        if(x >= _this.width) {
-          _this.image_view.src = '';
+      bind : (function(z) { return function(x) {
+        z.move(x);
+        if(x >= z.width) {
+          z.image_view.src = '';
         }
       }})(this)
     })).play();
@@ -381,9 +392,6 @@ Q.album_player = Q.extend({
     }
     
     item.click();
-    //if(!re.test(item.id))
-    //  return;
-    //this.select_album_item(RegExp.$1);
   },
 
   image_prev : function() {
