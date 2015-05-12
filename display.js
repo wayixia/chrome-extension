@@ -58,6 +58,7 @@ function initialize () {
   wayixia_images_box.set_style(extension.view_type());
 
   var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
+    checked: true,
     onchange: function(checked) {
       wayixia_track_button_click(Q.$('wayixia-show-block'));
       var visible = !checked;

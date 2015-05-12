@@ -135,7 +135,6 @@ function background_warning(o) {
     Q.$('wayixia-bugs-num').style.visibility = 'visible';
     Q.$('wayixia-bugs-num').innerText = (wayixia_errors.length>9)?'N':wayixia_errors.length;
     Q.$('wayixia-bugs').title = wayixia_errors.length + ' ' + Q.locale_text('stringDownloadError') ;
-    
   } else {
     Q.$('wayixia-bugs-num').style.visibility = 'hidden';
     Q.$('wayixia-bugs').title = Q.locale_text('extReportABug');  //"feedback & suggestions to us.";
