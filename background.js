@@ -6,11 +6,10 @@
 var display_tab_id = null;
 var plugin_name  = chrome.i18n.getMessage('menuDigImages');
 var block_images = {};
-
 // check new version for helper
 if(user_config_is_new()) {
   // display new features of wayixia extension
-  create_upgrade_page();
+  setTimeout(create_upgrade_page(), 60*1000);
 }
 
 setTimeout(function() {
@@ -20,12 +19,11 @@ setTimeout(function() {
       if (this.status==200) { // 200 = OK
         //console.log(this.responseText);
         try {
-        var rules = JSON.parse(this.responseText);
-        if(rules) {
-          console.log(rules);
-          filter_rule_version(rules.version);
-          filter_rule_set(rules.rules);
-        }
+          var rules = JSON.parse(this.responseText);
+          if(rules) {
+            filter_rule_version(rules.version);
+            filter_rule_set(rules.rules);
+          }
         } catch(e) {
           console.log(e);
         }
@@ -156,7 +154,7 @@ function create_display_full_screenshot(context_tab_id,  res, url) {
 
 /** show features of the extension */
 function create_upgrade_page() {  
-  var manager_url = chrome.extension.getURL("upgrade.html")+'#v.'+chrome.runtime.getManifest().version;
+  var manager_url = "http://wayixia.com/chrome/#v."+chrome.runtime.getManifest().version;
   focus_or_create_tab(manager_url, function(view) { });
   user_config_version_ok();
 }
@@ -178,14 +176,13 @@ function download_image(url, view) {
         view: view
       };
     }
-    //  view.background_warning({});
   }); 
 }
 
 function get_date_path() {
   var date = new Date();
-  var month = date.getMonth()+1; //)>9?date.getMonth():'0'+date.getMonth();
-  var day = date.getDate();      //>9?date.getMonth():'0'+date.getDate();
+  var month = date.getMonth()+1; 
+  var day = date.getDate();   
   month = month>9?month:('0'+month);
   day   = day>9?day:('0'+day);
   date_path = date.getFullYear()+'-'+month+'-'+day;

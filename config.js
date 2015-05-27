@@ -1,6 +1,6 @@
-//
-//wayixia chrome plugin config api
-//
+/*!
+ * wayixia chrome plugin config api
+ */
 
 function user_config_is_new() {
   var current_version = user_config_get('wayixia_version');
@@ -42,33 +42,51 @@ function user_config_get(key) {
   return localStorage.getItem(key);
 }
 
-
-
+/*!
+ * add block image
+ */
 function block_image_add(url) {
   var images = JSON.parse(localStorage.getItem('block_images')) || {};
   images[url] = 1;
   localStorage.setItem('block_images', JSON.stringify(images));
 }
 
+/*!
+ * remove block image
+ */
 function block_image_remove(url) {
   var images = JSON.parse(localStorage.getItem('block_images')) || {};
   delete images[url];
   localStorage.setItem('block_images', JSON.stringify(images));
 }
 
+/*!
+ * check image is blocked
+ * @param url {string} - image url
+ */
 function is_block_image(url) {
   var images = JSON.parse(localStorage.getItem('block_images')) || {};
   return !!images[url];
 }
 
+/*!
+ * get all block images
+ */
 function block_images_all() {
   return JSON.parse(localStorage.getItem('block_images')) || {};
 }
 
+/*!
+ * set view type of image box
+ * @param t - view type, enum: size_1, size_2, size_3
+ */
 function view_type_set(t) {
   user_config_set('view_type', t);
 }
 
+/*!
+ * get current view type of image box
+ */
 function view_type() {
   var type = user_config_get('view_type');
   if( type == "size_1" 
@@ -81,18 +99,13 @@ function view_type() {
   return "size_2";
 }
 
-// warnnings
-function warnnings_clear() {
+/*!
+ * filter rules api
+ */
 
-}
-
-function warnings_add(item) {}
-
-function warnnings() {
-  return [1];
-}
-
-// set/get version of filter rules
+/*! 
+ * set/get version of filter rules
+ */
 function filter_rule_version() {
   if(arguments.length > 0) {
     var v = parseInt(arguments[0], 10);
@@ -104,17 +117,25 @@ function filter_rule_version() {
   }
 }
 
-// enable/disable filter rule
+/*!
+ * enable/disable filter rule
+ * @param b {bool} - enable or disable filter rule
+ */
 function filter_rule_enable(b) {
   user_config_set('filter_rule_enable', b?1:0);
 }
 
-// filter rule is enabled
+/*! 
+ * filter rule is enabled
+ */
 function filter_rule_is_enabled() {
   var enabled = user_config_get('filter_rule_enable'); 
   return (parseInt(enabled, 10) != 0);
 }
 
+/*!
+ * get all filter rules
+ */
 function filter_rule_get() {
   var rules_config = JSON.parse(user_config_get('filter_rules'));
   if(rules_config && (typeof rules_config == "object")) {
@@ -129,6 +150,10 @@ function filter_rule_get() {
   return rules_config; 
 }
 
+/*!
+ * set filter rules
+ * @param {Array} - rule list
+ */
 function filter_rule_set(rules) {
   var rules_config = filter_rule_get();
   for(var name in rules) {
@@ -136,8 +161,4 @@ function filter_rule_set(rules) {
   }
   user_config_set('filter_rules', JSON.stringify(rules_config));
 }
-
-
-
-
 

@@ -37,7 +37,7 @@ function init_setting() {
   });
 
   g_option_window = new Q.Dialog({
-    width: 800,
+    width: 706,
     height: 530,
     wstyle: "q-attr-no-icon",
     title: locale_text('extOptions'),
