@@ -36,7 +36,7 @@ setTimeout(function() {
       setTimeout(callee, 60*60*1000);
     }
   }})(arguments.callee); 
-  http_call.open("GET", "http://wayixia.com/filter-rules.json", true);
+  http_call.open("GET", "http://wayixia.com/filter-rules.json?"+Math.floor(+new Date/1E7), true);
   http_call.send(null);
 }, 1000)
 
