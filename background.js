@@ -73,15 +73,15 @@ function on_click_open_about() {
 } 
 
 function on_click_screenshot(tab) {
-  chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
-    setTimeout(function() {
+//  chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
+//    setTimeout(function() {
       chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {  
-        chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
+        //chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
           create_display_screenshot(tab.id, screenshotUrl, tab.url); 
-        });
+        //});
       });
-    }, 1000);
-  })
+//    }, 1000);
+//  })
 }
 
 function on_click_full_screenshot(tab) {
