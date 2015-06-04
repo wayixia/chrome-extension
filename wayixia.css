@@ -43,6 +43,10 @@ button:hover.wayixia-ctrl-button
   background-color: #FFDD00;
 }
 
+.wayixia-toolbar-button.checked {
+  background-color: #CCC;
+}
+
 .wayixia-toolbar-button.zoom {
   background-position:  -270px top;
 }

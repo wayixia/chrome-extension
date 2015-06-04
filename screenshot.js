@@ -33,9 +33,19 @@ function initialize () {
       extension.download_image(Q.$('wayixia-screenshot-image').src);
     }
   }
-  
+ 
+  // init toolbar
+  new Q.checkbox({id: "wayixia-screenshot-text"});
+  new Q.checkbox({id: "wayixia-screenshot-arrow"});
+  new Q.checkbox({id: "wayixia-screenshot-rect"});
+  new Q.checkbox({id: "wayixia-screenshot-eclipse"});
+  new Q.checkbox({id: "wayixia-screenshot-line"});
+  new Q.checkbox({id: "wayixia-screenshot-zoom"});
+
   content_load_ok = true;
 }
+
+
 
 Q.Ready(function() {
   Q.set_locale_text(locale_text);
