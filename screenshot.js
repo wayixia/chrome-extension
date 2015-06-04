@@ -38,6 +38,9 @@ function initialize () {
 Q.Ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
+  // debug code
+  display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+
 });
 
 
@@ -103,9 +106,10 @@ function display_screenshot(tab_id, image_data, url) {
   wayixia_request_data.data.pageUrl = url;
   drag_screen_images_begin();
   var wayixia_container = Q.$('wayixia-list');
+  wayixia_container.innerHTML = '';
+  
   var img = document.createElement('img');
   img.id = 'wayixia-screenshot-image';
-  wayixia_container.innerHTML = '';
   wayixia_container.appendChild(img);
   img.onload = img.onerror = Q.bind_handler(img, function() {  drag_screen_images_end(); });
   img.src = image_data;

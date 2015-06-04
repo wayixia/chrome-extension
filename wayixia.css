@@ -29,6 +29,58 @@ button:hover.wayixia-ctrl-button
 }
 
 
+.wayixia-toolbar-button {
+  background: #FFF url(images/canvas-toolbar.png) left top no-repeat;
+  height: 40px;
+  width:45px;
+  border: 0;
+  outline: 0;
+  line-height: 40px;
+}
+
+.wayixia-toolbar-button:hover {
+  background-color: #FFDD00;
+}
+
+.wayixia-toolbar-button.zoom {
+  background-position:  -270px top;
+}
+
+.wayixia-toolbar-button.zoom:hover {
+  background-color: transparent;
+}
+
+.wayixia-toolbar-button.download {
+  background-position:  -225px top;
+}
+
+.wayixia-toolbar-button.restore {
+  background-position:  -180px top;
+}
+
+.wayixia-toolbar-button.text {
+  background-position:  0px top;
+}
+
+.wayixia-toolbar-button.arrow {
+  background-position:  -45px top;
+}
+
+.wayixia-toolbar-button.rect {
+  background-position:  -90px top;
+}
+
+.wayixia-toolbar-button.eclipse{
+  background-position:  -135px top;
+}
+
+
+.wayixia-toolbar-button.line {
+  background-position:  -180px top;
+}
+
+
+
 #wayixia-overlay {
   position: fixed; 
   left: 0px; 

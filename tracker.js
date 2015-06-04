@@ -24,7 +24,11 @@ _gaq.push(['_trackPageview']);
   ga.type = 'text/javascript';
   ga.async = true;
   ga.src = 'https://ssl.google-analytics.com/ga.js';
+<<<<<<< HEAD
   //var s = document.getElementsByTagName('script')[0];
+=======
+  var s = document.getElementsByTagName('script')[0];
+>>>>>>> 9e3733596ae0ebca003b5b5a20b8a2cfe02248b1
   //s.parentNode.insertBefore(ga, s);
 })();
 
