@@ -17,8 +17,10 @@ function initialize () {
   var e_zoom = new Q.slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
     on_xscroll: function(v) {
       g_screenshot_zoom = v;
-      if(Q.$('wayixia-screenshot-image'))
-        Q.$('wayixia-screenshot-image').style.zoom = v/100.0;  
+      if(Q.$('wayixia-canvas'))
+        Q.$('wayixia-canvas').style.zoom = v/100.0;  
+      //if(Q.$('wayixia-screenshot-image'))
+      //  Q.$('wayixia-screenshot-image').style.zoom = v/100.0;  
       Q.$('wayixia-screenshot-zoom').innerText = g_screenshot_zoom + '%';
     }
   });
@@ -40,7 +42,6 @@ Q.Ready(function() {
   initialize();
   // debug code
   display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
-
 });
 
 
@@ -105,15 +106,27 @@ function display_screenshot(tab_id, image_data, url) {
   wayixia_source_tab_id = tab_id;
   wayixia_request_data.data.pageUrl = url;
   drag_screen_images_begin();
-  var wayixia_container = Q.$('wayixia-list');
-  wayixia_container.innerHTML = '';
+  var wayixia_canvas = Q.$('wayixia-canvas');
+  //wayixia_container.innerHTML = '';
   
-  var img = document.createElement('img');
-  img.id = 'wayixia-screenshot-image';
-  wayixia_container.appendChild(img);
-  img.onload = img.onerror = Q.bind_handler(img, function() {  drag_screen_images_end(); });
+  //var img = document.createElement('img');
+  //img.id = 'wayixia-screenshot-image';
+  //wayixia_container.appendChild(img);
+  var img = new Image();
+  img.onerror = function() {  drag_screen_images_end(); };
+  img.onload  = function() {
+    wayixia_canvas.width = this.width+10; 
+    wayixia_canvas.height= this.height+10; 
+    var draw_context = wayixia_canvas.getContext("2d");
+    draw_context.drawImage(this, 0, 0);
+
+    drag_screen_images_end();
+    var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
+    wayixia_canvas.width = 1000;
+    draw_context.putImageData(imgData,0,0);
+  };
   img.src = image_data;
-  Q.drag.attach_object(img, {self: true});
+  //Q.drag.attach_object(img, {self: true});
 }
 
 /* call background script end */
