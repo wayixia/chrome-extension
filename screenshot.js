@@ -34,13 +34,55 @@ function initialize () {
     }
   }
  
+
+  var current_brush = "";
   // init toolbar
-  new Q.checkbox({id: "wayixia-screenshot-text"});
-  new Q.checkbox({id: "wayixia-screenshot-arrow"});
-  new Q.checkbox({id: "wayixia-screenshot-rect"});
-  new Q.checkbox({id: "wayixia-screenshot-eclipse"});
-  new Q.checkbox({id: "wayixia-screenshot-line"});
-  new Q.checkbox({id: "wayixia-screenshot-zoom"});
+  var toolbars = {};
+  function toolbars_onchange(checked) {
+    if(checked) {
+      for(var name in toolbars) {
+        if(toolbars[name] != this) {
+          toolbars[name].set_checked(false);
+        } else {
+          current_brush = name;
+        } 
+      } 
+    }
+  }
+
+  toolbars["text"] = new Q.checkbox({id: "wayixia-screenshot-text", onchange: toolbars_onchange});
+  toolbars["arrow"] = new Q.checkbox({id: "wayixia-screenshot-arrow", onchange: toolbars_onchange});
+  toolbars["rect"] = new Q.checkbox({id: "wayixia-screenshot-rect", onchange: toolbars_onchange});
+  toolbars["eclipse"] = new Q.checkbox({id: "wayixia-screenshot-eclipse", onchange: toolbars_onchange});
+  toolbars["line"] = new Q.checkbox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
+  toolbars["zoom"] = new Q.checkbox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
+  
+  //Q.drag.attach_object("wayixia-canvas", { self: true});
+
+  Q.$("wayixia-canvas").onmousedown = function() {
+    this.drag = true;
+    var pos = Q.absPosition(this);
+    this.beginX = pos.left;
+    this.beginY = pos.top;
+
+    this.tmr = setTimeout((function(t) { return function() {
+      t.move_handler = Q.bind_handler(t, function(evt) {
+        evt = evt || window.event;
+        console.log(evt.clientX + "," + evt.clientY);
+
+        
+      });
+      Q.addEvent(t, "mousemove", t.move_handler);
+    }})(this), 100);
+  }
+
+  Q.$("wayixia-canvas").onmouseup = function() {
+    clearTimeout(this.tmr);
+    if(this.drag) {
+      this.drag = false;
+      Q.removeEvent(this, "mousemove", this.move_handler);
+    }
+  }
 
   content_load_ok = true;
 }
