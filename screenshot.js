@@ -29,12 +29,35 @@ function initialize () {
   Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.set_value(100); }
   Q.$('wayixia-screenshot-download').onclick = function() {
     wayixia_track_button_click(this);
-    if(Q.$('wayixia-screenshot-image')) {
-      extension.download_image(Q.$('wayixia-screenshot-image').src);
-    }
+    //if(Q.$('wayixia-screenshot-image')) {
+      extension.download_image(Q.$('wayixia-canvas').toDataURL('image/png'));
+    //}
   }
  
+  content_load_ok = true;
+}
 
+Q.canvas_editor = Q.extend({
+canvas  : null,
+context : null,
+is_drag : false,
+x : 0,
+y : 0,
+MouseDown_Hanlder : null,
+MouseUp_Handler : null,
+MouseMove_Handler : null,
+is_moved : false,
+tmr : null,
+__init__ : function(config) {
+  config = config || {};
+  this.canvas = config.id;
+  this.context = this.canvas.getContext('2d');
+  this.pos = Q.absPosition(this.canvas);
+  // rect
+  this.rectangle = document.createElement('div');
+  this.rectangle.style.cssText = "position:absolute; border: 1px solid #000;";
+  document.body.appendChild(this.rectangle);
+  
   var current_brush = "";
   // init toolbar
   var toolbars = {};
@@ -57,37 +80,161 @@ function initialize () {
   toolbars["line"] = new Q.checkbox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
   toolbars["zoom"] = new Q.checkbox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
   
-  //Q.drag.attach_object("wayixia-canvas", { self: true});
+  this.createInterface();
 
-  Q.$("wayixia-canvas").onmousedown = function() {
-    this.drag = true;
-    var pos = Q.absPosition(this);
-    this.beginX = pos.left;
-    this.beginY = pos.top;
+  // 缓存时间
+  this.MouseDown_Hanlder = (function(t) { return function(evt) { 
+    t._MouseDown(evt); 
+  }})(this);
+  this.MouseUp_Handler   = (function(t) { return function(evt) { 
+    t._MouseUp(evt); 
+  }})(this);
+  this.MouseMove_Handler = (function(t) { return function(evt) { 
+    t._MouseMove(evt); 
+  }})(this);
+ 
+  Q.addEvent(document, 'mousedown', this.MouseDown_Hanlder);
+  Q.addEvent(document, 'mouseup', this.MouseUp_Handler);
+},
 
-    this.tmr = setTimeout((function(t) { return function() {
-      t.move_handler = Q.bind_handler(t, function(evt) {
-        evt = evt || window.event;
-        console.log(evt.clientX + "," + evt.clientY);
+createInterface : function() {
+  // create interface canvas
+  this.canvas_interface = this.canvas.cloneNode(true);
+  this.canvas.parentNode.appendChild(this.canvas_interface);
+  this.canvas_interface.style.cssText = "position: absolute; left: " + this.canvas.offsetLeft +
+    "; top: " + this.canvas.offsetTop + 
+    "; width: " + this.canvas.offsetWidth + 
+    "; height: " + this.canvas.offsetHeight + 
+    ";";
+  this.contextI = this.canvas_interface.getContext('2d');
+},
 
-        
-      });
-      Q.addEvent(t, "mousemove", t.move_handler);
-    }})(this), 100);
-  }
+drawRectangle: function(pntFrom, pntTo, context) {
+		context.beginPath();
+		context.fillRect(pntFrom.x, pntFrom.y, pntTo.x - pntFrom.x, pntTo.y - pntFrom.y);
+		context.closePath();
+},
 
-  Q.$("wayixia-canvas").onmouseup = function() {
-    clearTimeout(this.tmr);
-    if(this.drag) {
-      this.drag = false;
-      Q.removeEvent(this, "mousemove", this.move_handler);
+drawCircle: function (pntFrom, pntTo, context) {
+  var centerX = Math.max(pntFrom.x,pntTo.x) - Math.abs(pntFrom.x - pntTo.x)/2;
+	var centerY = Math.max(pntFrom.y,pntTo.y) - Math.abs(pntFrom.y - pntTo.y)/2;
+	context.beginPath();
+	var distance = Math.sqrt(Math.pow(pntFrom.x - pntTo.x,2) + Math.pow(pntFrom.y - pntTo.y,2));
+	context.arc(centerX, centerY, distance/2,0,Math.PI*2 ,true);
+	context.fill();
+	context.closePath();
+},
+
+drawLine: function(pntFrom, pntTo, context) {
+  console.log(pntFrom.x + ', ' + pntFrom.y + '; ' + pntTo.x + ', ' + pntTo.y);
+  context.beginPath();
+	context.moveTo(pntFrom.x,pntFrom.y);
+	context.lineTo(pntTo.x,pntTo.y);
+	context.stroke();
+	context.closePath();
+},
+
+
+_MouseDown : function(evt) {
+  evt = evt || window.event;
+  // 屏蔽右键拖动
+  if(evt.button == Q.RBUTTON) 
+    return; 
+  var target_wnd = drag_handle = this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
+
+  if(target_wnd && (target_wnd == this.canvas_interface)) {
+      this.is_drag = true; 
+      this.x = evt.clientX;
+      this.y = evt.clientY; 
+      
+      // 添加MouseMove事件
+      this.tmr = setTimeout((function(t) { return function() { 
+        Q.addEvent(document, 'mousemove', t.MouseMove_Handler);  
+      }})(this), 100);
+
+      this.pos = Q.absPosition(this.canvas);
+      /*
+      this.context.beginPath();
+      this.context.moveTo(this.x-this.pos.left, this.y-this.pos.top);
+      
+      //this.rectangle.style.display = '';
+      this.rectangle.style.left = this.x + 'px';
+      this.rectangle.style.top = this.y + 'px';
+      this.rectangle.style.width = 0;
+      this.rectangle.style.height = 0;
+      Q.printf("begin: x -> " + this.x + ", y -> " + this.y);
+      //this.contextI.lineJoin = "round";
+      //this.contextI.lineWidth = 1; 
+      */
+      return false; 
     }
-  }
+},
+    
+_MouseMove : function(evt){
+    var _this = this;
+    _this.is_moved = true;
+    evt = evt || window.event
+    if (_this.is_drag) {
+      //var x = evt.clientX-_this.x;
+      //var y = evt.clientY-_this.y;
+      //if(_this.hCaptureWnd.style.zoom) {
+      //  _this.hCaptureWnd.on_move(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
+      //} else {
+      //  _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
+      //}
+      
+      /*
+      var width = evt.clientX-this.x;
+      var height = evt.clientY-this.y;
+      if(width < 0) {
+        this.rectangle.style.right = (document.body.scrollWidth-this.x) + 'px';
+        this.rectangle.style.left = evt.clientX;
+      } else {
+        this.rectangle.style.left = this.x + 'px';
+      }
+      if(height < 0) {
+        this.rectangle.style.bottom = (document.body.scrollHeight-this.y) + 'px';
+        this.rectangle.style.top = evt.clientY;
+      } else {
+        this.rectangle.style.top = this.y + 'px';
+      }
+      this.rectangle.style.width = Math.abs(width) + 'px';
+      this.rectangle.style.height = Math.abs(height) + 'px';
+      
+     // Q.printf("move: x -> " + evt.clientX + ", y -> " + evt.clientY);
+     */
+      this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
+      var pointFrom = {};
+      pointFrom.x = this.x-this.pos.left+0.5;
+      pointFrom.y = this.y-this.pos.top+0.5;
+      var pointTo = {};
+      pointTo.x = evt.clientX-this.pos.left+0.5;
+      pointTo.y = evt.clientY-this.pos.top+0.5; 
+      this.drawLine(pointFrom, pointTo, this.contextI);
+    
+      return false; 
+    }
+},
 
-  content_load_ok = true;
+_MouseUp : function(evt) {
+    clearTimeout(this.tmr);
+    if(this.is_drag ) {
+      this.is_drag=false;
+      Q.removeEvent(document,'mousemove', this.MouseMove_Handler);
+      Q.printf("end: x -> " + evt.clientX + ", y -> " + evt.clientY);
+      var pointFrom = {};
+      pointFrom.x = this.x-this.pos.left+0.5;
+      pointFrom.y = this.y-this.pos.top+0.5;
+      var pointTo = {};
+      pointTo.x = evt.clientX-this.pos.left+0.5;
+      pointTo.y = evt.clientY-this.pos.top+0.5; 
+      this.drawLine(pointFrom, pointTo, this.context);
+
+    }
+    this.is_moved=false;
+    this.rectangle.style.display = 'none';
 }
-
-
+});
 
 Q.Ready(function() {
   Q.set_locale_text(locale_text);
@@ -176,6 +323,10 @@ function display_screenshot(tab_id, image_data, url) {
     var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
     wayixia_canvas.width = 1000;
     draw_context.putImageData(imgData,0,0);
+    // init painter
+    new Q.canvas_editor({
+      id : Q.$('wayixia-canvas')
+    });
   };
   img.src = image_data;
   //Q.drag.attach_object(img, {self: true});

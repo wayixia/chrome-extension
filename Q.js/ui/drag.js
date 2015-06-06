@@ -35,12 +35,15 @@ Q.draging = Q.extend({
     var config = config || {};
     obj.setAttribute('q-drag-object', true);
     obj.q_drag_objects = new Q.LIST();
-    obj.q_onmove = config.onmove || function(x, y) {
+    obj.on_begin = config.on_begin || function (x, y) {};
+    obj.on_move = config.on_move || function(x, y) {
       var obj = this;    
       Q.printf('x: ' + x + '; y:' + y + ';');
       obj.style.left = x + 'px'; 
       obj.style.top  = y + 'px'; 
     };
+    obj.on_end = config.on_end || function (x, y) {};
+
     if(!!config.self) 
       this.add_drag_handler(obj, obj);
     var init_drag_objects = config.objects || [];
@@ -72,26 +75,29 @@ Q.draging = Q.extend({
   },
 
   _MouseDown : function(evt) {
-    var _this = this;
     evt = evt || window.event;
-    if(evt.button == Q.RBUTTON){ return; } // 屏蔽右键拖动
-    var target_wnd = drag_handle = _this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
+    // 屏蔽右键拖动
+    if(evt.button == Q.RBUTTON) 
+      return; 
+    var target_wnd = drag_handle = this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
     
-    while(target_wnd && !_this.is_dragable(target_wnd) && (target_wnd != document.body)) {
+    while(target_wnd && !this.is_dragable(target_wnd) && (target_wnd != document.body)) {
       target_wnd = target_wnd.parentNode;
     }
 
     //if(target_wnd && (!$IsMaxWindow(target_wnd)) && $IsDragObject(target_wnd, oDragHandle)) {
-    if(target_wnd && _this.is_drag_handler(target_wnd, drag_handle)) {
-      _this.hCaptureWnd = target_wnd; 
-      _this.is_drag = true; 
-      _this.x = evt.clientX;
-      _this.y = evt.clientY; 
+    if(target_wnd && this.is_drag_handler(target_wnd, drag_handle)) {
+      this.hCaptureWnd = target_wnd; 
+      this.is_drag = true; 
+      this.x = evt.clientX;
+      this.y = evt.clientY; 
       
-      _this.begin_left = target_wnd.offsetLeft;  
-      _this.begin_top = target_wnd.offsetTop; 
+      this.begin_left = target_wnd.offsetLeft;  
+      this.begin_top = target_wnd.offsetTop; 
       // 添加MouseMove事件
-      _this.tmr = setTimeout(function() { Q.addEvent(document, 'mousemove', _this.MouseMove_Handler);  }, 100);
+      this.tmr = setTimeout((function(t) { return function() { 
+        Q.addEvent(document, 'mousemove', t.MouseMove_Handler);  
+      }})(this), 100);
       return false; 
     }
   },
@@ -104,9 +110,9 @@ Q.draging = Q.extend({
       var x = evt.clientX-_this.x;
       var y = evt.clientY-_this.y;
       if(_this.hCaptureWnd.style.zoom) {
-        _this.hCaptureWnd.q_onmove(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
+        _this.hCaptureWnd.on_move(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
       } else {
-        _this.hCaptureWnd.q_onmove(_this.begin_left+x, _this.begin_top+y);
+        _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
       }
       return false; 
     }
