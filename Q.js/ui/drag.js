@@ -36,7 +36,7 @@ Q.draging = Q.extend({
     obj.setAttribute('q-drag-object', true);
     obj.q_drag_objects = new Q.LIST();
     obj.on_begin = config.on_begin || function (x, y) {};
-    obj.on_move = config.on_move || function(x, y) {
+    obj.on_move = config.onmove || function(x, y) {
       var obj = this;    
       Q.printf('x: ' + x + '; y:' + y + ';');
       obj.style.left = x + 'px'; 

@@ -5,7 +5,7 @@ var g_block_window = null;
 var g_block_images_box = null;
 
 function init_about() {
-  g_about_window = new Q.MessageBox({
+  g_about_window = Q.alert({
     title: locale_text('extAbout'),
     width: 500,
     height: 350, 
@@ -25,11 +25,11 @@ function init_setting() {
   Q.$('save_path').value = extension.user_config_get('save_path');
   // date folder
   var option_date_folder = (extension.user_config_get('date_folder') != '0');
-  var date_folder = new Q.checkbox({ id : "date_folder", checked: option_date_folder});
+  var date_folder = new Q.CheckBox({ id : "date_folder", checked: option_date_folder});
   // filter rules
   var option_filter_rules = extension.filter_rule_is_enabled();
   Q.$('manager_filter_rules').disabled = !option_filter_rules;
-  var filter_rules = new Q.checkbox({ id : "filter_rules_enable",
+  var filter_rules = new Q.CheckBox({ id : "filter_rules_enable",
     checked: option_filter_rules,
     onchange : function(checked) {
       Q.$('manager_filter_rules').disabled = !checked;
@@ -69,7 +69,7 @@ function init_setting() {
   // block images
   Q.$('manager_block_images').onclick = function() {
     wayixia_track_button_click(this);
-    g_block_images_box = new Q.images_box({id: 'wayixia-list'});
+    g_block_images_box = new Q.ImagesBox({id: 'wayixia-list'});
     var extension = chrome.extension.getBackgroundPage();
     var block_images = extension.block_images_all();
     g_block_images_box.display_images(block_images, {})();  
@@ -136,13 +136,13 @@ function display_filter_rules() {
         for(var name in filter_rules.rules) {
           rules.push(filter_rules.rules[name]);
         }
-        var store = new Q.store({
+        var store = new Q.Store({
           datasource: rules
         });
-        d.table = new Q.table({ 
+        d.table = new Q.Table({ 
           title: Q.locale_text('filterRulesList'), 
           wstyle: "q-attr-no-title",
-          container: d.item('list'),
+          id: d.item('list'),
           columns: [
             { name: 'url', title: Q.locale_text('colName'), align:'left', fixed: true, width: 398, isHTML: true, renderer : function(record) {return record['name'];} }
           ],
@@ -166,7 +166,7 @@ function display_filter_rules() {
 
 }
 
-Q.Ready(function() {
+Q.ready(function() {
   var hash = location.hash;
   if(hash == "#about") {
     init_about();     

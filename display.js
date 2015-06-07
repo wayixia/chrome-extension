@@ -19,7 +19,7 @@ function initialize () {
   var accept_length  = 0;
   var extension = chrome.extension.getBackgroundPage();
  
-  var wayixia_images_box = new Q.images_box({id: 'wayixia-list', 
+  var wayixia_images_box = new Q.ImagesBox({id: 'wayixia-list', 
     on_item_changed: function(item, check) {
       if(item.style.display == '') { 
         update_ui_count();
@@ -43,9 +43,10 @@ function initialize () {
   });
 
   Q.$('wayixia-view').onclick = function(evt) {return false;}
-  var view_type = new Q.dropdownlist({ 
-    render: 'wayixia-select-view', 
+  var view_type = new Q.DropDownList({ 
+    id: 'wayixia-select-view', 
     wstyle: 'wayixia-menu',
+    value : extension.view_type(),
     on_change: function(text, value) {
       wayixia_images_box.set_style(value);
       extension.view_type_set(value);
@@ -54,10 +55,10 @@ function initialize () {
   });
 
   
-  view_type.set_value(extension.view_type());
-  wayixia_images_box.set_style(extension.view_type());
+  //view_type.set_value(extension.view_type());
+  //wayixia_images_box.set_style(extension.view_type());
 
-  var checkbox_show_block = new Q.checkbox({id:'wayixia-show-block',
+  var checkbox_show_block = new Q.CheckBox({id:'wayixia-show-block',
     checked: true,
     onchange: function(checked) {
       wayixia_track_button_click(Q.$('wayixia-show-block'));
@@ -79,7 +80,7 @@ function initialize () {
     }
   });
 
-  var button_select_all = new Q.checkbox({id: 'wayixia-select-all',
+  var button_select_all = new Q.CheckBox({id: 'wayixia-select-all',
     onchange: function(checked) {
       wayixia_track_button_click(Q.$('wayixia-select-all'));
       wayixia_images_box.select_all(checked);
@@ -88,7 +89,7 @@ function initialize () {
 
   Q.$('wayixia-add-block').onclick=function() {
     wayixia_track_button_click(this);
-    var box = new Q.MessageBox({
+    var box = Q.alert({
       title: Q.locale_text('extName'),
       wstyle: "q-attr-no-icon",
       content: '<div style="margin:auto; padding:20px;font-size:14px;">'+Q.locale_text('infoAddBlock')+'</div>',
@@ -171,8 +172,8 @@ function initialize () {
     // clear errors
     clear_errors();
     clear_album_player();
-    this.e_width.set_value(0);
-    this.e_height.set_value(0);
+    this.e_width.setValue(0);
+    this.e_height.setValue(0);
     // init datacheckbox_show_block.checked()
     var accept_images  = {};
     accept_length  = 0;
@@ -202,7 +203,7 @@ function initialize () {
 
   this.g_min_width = 0;
   this.g_min_height= 0; 
-  this.e_width = new Q.slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
+  this.e_width = new Q.Slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) {
       g_min_width = v*10;
       wayixia_images_box.each_item(function(item) {
@@ -213,7 +214,7 @@ function initialize () {
     }
   });
   
-  this.e_height = new Q.slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
+  this.e_height = new Q.Slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) { 
       t.g_min_height = v*10;
       wayixia_images_box.each_item(function(item) {
@@ -280,7 +281,7 @@ function clear_album_player() {
 
 
 /** 挖图界面初始化 */
-Q.Ready(function() {
+Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
   content_load_ok = true;

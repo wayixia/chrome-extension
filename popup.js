@@ -59,7 +59,7 @@ function show_tips_full_screenshot() {
  // document.body.style.visibility='visible';
 }
 
-Q.Ready(function() {
+Q.ready(function() {
   document.body.ondragstart  =function() { return false; }
   document.body.onselectstart=function() { return false; }
   init();

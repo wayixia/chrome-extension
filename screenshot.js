@@ -1,32 +1,31 @@
-/*-------------------------------------------------------
- $ file:  wayixia.js
- $ powered by wayixia.com
- $ date: 2014-11-8
- $ author: Q 
----------------------------------------------------------*/
+/**
+ * @file:  screenshot.js
+ * @powered by wayixia.com
+ * @date: 2014-11-8
+ * @author: Q 
+ */
 
 var t = null;
 var content_load_ok = false;
 var g_screenshot_zoom = 100;
 var g_screenshot_dialog = null;
+var g_canvas_editor = null;
 
 function initialize () {
   var _this = t = this;
   var extension = chrome.extension.getBackgroundPage();
  
-  var e_zoom = new Q.slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
+  var e_zoom = new Q.Slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
     on_xscroll: function(v) {
       g_screenshot_zoom = v;
-      if(Q.$('wayixia-canvas'))
-        Q.$('wayixia-canvas').style.zoom = v/100.0;  
-      //if(Q.$('wayixia-screenshot-image'))
-      //  Q.$('wayixia-screenshot-image').style.zoom = v/100.0;  
-      Q.$('wayixia-screenshot-zoom').innerText = g_screenshot_zoom + '%';
+      if(g_canvas_editor)
+        g_canvas_editor.zoom(v); ///100.0;  
+      Q.$('wayixia-screenshot-zoomtext').innerText = g_screenshot_zoom + '%';
     }
   });
   
-  Q.$('wayixia-screenshot-zoom').innerText = e_zoom.get_value() + '%';
-  Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.set_value(100); }
+  Q.$('wayixia-screenshot-zoomtext').innerText = e_zoom.getValue() + '%';
+  Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.setValue(100); }
   Q.$('wayixia-screenshot-download').onclick = function() {
     wayixia_track_button_click(this);
     //if(Q.$('wayixia-screenshot-image')) {
@@ -36,6 +35,20 @@ function initialize () {
  
   content_load_ok = true;
 }
+
+function fireMouseEvent(element, evtName) {
+  if( document.createEvent ) 
+  {
+     var evObj = document.createEvent('MouseEvents');
+     evObj.initEvent( evtName, true, false );
+     element.dispatchEvent(evObj);
+  }
+  else if( document.createEventObject )
+  {
+      element.fireEvent('on'+evtName);
+  }
+}
+
 
 Q.canvas_editor = Q.extend({
 canvas  : null,
@@ -53,32 +66,27 @@ __init__ : function(config) {
   this.canvas = config.id;
   this.context = this.canvas.getContext('2d');
   this.pos = Q.absPosition(this.canvas);
-  // rect
-  this.rectangle = document.createElement('div');
-  this.rectangle.style.cssText = "position:absolute; border: 1px solid #000;";
-  document.body.appendChild(this.rectangle);
-  
-  var current_brush = "";
+ 
   // init toolbar
   var toolbars = {};
-  function toolbars_onchange(checked) {
+  var  toolbars_onchange = (function(t) { return function(checked) {
     if(checked) {
       for(var name in toolbars) {
         if(toolbars[name] != this) {
-          toolbars[name].set_checked(false);
+          toolbars[name].setCheck(false);
         } else {
-          current_brush = name;
+          t.action = name;
         } 
       } 
-    }
-  }
+    } 
+  }})(this);
 
-  toolbars["text"] = new Q.checkbox({id: "wayixia-screenshot-text", onchange: toolbars_onchange});
-  toolbars["arrow"] = new Q.checkbox({id: "wayixia-screenshot-arrow", onchange: toolbars_onchange});
-  toolbars["rect"] = new Q.checkbox({id: "wayixia-screenshot-rect", onchange: toolbars_onchange});
-  toolbars["eclipse"] = new Q.checkbox({id: "wayixia-screenshot-eclipse", onchange: toolbars_onchange});
-  toolbars["line"] = new Q.checkbox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
-  toolbars["zoom"] = new Q.checkbox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
+  toolbars["text"] = new Q.CheckBox({id: "wayixia-screenshot-text", onchange: toolbars_onchange});
+  toolbars["arrow"] = new Q.CheckBox({id: "wayixia-screenshot-arrow", onchange: toolbars_onchange});
+  toolbars["rect"] = new Q.CheckBox({id: "wayixia-screenshot-rect", onchange: toolbars_onchange});
+  toolbars["eclipse"] = new Q.CheckBox({id: "wayixia-screenshot-eclipse", onchange: toolbars_onchange});
+  toolbars["line"] = new Q.CheckBox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
+  toolbars["zoom"] = new Q.CheckBox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
   
   this.createInterface();
 
@@ -109,9 +117,14 @@ createInterface : function() {
   this.contextI = this.canvas_interface.getContext('2d');
 },
 
+zoom : function(v) {
+  this.canvas.style.zoom = v/100.0;
+  this.canvas_interface.style.zoom = v/100.0;
+},
+
 drawRectangle: function(pntFrom, pntTo, context) {
 		context.beginPath();
-		context.fillRect(pntFrom.x, pntFrom.y, pntTo.x - pntFrom.x, pntTo.y - pntFrom.y);
+		context.strokeRect(pntFrom.x, pntFrom.y, pntTo.x - pntFrom.x, pntTo.y - pntFrom.y);
 		context.closePath();
 },
 
@@ -134,6 +147,38 @@ drawLine: function(pntFrom, pntTo, context) {
 	context.closePath();
 },
 
+drawEclipse : function(pntFrom, pntTo, context) {
+  var x = pntFrom.x;
+  var y = pntFrom.y;
+  var a = Math.abs(pntTo.x-pntFrom.x)/2;
+  var b = Math.abs(pntTo.y-pntFrom.y)/2;
+  if(pntTo.x < pntFrom.x) {
+    x = pntTo.x;
+  }
+  if(pntTo.x < pntFrom.x) {
+    y = pntTo.y;
+  }
+
+  context.save();
+  //选择a、b中的较大者作为arc方法的半径参数
+  var r = (a > b) ? a : b; 
+  var ratioX = a / r; //横轴缩放比率
+  var ratioY = b / r; //纵轴缩放比率
+  context.scale(ratioX, ratioY); //进行缩放（均匀压缩）
+  context.beginPath();
+  //从椭圆的左端点开始逆时针绘制
+  context.moveTo((x + a) / ratioX, y / ratioY);
+  context.arc(x / ratioX, y / ratioY, r, 0, 2 * Math.PI);
+  //context.closePath();
+  //context.stroke();
+  context.restore();
+  context.stroke();
+  context.closePath();
+},
+
+drawArrow: function(pntFrom, pntTo, context) {
+
+},
 
 _MouseDown : function(evt) {
   evt = evt || window.event;
@@ -143,6 +188,7 @@ _MouseDown : function(evt) {
   var target_wnd = drag_handle = this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
 
   if(target_wnd && (target_wnd == this.canvas_interface)) {
+    //fireMouseEvent(document, "mousedown");
       this.is_drag = true; 
       this.x = evt.clientX;
       this.y = evt.clientY; 
@@ -153,67 +199,38 @@ _MouseDown : function(evt) {
       }})(this), 100);
 
       this.pos = Q.absPosition(this.canvas);
-      /*
-      this.context.beginPath();
-      this.context.moveTo(this.x-this.pos.left, this.y-this.pos.top);
-      
-      //this.rectangle.style.display = '';
-      this.rectangle.style.left = this.x + 'px';
-      this.rectangle.style.top = this.y + 'px';
-      this.rectangle.style.width = 0;
-      this.rectangle.style.height = 0;
-      Q.printf("begin: x -> " + this.x + ", y -> " + this.y);
-      //this.contextI.lineJoin = "round";
-      //this.contextI.lineWidth = 1; 
-      */
-      return false; 
-    }
+      return true; 
+  }
 },
     
 _MouseMove : function(evt){
-    var _this = this;
-    _this.is_moved = true;
-    evt = evt || window.event
-    if (_this.is_drag) {
-      //var x = evt.clientX-_this.x;
-      //var y = evt.clientY-_this.y;
-      //if(_this.hCaptureWnd.style.zoom) {
-      //  _this.hCaptureWnd.on_move(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
-      //} else {
-      //  _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
-      //}
-      
-      /*
-      var width = evt.clientX-this.x;
-      var height = evt.clientY-this.y;
-      if(width < 0) {
-        this.rectangle.style.right = (document.body.scrollWidth-this.x) + 'px';
-        this.rectangle.style.left = evt.clientX;
-      } else {
-        this.rectangle.style.left = this.x + 'px';
-      }
-      if(height < 0) {
-        this.rectangle.style.bottom = (document.body.scrollHeight-this.y) + 'px';
-        this.rectangle.style.top = evt.clientY;
-      } else {
-        this.rectangle.style.top = this.y + 'px';
-      }
-      this.rectangle.style.width = Math.abs(width) + 'px';
-      this.rectangle.style.height = Math.abs(height) + 'px';
-      
-     // Q.printf("move: x -> " + evt.clientX + ", y -> " + evt.clientY);
-     */
-      this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
-      var pointFrom = {};
-      pointFrom.x = this.x-this.pos.left+0.5;
-      pointFrom.y = this.y-this.pos.top+0.5;
-      var pointTo = {};
-      pointTo.x = evt.clientX-this.pos.left+0.5;
-      pointTo.y = evt.clientY-this.pos.top+0.5; 
+  this.is_moved = true;
+  evt = evt || window.event
+  if (this.is_drag) {
+    //var x = evt.clientX-_this.x;
+    //var y = evt.clientY-_this.y;
+    //if(_this.hCaptureWnd.style.zoom) {
+    //  _this.hCaptureWnd.on_move(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
+    //} else {
+    //  _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
+    //}
+     
+    this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
+    var pointFrom = {};
+    pointFrom.x = this.x-this.pos.left+0.5;
+    pointFrom.y = this.y-this.pos.top+0.5;
+    var pointTo = {};
+    pointTo.x = evt.clientX-this.pos.left+0.5;
+    pointTo.y = evt.clientY-this.pos.top+0.5;
+
+    if(this.action == "line") {
       this.drawLine(pointFrom, pointTo, this.contextI);
-    
-      return false; 
+    } else if(this.action == "rect") {
+      this.drawRectangle(pointFrom, pointTo, this.contextI);
+    } else if(this.action == "eclipse") {
+      this.drawEclipse(pointFrom, pointTo, this.contextI);
     }
+  }
 },
 
 _MouseUp : function(evt) {
@@ -227,16 +244,21 @@ _MouseUp : function(evt) {
       pointFrom.y = this.y-this.pos.top+0.5;
       var pointTo = {};
       pointTo.x = evt.clientX-this.pos.left+0.5;
-      pointTo.y = evt.clientY-this.pos.top+0.5; 
-      this.drawLine(pointFrom, pointTo, this.context);
-
+      pointTo.y = evt.clientY-this.pos.top+0.5;
+      if(this.action == "line") {
+        this.drawLine(pointFrom, pointTo, this.context);
+      } else if(this.action == "rect") {
+        this.drawRectangle(pointFrom, pointTo, this.context);
+      } else if(this.action == "eclipse") {
+        this.drawEclipse(pointFrom, pointTo, this.context);
+      }
+      this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
     }
     this.is_moved=false;
-    this.rectangle.style.display = 'none';
 }
 });
 
-Q.Ready(function() {
+Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
   // debug code
@@ -258,7 +280,7 @@ function drag_screen_images_begin() {
   g_screenshot_dialog.domodal();
   g_screenshot_dialog.center();
   var w = Q.$("wayixia-progress-bar").offsetWidth;
-  scroll_loadding = new Q.slider({id: 'x-ctrl-loadding', min: 0, max: 100, value: 0, 
+  scroll_loadding = new Q.Slider({id: 'x-ctrl-loadding', min: 0, max: 100, value: 0, 
     on_xscroll: function(v) {
       Q.$("wayixia-progress-bar-thumb").style.width = (v*w/100)+'px';
     }
@@ -273,12 +295,12 @@ function drag_screen_images_update(n, total) {
 }
 
 function drag_screen_images_end() {
-  scroll_loadding.set_value(scroll_loadding.max);
+  scroll_loadding.setValue(scroll_loadding.max);
   (new Q.Animate({ tween: 'cubic', ease: 'easyin',
         max: 1000, begin: 0, duration: 100,
         bind : function(x) {
           if(x == this.max) {
-            g_screenshot_dialog.end_dialog();
+            g_screenshot_dialog.end();
           } else {
             g_screenshot_dialog.wnd().style.opacity = ((this.max-x)*1.0) / this.max;
           }
@@ -306,11 +328,7 @@ function display_screenshot(tab_id, image_data, url) {
   wayixia_request_data.data.pageUrl = url;
   drag_screen_images_begin();
   var wayixia_canvas = Q.$('wayixia-canvas');
-  //wayixia_container.innerHTML = '';
   
-  //var img = document.createElement('img');
-  //img.id = 'wayixia-screenshot-image';
-  //wayixia_container.appendChild(img);
   var img = new Image();
   img.onerror = function() {  drag_screen_images_end(); };
   img.onload  = function() {
@@ -324,7 +342,7 @@ function display_screenshot(tab_id, image_data, url) {
     wayixia_canvas.width = 1000;
     draw_context.putImageData(imgData,0,0);
     // init painter
-    new Q.canvas_editor({
+    g_canvas_editor = new Q.canvas_editor({
       id : Q.$('wayixia-canvas')
     });
   };

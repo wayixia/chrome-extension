@@ -1,11 +1,10 @@
-/*-------------------------------------------------------
- $ name:  loader
- $ function: Q frame work do some initialize
- $ date: 2011-4-6
- $ author: lovelylife
----------------------------------------------------------*/
 
-// 初始化 Javascript Loader
+/**
+ * 常用dom操作和异步加载javascript模块的封装, 支持继承
+ * @author Q
+ * @version 1.0
+ */
+
 (function() {
   window.undefined = window.undefined;
   // check the name is used
@@ -14,21 +13,17 @@
     return;
   }
     
-  // QLib base dir
-  var _libdir = null;
-  // dom elements cache
+  /** 调试输出 */
+  var _debug = null;
+  /** dom elements cache */
   var _domcache = {};    
-  // on_page_load Message Queue
-  var _on_page_load = [];
-  // QueryString
+  /** QueryString */
   var _querystring = {};
-
-  // LoadCompleted
-  var _LoadCompleted = false;
-  var _delayDOMReady = [];
+  /**  on_page_load Message Queue */
+  var _on_page_load = [];
 
   // string prototype
-  String.prototype.trim      = function() { 
+  String.prototype.trim = function() { 
     return this.replace(/(^\s*)|(\s*$)/g, ""); 
   }
 　String.prototype.trim_left = function() { 
@@ -50,10 +45,16 @@
     };
   }
 
-  // 基于prototype的继承实现
-  // 警告：调用父类的（被重载的）同名函数调用需要借助parent_class.prototype.method.call(this, arguments);
-  var CLASS = function() {};
-  CLASS.prototype.extend = function(props) {
+  /** 
+   * 基于prototype的继承实现, 调用父类的（被重载的）同名函数调用需要借助
+   * 
+   ```
+   parent_class.prototype.method.call(this, arguments);
+   ```
+   * @namespace Q
+   */
+  var Q = function() {};
+  Q.prototype.extend = function(props) {
     var parent_class = this.prototype;  
     var this_class = function() {
       this.__init__.apply(this, arguments);
@@ -70,52 +71,93 @@
 
     return this_class;
   }
-
-  CLASS.extend = function(props) {
+  
+  /**
+   * 类继承方法 
+   * @function Q.extend
+   * @param props {object} - 派生类的属性
+   * @return {class} 返回派生类
+   * 
+   * @example <caption>派生一个新的class</caption>
+var subclass = Q.extend({
+  __init__ : function(json) {
+   // 构造函数
+  }
+});
+   */
+  Q.extend = function(props) {
     return this.prototype.extend.call(this, props);
   }
 
-  var Q = CLASS;
   window.Q = Q;
-  
-  Q.Browser = {};
+ 
+  /** 
+   * DOM 元素节点类型 
+   * @const {number} Q.ELEMENT_NODE
+   */
   Q.ELEMENT_NODE = 1;
+
+  /** 
+   * DOM 文本节点类型 
+   * @const {number} Q.ELEMENT_TEXTNODE
+   */
   Q.ELEMENT_TEXTNODE = 3;
 
-  // default ie mouse button
+
+  /** 
+   * 鼠标左键
+   * @const {number} Q.LBUTTON
+   */
   Q.LBUTTON  = 1;
+  
+  /** 
+   * 鼠标右键 
+   * @const {number} Q.RBUTTON
+   */
   Q.RBUTTON  = 2;
+  
+  /** 
+   * 鼠标滚轮 
+   * @const {number} Q.MBUTTON
+   */
   Q.MBUTTON  = 4;
 
-  // debug
-  Q._DEBUG    = {
-    enable: false,    // 开启debug功能
-    stdoutput: null    // 输出
-  };
+  /** 开启关闭调试功能
+   *
+   * @function Q.setDebug
+   * @param output {dom} - 调试信息输出容器, 如果为null，则关闭调试
+   * @return 无
+   */
+  Q.setDebug = function(output) { _debug = output; }
 
-  // enable/disable debug
-  Q.setdebug = function(output) { 
-    Q._DEBUG.stdoutput = output; 
-  }
-
-  // print debug info to 'stdoutput' element
+  /** 打印调试日志信息
+   * 
+   * @function Q.printf
+   * @param message {string} - 日志消息
+   * @return 无
+   */ 
   Q.printf = function(message) {
-    if(Q._DEBUG.stdoutput) {
-      Q._DEBUG.stdoutput.innerHTML += '<br/>'+message;
-      Q._DEBUG.stdoutput.scrollTop = Q._DEBUG.stdoutput.scrollHeight;
+    if(_debug && _debug.nodeType === Q.ELEMENT_NODE) {
+      _debug.innerHTML += '<br/>'+message;
+      _debug.scrollTop = _debug.scrollHeight;
     } else {
-      if(console)
-        console.log(message);
+      if(window.console)
+        window.console.log(message);
     }
   };
 
-  // get Element from dom cache if exists
-  Q.$ = function(id, bOverride) {
+  /** 获取网页元素DOM对象
+   *
+   * @function Q.$
+   * @param id {string|dom} - 网页元素id或者dom对象
+   * @return element {dom} - 网页元素或者null
+   */
+  Q.$ = function(id) {
     if(typeof(id) != 'string') { return id; }
     if(id && id.nodeType === Q.ELEMENT_NODE)
       return id;
     var element = _domcache[id];
-    if(!element || bOverride || (element.parentElement === null)) {
+    if(!element || (element.parentElement === null)) {
       element = document.getElementById(id);
       if(element) {
         _domcache[id] = element;
@@ -125,21 +167,30 @@
     return element;
   };
 
-  Q.bind_handler = function(object, func) {
+  /** 调用类实例和类函数绑定，返回新的函数对象
+   *
+   * @function Q.bind_handler
+   * @type {function}
+   * @param object {object} - 类实例 
+   * @param fn {function} - 类方法
+   */
+  Q.bind_handler = function(object, fn) {
     return function() {
-      return func.apply(object, arguments);
+      return fn.apply(object, arguments);
     };
   };
 
-  Q.registerDelayDOMReady = function(f) {
-    if(!_LoadCompleted) {
-      _delayDOMReady.push(f);
-    }
-  };
-
-  // 兼容ff的attachEvent接口
-  Q.addEvent = function(obj, evtName, fnHandler, useCapture) {
-    obj = Q.$(obj);
+  /** 兼容ff的attachEvent接口
+   *
+   * @function Q.addEvent
+   * @param element {dom} - 绑定事件的网页元素 id或者dom对象
+   * @param evtName {string} - 事件名称，不需要'on'前缀
+   * @param fnHandler {function} - 事件处理回调函数
+   * @param useCapture {bool} -  是否使用捕捉, 一般使用false
+   * @return 无
+   */
+  Q.addEvent = function(element, evtName, fnHandler, useCapture) {
+    var obj = Q.$(element);
     if(obj.addEventListener) {
       obj.addEventListener(evtName, fnHandler, !!useCapture);
     } else if(obj.attachEvent) {
@@ -149,8 +200,16 @@
     }
   };
 
-  Q.removeEvent = function(obj, evtName, fnHandler) {
-    obj = Q.$(obj); 
+  /** 删除网页元素的绑定事件
+   *
+   * @function Q.removeEvent
+   * @param element {dom|string} - 网页元素
+   * @param evtName {string} - 事件名称，不需要'on'前缀
+   * @param fnHandler {function} - 事件处理回调函数
+   * @return 无
+   */
+  Q.removeEvent = function(element, evtName, fnHandler) {
+    obj = Q.$(element); 
     if (obj.removeEventListener) {
       obj.removeEventListener(evtName, fnHandler, false);
     } else if (obj.detachEvent) {
@@ -160,6 +219,13 @@
     }
   };
 
+  /** 动态添加网页元素的CSS样式
+   *
+   * @function Q.addClass
+   * @param element {dom} - 网页元素
+   * @param new_class {string} - 新的CSS样式，使用空格分割多个样式
+   * @return element {dom} - 返回当前网页元素
+   */
   Q.addClass = function(element, new_class) {
     var arr = (element.className+" "+new_class).trim().split(/\s+/);
     var class_name = '';
@@ -172,6 +238,13 @@
     return element;
   }
 
+  /** 动态删除网页元素的CSS样式
+   *
+   * @function Q.removeClass
+   * @param element {dom} - 网页元素
+   * @param remove_class {string} - 删除的CSS样式，使用空格分割多个样式
+   * @return element {dom} - 返回当前网页元素
+   */
   Q.removeClass = function(element, remove_class) {
     var arr = (element.className+'').split(/\s+/);
     var arr2= (remove_class+'').split(/\s+/);
@@ -189,6 +262,13 @@
     return element;
   }
 
+  /** 网页元素是否包含CSS样式
+   *
+   * @function Q.hasClass
+   * @param element {dom} - 网页元素
+   * @param class_name {string} - CSS样式名称，单个名称
+   * @return exists {bool} - true 存在， false 不存在
+   */
   Q.hasClass = function(element, class_name) {
     var class_names = (element.className+" ").split(/\s+/);
     for(var i=0;i < class_names.length; i++) {
@@ -200,9 +280,17 @@
     return false;
   }
 
-  Q.click = function(element, click, dblclick) {
+  /** 网页元素绑定click和dblclick事件， 解决click和dblclick同时触发的冲突
+   *
+   * @function Q.click
+   * @param element {dom} - 网页元素
+   * @param click {function} - 单击事件处理函数
+   * @param dblclick {function} - 双击事件处理函数
+   * @return 无
+   */
+  Q.dblclick = function(element, dblclick) {
     element = Q.$(element);
-    element.onclick = (function(r) { return function(evt) {
+    Q.addEvent(element, 'click', (function(r) { return function(evt) {
     if(r.__clickonce__) {
       r.__clickonce__ = false;
       clearTimeout(r.t);
@@ -217,21 +305,40 @@
     }})(r), 200);
     }
     return false;
-  }})(element);
+  }})(element));
  
   }
-  // default locale_text
-  Q.locale_text = function(lang, default_value) {
+ 
+  /** i18n 多语言实现默认实现，直接返回默认值
+   *
+   * @function Q.locale_text
+   * @param message_id {string} - 多语言消息标识
+   * @param default_value {string} - 默认值 
+   * @return {string} - 多语言值
+   */
+  Q.locale_text = function(message_id, default_value) {
     return default_value;
   }
-  
+
+  /** i18n 设置多语言适配接口 
+   *
+   * @function Q.set_locale_text
+   * @param fn {function} - 适配函数
+   * @return 无
+   */
   Q.set_locale_text = function(fn) {
     if(typeof fn == 'function') {
       Q.locale_text = fn;
     }
   }
 
-  // 获取element的绝对位置
+  /** 获取element的绝对位置 
+   * 
+   * @function Q.absPosition
+   * @param element {dom} - 网页元素对象
+   * @return {object} width 宽度, height 高度, left 绝对位置的水平定点位置， top 绝对位置的垂直定点位置
+   * 
+   */
   Q.absPosition = function(element) {
     var w = element.offsetWidth;
     var h = element.offsetHeight;
@@ -244,6 +351,14 @@
     return { width : w, height : h,  left : l,  top : t  };
   };
 
+  
+  /** 获取element的绝对位置, 包含边框宽度
+   * 
+   * @function Q.absPositionEx
+   * @param element {dom} - 网页元素对象
+   * @return {object} width 宽度, height 高度, left 绝对位置的水平定点位置， top 绝对位置的垂直定点位置
+   * 
+   */
   Q.absPositionEx = function(element) {
     var rect = element.getBoundingClientRect();
     var l= rect.left+document.documentElement.scrollLeft;
@@ -253,7 +368,13 @@
 
     return { width : w, height : h,  left : l,  top : t  };
   }
-  // get scroll info
+
+  /** 获取滚动条信息 
+   *
+   * @function Q.scrollInfo
+   * @return {object} - t 垂直滚动条top位置，l 水平滚动条left位置， w 网页宽度包含隐藏部分， h 网页高度包含隐藏部分
+   * 
+   */
   Q.scrollInfo = function() {
     var t, l, w, h;
     if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft) ) { 
@@ -270,6 +391,35 @@
     return { t: t, l: l, w: w, h: h };
   };
 
+  /**
+   * @typedef size {object} 
+   * @property width {number} - 宽度
+   * @property height {number} - 高度
+   */
+  /** 获取和设置工作区大小，作用于右键菜单和窗口系统
+   * @function Q.workspace
+   * @return {size} 工作区大小
+   */
+  Q.workspace = function() {
+    var max_height = document.body.clientHeight;
+    if( document.documentElement.clientHeight) {
+      max_height = document.documentElement.clientHeight;
+    }
+  
+    var max_width = document.body.clientWidth;
+    if( document.documentElement.clientWidth) {
+      max_width = document.documentElement.clientWidth;
+    }
+   
+    return  {width: max_width, height: max_height}
+  }, 
+
+  /** Object对象拷贝
+   * 
+   * @function Q.copy
+   * @param src_object {object} - 源对象
+   * @return {object} - 目标对象
+   */
   Q.copy = function(src_object) {
     var target_object = {}; 
     for(var name in src_object) {
@@ -278,40 +428,41 @@
     return target_object;
   };
 
-  // get querystring
-  Q.GET = function(key) { return _querystring[key]; };
+  /** 获取url查询字段
+   * 
+   * @function Q.query
+   * @param key {string} - 字段名称
+   * @return {string} - 字段值
+   */
+  Q.query = function(key) { return _querystring[key]; };
   
-  // OnLoad
-  Q.DOMReady = function(evt) {
-    if(!_LoadCompleted) {
-      Q.registerDelayDOMReady(Q.delayDOMReady);
-    } else {
-      Q.delayDOMReady();
-    }        
-  };
-  
-  // 当所有脚本都加载后开始执行Ready回调
+  /** 当所有脚本都加载后开始执行Ready回调 */
   Q.delayDOMReady = function() {
     while(_on_page_load.length > 0) { _on_page_load.shift()(); }
   };
 
-  // push event when document loaded
-  Q.Ready = function(f, push_front) {
-    var back = !push_front;
+  /**
+   * 注册函数，当文档加载完成后依次执行
+   * 
+   * @function
+   * @param f {function} - 函数对象
+   * @param front {bool} - 追加或者置顶 
+   */
+  Q.ready = function(f, front) {
+    var back = !front;
     if(back)
       _on_page_load.push(f); 
     else 
       _on_page_load.unshift(f); 
   };
 
-  // current Q.js所在路径
-  Q.__DIR__ = function() {
-    var js=document.scripts;
-    js=js[js.length-1].src.substring(0,js[js.length-1].src.lastIndexOf("/")+1);
-    return js;
-  };
-
-  Q.load_module = function(src, oncomplete) {
+  /** 加载js模块
+   *
+   * @function Q.loadModule
+   * @param src {string} - javascript模块地址
+   * @param oncomplete(bool) {function} - 加载完成调用， ok 为true 加载成功，否则失败
+   */
+  Q.loadModule = function(src, oncomplete) {
     var header = document.getElementsByTagName("head")[0];
     var s = document.createElement("script");  
     s.type = "text/javascript";
@@ -339,68 +490,50 @@
     // 获取head结点，并将<script>插入到其中  
     header.appendChild(s);
   }
-  // Javascript Loader
-  function jsloader() {
-    var scripts = document.getElementsByTagName("script");  
-    // 判断指定的文件是否已经包含，如果已包含则触发onsuccess事件并返回  
-    var libscript = null;
-    for (i = 0; i < scripts.length; i++) {
-      if(scripts[i].src) {
-        var pos = -1;
-        if((pos=scripts[i].src.indexOf('/Q.js')) >= 0) {
-           _libdir = scripts[i].src.substring(0, pos);
-           libscript = scripts[i];
-        }
-      }
-    }
 
-    // 解析script import
-    var sImports = libscript.innerHTML;
-    var re = /\n/ig;
-    var arr = sImports.split(re);
-
-    // 异步顺序加载
-    async_load_js(document.getElementsByTagName("head")[0], arr);        
-  };
-
-  // 顺序加载js文件
-  function async_load_js(header, ar) {
-    ar = ar||[];
-    if(ar.length<=0) { 
-      _LoadCompleted = true;
-      while(_delayDOMReady.length > 0) { _delayDOMReady.shift()(); }
-      return;
-    }
-    
-    // 加载lib
-    var url = ar.shift();
-    // 解析格式，并自动加载库文件
-    var re2 = /^\s*import\s+(.+);/i;
-    if(re2.test(url)) {
-      url = RegExp.$1 + '';
-      url = url.replace(/\./g, '/')+'.js';
-      Q.load_module(_libdir+'/'+url, function(isok) {
-        async_load_js(header, ar);
-      });
-    } else {
-      async_load_js(header, ar);
-    }
-  }
-
-  // get Browser
+  /** 获取浏览器客户端版本信息 
+   *
+   * @function Q.agent
+   * @return {string} 浏览器版本信息
+   */
   Q.agent   = function() { 
     return navigator.userAgent.toLowerCase(); 
   }
+
+  /** 客户端是不是标准的W3C客户端 
+   *
+   * @function Q.isW3C
+   * @type {boolean}
+   */
   Q.isW3C   = function() { 
     return document.getElementById ? true:false; 
   }
+
+  /** 客户端是否是Internet Explorer 
+   *
+   * @function Q.isIE
+   * @return  {bool} - true 是， false 否 
+   */
   Q.isIE    = function() { 
     var a = Q.agent(); 
     return ((a.indexOf("msie") != -1) && (a.indexOf("opera") == -1) && (a.indexOf("omniweb") == -1)); 
   }
+
+
+  /** 客户端是否是Opera 
+   *
+   * @function Q.isOpera
+   * @return  {bool} - true 是， false 否 
+   */
   Q.isOpera = function() { 
     return Q.agent().indexOf("opera") != -1; 
   }
+  
+  /** 客户端是否是Netscape 
+   *
+   * @function Q.isNS6
+   * @return  {bool} - true 是， false 否 
+   */
   Q.isNS6   = function() { 
     return Q.isW3C() && (navigator.appName=="Netscape"); 
   }
@@ -429,6 +562,7 @@
     _querystring[values[0]] = values[1];
   }
 
-  jsloader();
-  Q.addEvent(window, 'load', Q.DOMReady);  
+  Q.addEvent(window, 'load', function(evt) {
+    Q.delayDOMReady();
+  });
 })();

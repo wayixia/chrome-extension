@@ -6,7 +6,7 @@ var wayixia_report_window = null;
 var wayixia_ui_wndx = null;
 var wayixia_request_data = {imgs: [], data: {}};
 
-Q.Ready(function() {
+Q.ready(function() {
 
 document.body.ondragstart  =function() { return false; }
 document.body.onselectstart=function() { return false; }
@@ -99,7 +99,7 @@ Q.$('wayixia-bugs').onclick = function(evt) {
 if(Q.$('wayixia-help')) { // wayixia-help
 
 // init drop menu
-wayixia_help_menu = new class_menu({
+wayixia_help_menu = new Q.Menu({
   style: "wayixia-menu", 
   on_popup: function(popup) {
     if(popup) {
@@ -110,7 +110,7 @@ wayixia_help_menu = new class_menu({
   }
 }); 
 
-var menu_suggest = new class_menuitem({
+var menu_suggest = new Q.MenuItem({
   text: Q.locale_text("extHelpFAQ"),
   callback : function(menuitem) {
     window.open("http://wayixia.com/chrome/faq");
@@ -157,10 +157,10 @@ function ui(f) {
   if(wayixia_ui_wndx) {
     f(wayixia_ui_wndx);
   } else {
-    wayixia_ui_wndx = new Q.ui({src: 'wndx_template.html', oncomplete:  function(ok) {
+    wayixia_ui_wndx = new Q.UI({src: 'wndx_template.html', oncomplete:  function(ok) {
       if(ok) {
         // bind css style from template file
-        wayixia_ui_wndx.bind_css();
+        wayixia_ui_wndx.bindCss();
         f(wayixia_ui_wndx);
       } else
         Q.printf('Load template of wndx failed. File is not exists.');
