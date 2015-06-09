@@ -178,6 +178,88 @@ drawEclipse : function(pntFrom, pntTo, context) {
 
 drawArrow: function(pntFrom, pntTo, context) {
 
+
+  var color="#ffff00";
+  var rotation=0;
+  context.save();
+  /*
+  context.translate(pntTo.x, pntTo.y);
+  context.rotate(rotation);
+  context.lineWidth=2;
+  context.fillStyle=color;
+  context.beginPath();
+  context.moveTo(-50,-25);
+  context.lineTo(0,-25);
+  context.lineTo(0,-50);
+  context.lineTo(50,0);
+  context.lineTo(0,50);
+  context.lineTo(0,25);
+  context.lineTo(-50,25);
+  context.lineTo(-50,-25);
+  context.closePath();
+  context.stroke();
+  */
+  var arrowShape = [
+    [-8, -5],
+    [-8, 5],
+    [2, 0],
+  ];
+  
+// Functions from blog tutorial
+	function drawFilledPolygon(canvas,shape)/*{{{*/
+	{
+		canvas.beginPath();
+		canvas.moveTo(shape[0][0],shape[0][1]);
+
+		for(p in shape)
+			if (p > 0) canvas.lineTo(shape[p][0],shape[p][1]);
+
+		canvas.lineTo(shape[0][0],shape[0][1]);
+		canvas.fill();
+	};
+	/*}}}*/
+	function translateShape(shape,x,y)/*{{{*/
+	{
+		var rv = [];
+		for(p in shape)
+			rv.push([ shape[p][0] + x, shape[p][1] + y ]);
+		return rv;
+	};
+	/*}}}*/
+	function rotateShape(shape,ang)/*{{{*/
+	{
+		var rv = [];
+		for(p in shape)
+			rv.push(rotatePoint(ang,shape[p][0],shape[p][1]));
+		return rv;
+	};
+	/*}}}*/
+	function rotatePoint(ang,x,y)/*{{{*/
+	{
+		return [
+			(x * Math.cos(ang)) - (y * Math.sin(ang)),
+			(x * Math.sin(ang)) + (y * Math.cos(ang))
+		];
+	};
+
+  context.beginPath();
+  context.moveTo(pntFrom.x, pntFrom.y);  // p2
+  context.lineTo(pntTo.x, pntTo.y);  // p2
+  context.closePath();
+  context.stroke();
+  
+  var ang = Math.atan2(pntTo.y-pntFrom.y, pntTo.x-pntFrom.x);
+	drawFilledPolygon(context,translateShape(rotateShape(arrowShape,ang),pntTo.x, pntTo.y));
+  var arrowShap2 = [
+    [2, 0],
+    [-8, -4],
+    [-8, 4]
+  ]
+	drawFilledPolygon(context,translateShape(rotateShape(arrowShape2,ang),pntFrom.x, pntFrom.y));
+
+
+
+  context.restore();
 },
 
 _MouseDown : function(evt) {
@@ -229,6 +311,8 @@ _MouseMove : function(evt){
       this.drawRectangle(pointFrom, pointTo, this.contextI);
     } else if(this.action == "eclipse") {
       this.drawEclipse(pointFrom, pointTo, this.contextI);
+    } else if(this.action == "arrow") {
+        this.drawArrow(pointFrom, pointTo, this.contextI);
     }
   }
 },
@@ -251,6 +335,8 @@ _MouseUp : function(evt) {
         this.drawRectangle(pointFrom, pointTo, this.context);
       } else if(this.action == "eclipse") {
         this.drawEclipse(pointFrom, pointTo, this.context);
+      } else if(this.action == "arrow") {
+        this.drawArrow(pointFrom, pointTo, this.context);
       }
       this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
     }
