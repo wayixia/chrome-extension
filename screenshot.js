@@ -272,6 +272,29 @@ drawArrow: function(pntFrom, pntTo, context) {
   context.restore();
 },
 
+wrapText : function(context, text, x, y, maxWidth, lineHeight) {
+  var cars = text.split("\n");
+  for (var ii = 0; ii < cars.length; ii++) {
+   var line = "";
+   var words = cars[ii].split(" ");
+   for (var n = 0; n < words.length; n++) {
+    var testLine = line + words[n] + " ";
+    var metrics = context.measureText(testLine);
+    var testWidth = metrics.width;
+    if (testWidth > maxWidth) {
+     context.fillText(line, x, y);
+     line = words[n] + " ";
+     y += lineHeight;
+    }
+    else {
+     line = testLine;
+    }
+   }
+   context.fillText(line, x, y);
+   y += lineHeight;
+  }
+},
+
 drawText : function(pntFrom, pntTo, context) {
   //this.drawRectangle(pntFrom, pntTo, context);
   var ta = document.createElement('textarea');
@@ -293,7 +316,39 @@ drawText : function(pntFrom, pntTo, context) {
   this.canvas.parentNode.appendChild(ta);
   ta.focus();
   ta.onblur = (function(t, a) { return function() {
-    
+    var textCanvasCtx = t.context;
+    textCanvasCtx.font = ta.currentStyle.fontSize + " " + ta.currentStyle.fontFamily;
+    //textCanvasCtx.textBaseline = "middle";//请取消注释本行代码再查看效果
+    textCanvasCtx.fillStyle = ta.currentStyle.color;
+    textCanvasCtx.strokeStyle = ta.currentStyle.color; //"rgba(0,255,0,0.8)";
+    textCanvasCtx.textBaseline = 'middle';//设置文本的垂直对齐方式
+    textCanvasCtx.textAlign = 'left'; //设置文本的水平对对齐方式
+    ta.style.display = "none";
+    var text = ta.value + '';
+    var ll = left;
+    var tt = top;
+    var line = "";
+    for(var i=0; i<text.length; i++) {
+      var px = textCanvasCtx.measureText(text[i]);
+      ll += px.width;
+      if(ll - left > width) {
+        textCanvasCtx.fillText(line, left, tt);
+        ll = left;
+        tt += 14;
+        i--;
+        line = "";
+      } else {
+        //textCanvasCtx.fillText(text[i], ll, top);
+        line += text[i];
+      }
+
+      console.log("ll: " + ll + "; tt: " + tt)
+    }
+    textCanvasCtx.fillText(line, left, tt);
+    //textCanvasCtx.strokeText(ta.value, left, top);
+    //t.wrapText(textCanvasCtx, ta.value, left, top, width, ta.currentStyle.lineHeight);
+    ta.style.display = "none";
+    ta.parentNode.removeChild(ta);
   }})(this, ta);
 },
 
