@@ -257,9 +257,9 @@ drawArrow: function(pntFrom, pntTo, context) {
   context.closePath();
   context.stroke();
   
-  var len = Math.sqrt( ( pntTo.y-pntFrom.y ) * ( pntTo.y-pntFrom.y ) + ( pntTo.x-pntFrom.x ) * ( pntTo.x-pntFrom.x ) );
-  var yc = ( pntTo.y-pntFrom.y ) * 10.0 / len;
-  var xc = 
+  //var len = Math.sqrt( ( pntTo.y-pntFrom.y ) * ( pntTo.y-pntFrom.y ) + ( pntTo.x-pntFrom.x ) * ( pntTo.x-pntFrom.x ) );
+  //var yc = ( pntTo.y-pntFrom.y ) * 10.0 / len;
+  //var xc = 
 
   var ang = Math.atan2(pntTo.y-pntFrom.y, pntTo.x-pntFrom.x);
 	drawFilledPolygon(context,translateShape(rotateShape(arrowShape,ang),pntTo.x, pntTo.y));
@@ -270,6 +270,31 @@ drawArrow: function(pntFrom, pntTo, context) {
   ]
 	//drawFilledPolygon(context,translateShape(rotateShape(arrowShape2,ang),pntFrom.x, pntFrom.y));
   context.restore();
+},
+
+drawText : function(pntFrom, pntTo, context) {
+  //this.drawRectangle(pntFrom, pntTo, context);
+  var ta = document.createElement('textarea');
+  var left = pntFrom.x;
+  var top = pntFrom.y;
+  if(pntTo.x < pntFrom.x) {
+    left = pntTo.x;
+  }
+
+  if(pntTo.y < pntFrom.y) {
+    top = pntTo.y;
+  }
+
+  left += this.canvas.offsetLeft;
+  top  += this.canvas.offsetTop;
+  var width = Math.abs(pntTo.x-pntFrom.x);
+  var height = Math.abs(pntTo.y-pntFrom.y);
+  ta.style.cssText = "position:absolute; background-color: transparent; border: 1px solid red; left:"+left+"px; top:"+top+";px; width:"+width+"px; height:"+height+";";
+  this.canvas.parentNode.appendChild(ta);
+  ta.focus();
+  ta.onblur = (function(t, a) { return function() {
+    
+  }})(this, ta);
 },
 
 _MouseDown : function(evt) {
@@ -323,7 +348,7 @@ _MouseMove : function(evt){
     console.log(pointTo)
     if(this.action == "line") {
       this.drawLine(pointFrom, pointTo, this.contextI);
-    } else if(this.action == "rect") {
+    } else if(this.action == "rect" || this.action == "text") {
       this.drawRectangle(pointFrom, pointTo, this.contextI);
     } else if(this.action == "eclipse") {
       this.drawEclipse(pointFrom, pointTo, this.contextI);
@@ -357,6 +382,8 @@ _MouseUp : function(evt) {
         this.drawEclipse(pointFrom, pointTo, this.context);
       } else if(this.action == "arrow") {
         this.drawArrow(pointFrom, pointTo, this.context);
+      } else if(this.action == "text") {
+        this.drawText(pointFrom, pointTo, this.context);
       }
       this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
     }
