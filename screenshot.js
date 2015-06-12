@@ -56,6 +56,7 @@ context : null,
 is_drag : false,
 x : 0,
 y : 0,
+container: null,
 MouseDown_Hanlder : null,
 MouseUp_Handler : null,
 MouseMove_Handler : null,
@@ -66,6 +67,7 @@ __init__ : function(config) {
   this.canvas = config.id;
   this.context = this.canvas.getContext('2d');
   this.pos = Q.absPosition(this.canvas);
+  this.container = Q.$(config.container);
  
   // init toolbar
   var toolbars = {};
@@ -122,6 +124,15 @@ zoom : function(v) {
   this.canvas_interface.style.zoom = v/100.0;
 },
 
+zoomxy : function(pnt) {
+  if(this.canvas.style.zoom) {
+    var z = parseFloat(this.canvas.style.zoom);
+    return {x: parseInt(pnt.x*1.0 / z, 10), y: parseInt(pnt.y*1.0/z, 10)}
+  } else {
+    return pnt;
+  }
+},
+
 drawRectangle: function(pntFrom, pntTo, context) {
 		context.beginPath();
 		context.strokeRect(pntFrom.x, pntFrom.y, pntTo.x - pntFrom.x, pntTo.y - pntFrom.y);
@@ -169,8 +180,6 @@ drawEclipse : function(pntFrom, pntTo, context) {
   //从椭圆的左端点开始逆时针绘制
   context.moveTo((x + a) / ratioX, y / ratioY);
   context.arc(x / ratioX, y / ratioY, r, 0, 2 * Math.PI);
-  //context.closePath();
-  //context.stroke();
   context.restore();
   context.stroke();
   context.closePath();
@@ -254,15 +263,12 @@ drawArrow: function(pntFrom, pntTo, context) {
 
   var ang = Math.atan2(pntTo.y-pntFrom.y, pntTo.x-pntFrom.x);
 	drawFilledPolygon(context,translateShape(rotateShape(arrowShape,ang),pntTo.x, pntTo.y));
-  var arrowShap2 = [
+  var arrowShape2 = [
     [2, 0],
     [-8, -4],
     [-8, 4]
   ]
-	drawFilledPolygon(context,translateShape(rotateShape(arrowShape2,ang),pntFrom.x, pntFrom.y));
-
-
-
+	//drawFilledPolygon(context,translateShape(rotateShape(arrowShape2,ang),pntFrom.x, pntFrom.y));
   context.restore();
 },
 
@@ -274,10 +280,11 @@ _MouseDown : function(evt) {
   var target_wnd = drag_handle = this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
 
   if(target_wnd && (target_wnd == this.canvas_interface)) {
+      var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop}; //Q.scrollInfo(); 
     //fireMouseEvent(document, "mousedown");
       this.is_drag = true; 
-      this.x = evt.clientX;
-      this.y = evt.clientY; 
+      this.x = scrollInfo.l+evt.clientX;
+      this.y = scrollInfo.t+evt.clientY; 
       
       // 添加MouseMove事件
       this.tmr = setTimeout((function(t) { return function() { 
@@ -300,15 +307,20 @@ _MouseMove : function(evt){
     //} else {
     //  _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
     //}
-     
+    var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop};
     this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
     var pointFrom = {};
     pointFrom.x = this.x-this.pos.left+0.5;
     pointFrom.y = this.y-this.pos.top+0.5;
     var pointTo = {};
-    pointTo.x = evt.clientX-this.pos.left+0.5;
-    pointTo.y = evt.clientY-this.pos.top+0.5;
+    pointTo.x = evt.clientX+scrollInfo.l-this.pos.left+0.5;
+    pointTo.y = evt.clientY+scrollInfo.t-this.pos.top+0.5;
+    
+    pointFrom = this.zoomxy(pointFrom);
+    pointTo = this.zoomxy(pointTo);
 
+    console.log(pointFrom)
+    console.log(pointTo)
     if(this.action == "line") {
       this.drawLine(pointFrom, pointTo, this.contextI);
     } else if(this.action == "rect") {
@@ -316,7 +328,7 @@ _MouseMove : function(evt){
     } else if(this.action == "eclipse") {
       this.drawEclipse(pointFrom, pointTo, this.contextI);
     } else if(this.action == "arrow") {
-        this.drawArrow(pointFrom, pointTo, this.contextI);
+      this.drawArrow(pointFrom, pointTo, this.contextI);
     }
   }
 },
@@ -324,6 +336,7 @@ _MouseMove : function(evt){
 _MouseUp : function(evt) {
     clearTimeout(this.tmr);
     if(this.is_drag ) {
+      var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop}; //Q.scrollInfo(); 
       this.is_drag=false;
       Q.removeEvent(document,'mousemove', this.MouseMove_Handler);
       Q.printf("end: x -> " + evt.clientX + ", y -> " + evt.clientY);
@@ -331,8 +344,11 @@ _MouseUp : function(evt) {
       pointFrom.x = this.x-this.pos.left+0.5;
       pointFrom.y = this.y-this.pos.top+0.5;
       var pointTo = {};
-      pointTo.x = evt.clientX-this.pos.left+0.5;
-      pointTo.y = evt.clientY-this.pos.top+0.5;
+      pointTo.x = scrollInfo.l+evt.clientX-this.pos.left+0.5;
+      pointTo.y = scrollInfo.t+evt.clientY-this.pos.top+0.5;
+      
+      pointFrom = this.zoomxy(pointFrom);
+      pointTo = this.zoomxy(pointTo);
       if(this.action == "line") {
         this.drawLine(pointFrom, pointTo, this.context);
       } else if(this.action == "rect") {
@@ -434,7 +450,8 @@ function display_screenshot(tab_id, image_data, url) {
     draw_context.putImageData(imgData,0,0);
     // init painter
     g_canvas_editor = new Q.canvas_editor({
-      id : Q.$('wayixia-canvas')
+      id : Q.$('wayixia-canvas'),
+      container: Q.$('wayixia-container')
     });
   };
   img.src = image_data;
