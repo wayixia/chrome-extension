@@ -248,6 +248,10 @@ drawArrow: function(pntFrom, pntTo, context) {
   context.closePath();
   context.stroke();
   
+  var len = Math.sqrt( ( pntTo.y-pntFrom.y ) * ( pntTo.y-pntFrom.y ) + ( pntTo.x-pntFrom.x ) * ( pntTo.x-pntFrom.x ) );
+  var yc = ( pntTo.y-pntFrom.y ) * 10.0 / len;
+  var xc = 
+
   var ang = Math.atan2(pntTo.y-pntFrom.y, pntTo.x-pntFrom.x);
 	drawFilledPolygon(context,translateShape(rotateShape(arrowShape,ang),pntTo.x, pntTo.y));
   var arrowShap2 = [
@@ -348,7 +352,8 @@ Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
   // debug code
-  display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+  //display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+  display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
 });
 
 
