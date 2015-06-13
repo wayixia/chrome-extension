@@ -169,7 +169,10 @@ drawEclipse : function(pntFrom, pntTo, context) {
   if(pntTo.x < pntFrom.x) {
     y = pntTo.y;
   }
-
+  
+  if(a == 0 || b == 0)
+    return;
+  
   context.save();
   //选择a、b中的较大者作为arc方法的半径参数
   var r = (a > b) ? a : b; 
@@ -180,9 +183,9 @@ drawEclipse : function(pntFrom, pntTo, context) {
   //从椭圆的左端点开始逆时针绘制
   context.moveTo((x + a) / ratioX, y / ratioY);
   context.arc(x / ratioX, y / ratioY, r, 0, 2 * Math.PI);
-  context.restore();
   context.stroke();
   context.closePath();
+  context.restore();
 },
 
 drawArrow: function(pntFrom, pntTo, context) {
@@ -295,6 +298,10 @@ wrapText : function(context, text, x, y, maxWidth, lineHeight) {
   }
 },
 
+getIntValue : function(s) {
+  return parseInt(s.replace("px", ""), 10);
+},
+
 drawText : function(pntFrom, pntTo, context) {
   //this.drawRectangle(pntFrom, pntTo, context);
   var ta = document.createElement('textarea');
@@ -312,43 +319,40 @@ drawText : function(pntFrom, pntTo, context) {
   top  += this.canvas.offsetTop;
   var width = Math.abs(pntTo.x-pntFrom.x);
   var height = Math.abs(pntTo.y-pntFrom.y);
-  ta.style.cssText = "position:absolute; background-color: transparent; border: 1px solid red; left:"+left+"px; top:"+top+";px; width:"+width+"px; height:"+height+";";
+  ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; font-size: 16px; border: 0px solid red; left:"+left+"px; top:"+top+";px; width:"+width+"px; height:"+height+"; line-height: 18px;";
   this.canvas.parentNode.appendChild(ta);
   ta.focus();
   ta.onblur = (function(t, a) { return function() {
     var textCanvasCtx = t.context;
-    textCanvasCtx.font = ta.currentStyle.fontSize + " " + ta.currentStyle.fontFamily;
-    //textCanvasCtx.textBaseline = "middle";//请取消注释本行代码再查看效果
-    textCanvasCtx.fillStyle = ta.currentStyle.color;
-    textCanvasCtx.strokeStyle = ta.currentStyle.color; //"rgba(0,255,0,0.8)";
-    textCanvasCtx.textBaseline = 'middle';//设置文本的垂直对齐方式
+    textCanvasCtx.font = a.currentStyle.fontSize + " " + a.currentStyle.fontFamily;
+    textCanvasCtx.fillStyle = a.currentStyle.color;
+    textCanvasCtx.strokeStyle = a.currentStyle.color; //"rgba(0,255,0,0.8)";
+    //textCanvasCtx.textBaseline = 'top';//设置文本的垂直对齐方式
     textCanvasCtx.textAlign = 'left'; //设置文本的水平对对齐方式
-    ta.style.display = "none";
-    var text = ta.value + '';
-    var ll = left;
-    var tt = top;
+    a.style.display = "none";
+    var text = a.value + '';
+    var text_left = left+t.getIntValue(a.currentStyle.paddingLeft)+t.getIntValue(a.currentStyle.borderLeftWidth) - 15;
+    var text_right = left+width-(t.getIntValue(a.currentStyle.paddingRight)+t.getIntValue(a.currentStyle.borderRightWidth)) - 15;
+    var tt = top+t.getIntValue(a.currentStyle.paddingTop) +t.getIntValue(a.currentStyle.borderTopWidth)+t.getIntValue(a.currentStyle.marginTop);
     var line = "";
+    var line_width = 0;
+    var line_height = t.getIntValue(a.currentStyle.lineHeight);
     for(var i=0; i<text.length; i++) {
       var px = textCanvasCtx.measureText(text[i]);
-      ll += px.width;
-      if(ll - left > width) {
-        textCanvasCtx.fillText(line, left, tt);
-        ll = left;
-        tt += 14;
+      line_width += px.width;
+      if( line_width > (text_right-text_left) ) {
+        textCanvasCtx.fillText(line, text_left, tt);
+        tt += line_height;
         i--;
         line = "";
+        line_width = 0;
       } else {
-        //textCanvasCtx.fillText(text[i], ll, top);
         line += text[i];
       }
-
-      console.log("ll: " + ll + "; tt: " + tt)
     }
-    textCanvasCtx.fillText(line, left, tt);
-    //textCanvasCtx.strokeText(ta.value, left, top);
-    //t.wrapText(textCanvasCtx, ta.value, left, top, width, ta.currentStyle.lineHeight);
-    ta.style.display = "none";
-    ta.parentNode.removeChild(ta);
+    textCanvasCtx.fillText(line, text_left, tt);
+    a.style.display = "none";
+    a.parentNode.removeChild(a);
   }})(this, ta);
 },
 
@@ -450,8 +454,8 @@ Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
   // debug code
-  //display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
-  display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
+  display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+  //display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
 });
 
 
@@ -521,14 +525,14 @@ function display_screenshot(tab_id, image_data, url) {
   var img = new Image();
   img.onerror = function() {  drag_screen_images_end(); };
   img.onload  = function() {
-    wayixia_canvas.width = this.width+10; 
-    wayixia_canvas.height= this.height+10; 
+    wayixia_canvas.width = this.width; 
+    wayixia_canvas.height= this.height; 
     var draw_context = wayixia_canvas.getContext("2d");
     draw_context.drawImage(this, 0, 0);
 
     drag_screen_images_end();
     var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
-    wayixia_canvas.width = 1000;
+    //wayixia_canvas.width = 1000;
     draw_context.putImageData(imgData,0,0);
     // init painter
     g_canvas_editor = new Q.canvas_editor({
