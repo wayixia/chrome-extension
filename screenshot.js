@@ -340,10 +340,11 @@ drawText : function(pntFrom, pntTo, context) {
     for(var i=0; i<text.length; i++) {
       var px = textCanvasCtx.measureText(text[i]);
       line_width += px.width;
-      if( line_width > (text_right-text_left) ) {
+      if( line_width > (text_right-text_left) || ( text[i] == "\n" ) ) {
         textCanvasCtx.fillText(line, text_left, tt);
         tt += line_height;
-        i--;
+        if( text[i] != "\n" )
+          i--;
         line = "";
         line_width = 0;
       } else {
