@@ -84,17 +84,19 @@ button:hover.wayixia-ctrl-button
 }
 
 .wayixia-toolbar-button.color {
+  background-image: none;
   background-color: transparent;
-  border: 1px solid #000;
-  padding: 0;
-  margin: 4px 9px;
-  height: 28px;
-  width: 28px;
   position: relative;
+  background: transparent url(images/dropdown.png) right 16px no-repeat;
 }
 
+
 .wayixia-toolbar-button.size {
-  background-position:  -360px top;
+  position: relative;
+  padding: 0;
+  line-height: 31px;
+  background: transparent url(images/dropdown.png) right 16px no-repeat;
+  color: #515151;
 }
 
 

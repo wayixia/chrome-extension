@@ -5,14 +5,12 @@
  * @author: Q 
  */
 
-var t = null;
 var content_load_ok = false;
 var g_screenshot_zoom = 100;
 var g_screenshot_dialog = null;
 var g_canvas_editor = null;
 
 function initialize () {
-  var _this = t = this;
   var extension = chrome.extension.getBackgroundPage();
  
   var e_zoom = new Q.Slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
@@ -168,6 +166,52 @@ __init__ : function( json ) {
 } );
 
 
+/** font size drop window
+ *
+ */
+Q.FontSizeSelector = Q.DropWindow.extend( {
+__init__ : function( json ) {
+  json = json || {};
+
+  var line_width = [14, 16, 22, 28, 40];
+  this.table = document.createElement('table');
+  this.table.width = "100%";
+  this.table.cellPadding = 3;
+  this.table.cellSpacing = 0;
+  for(var i=0; i < line_width.length; i++) {
+    var row = this.table.insertRow(-1);
+    var td1 = row.insertCell(-1);
+    var td2 = row.insertCell(-1);
+    td1.style.fontSize = line_width[i] + 'px';
+    td1.innerText = "FontSize"
+    row.onclick = (function( t, e ) { return function() {
+      if(t.onchange)
+        t.onchange( parseInt(e.style.fontSize, 10) );
+      t.hide();
+    } })(this, td1);
+    row.onmouseover = function(evt) { 
+      this.style.backgroundColor = "#EEE"; 
+    }
+    row.onmouseout = function(evt) { 
+      this.style.backgroundColor = "transparent";
+    }
+    td1.style.width = "120"
+    td2.style.width = "30";
+    td2.innerText = line_width[i] + "px";
+  }
+  
+  if( typeof json.onchange == "function" )
+    this.onchange = json.onchange;
+
+  json.content = this.table;
+  json.width = 122;
+  json.height = 200;
+  Q.DropWindow.prototype.__init__.call(this, json);
+}
+
+} );
+
+
 
 /** an editor of Canvas
  *
@@ -177,6 +221,7 @@ __init__ : function( json ) {
 Q.CanvasEditor = Q.extend({
 canvas  : null,
 context : null,
+font_size : 14,
 is_drag : false,
 x : 0,
 y : 0,
@@ -234,23 +279,40 @@ __init__ : function(config) {
 
 initToolbar : function() {
   var _this = this;
+  /**
+   * colorTable
+   */
   this.colorTable = new Q.ColorTable( { onchange : function( color ) {
     Q.$( 'wayixia-screenshot-color-view' ).style.backgroundColor = color;
     _this.context.strokeStyle = _this.contextI.strokeStyle = color;
     _this.context.fillStyle = _this.contextI.fillStyle = color;
   } } );
     
-  Q.$( 'wayixia-screenshot-color-view' ).onclick = (function(t, e) { return function(evt) { 
+  Q.$( 'wayixia-screenshot-color' ).onclick = (function(t, e) { return function(evt) { 
     t.colorTable.showElement(e);
   } } )(this, Q.$( 'wayixia-screenshot-color' ));
 
+  /**
+   * widthSelector
+   */
   this.widthSelector = new Q.WidthSelector( { onchange: function(width) { 
     _this.context.lineWidth = _this.contextI.lineWidth = width;
+    Q.$( 'wayixia-screenshot-line-width' ).style.height = width + 'px';
+    Q.$( 'wayixia-screenshot-line-text' ).innerText = width + 'px';
   } } );
   
   Q.$( 'wayixia-screenshot-size' ).onclick = (function(t, e) { return function(evt) { 
     t.widthSelector.showElement(e);
   } } )(this, Q.$( 'wayixia-screenshot-size' ));
+
+  this.fontsizeSelector = new Q.FontSizeSelector( { onchange: function( fontsize ) {
+    _this.font_size = fontsize;
+    Q.$( 'wayixia-screenshot-fontsize' ).innerText = fontsize + 'px';
+  } } );
+  
+  Q.$( 'wayixia-screenshot-fontsize' ).onclick = (function(t, e) { return function(evt) { 
+    t.fontsizeSelector.showElement(e);
+  } } )(this, Q.$( 'wayixia-screenshot-fontsize' ));
 },
 
 createInterface : function() {
@@ -465,15 +527,20 @@ drawText : function(pntFrom, pntTo, context) {
   top  += this.canvas.offsetTop;
   var width = Math.abs(pntTo.x-pntFrom.x);
   var height = Math.abs(pntTo.y-pntFrom.y);
-  ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; font-size: 16px; border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ this.context.fillStyle +"; width:"+width+"px; height:"+height+"; line-height: 18px;";
+  ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; "
+    + "font-size: " + this.font_size + "px; line-height: " + (this.font_size) + "px; " 
+    + "border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ this.context.fillStyle +"; width:"+width+"px; height:"+height+";padding:0;margin:0;";
   this.canvas.parentNode.appendChild(ta);
   ta.focus();
   ta.onblur = (function(t, a) { return function() {
+    var font_height = t.getIntValue(a.currentStyle.fontSize)
+    var line_height = t.getIntValue(a.currentStyle.lineHeight);
     var textCanvasCtx = t.context;
-    textCanvasCtx.font = a.currentStyle.fontSize + " " + a.currentStyle.fontFamily;
+    textCanvasCtx.font = "normal normal normal " + a.currentStyle.fontSize + "/" + a.currentStyle.lineHeight +" " + a.currentStyle.fontFamily;
+    Q.printf(textCanvasCtx.font);
     textCanvasCtx.fillStyle = a.currentStyle.color;
     textCanvasCtx.strokeStyle = a.currentStyle.color; //"rgba(0,255,0,0.8)";
-    //textCanvasCtx.textBaseline = 'top';//设置文本的垂直对齐方式
+    textCanvasCtx.textBaseline = 'middle';//设置文本的垂直对齐方式  top|hanging|middle|alphabetic|ideographic|bottom
     textCanvasCtx.textAlign = 'left'; //设置文本的水平对对齐方式
     a.style.display = "none";
     var text = a.value + '';
@@ -482,7 +549,6 @@ drawText : function(pntFrom, pntTo, context) {
     var tt = top+t.getIntValue(a.currentStyle.paddingTop) +t.getIntValue(a.currentStyle.borderTopWidth)+t.getIntValue(a.currentStyle.marginTop);
     var line = "";
     var line_width = 0;
-    var line_height = t.getIntValue(a.currentStyle.lineHeight);
     for(var i=0; i<text.length; i++) {
       var px = textCanvasCtx.measureText(text[i]);
       line_width += px.width;
@@ -497,9 +563,9 @@ drawText : function(pntFrom, pntTo, context) {
         line += text[i];
       }
     }
-    textCanvasCtx.fillText(line, text_left, tt);
-    a.style.display = "none";
-    a.parentNode.removeChild(a);
+    textCanvasCtx.fillText(line, text_left, tt-((line_height-font_height)/2));
+    //a.style.display = "none";
+    //a.parentNode.removeChild(a);
   }})(this, ta);
 },
 
