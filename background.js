@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 //
 
-var display_tab_id = null;
+//var display_tab_id = null;
 var plugin_name  = chrome.i18n.getMessage('menuDigImages');
 var block_images = {};
 // check new version for helper
@@ -126,6 +126,7 @@ function screenshot_end(tab, canvas) {
   });
 }
 
+/*
 function find_display_view(url) {
   var views = chrome.extension.getViews();
   for(var i=0; i < views.length; i++) {
@@ -136,6 +137,7 @@ function find_display_view(url) {
     }
   }
 }
+*/
 
 function create_display_page(context_tab_id,  res) {  
   var manager_url = chrome.extension.getURL("display.html");
@@ -207,26 +209,25 @@ function get_save_path() {
 }
 
 function focus_or_create_tab(url, func) {
-  var view = find_display_view(url);
-  if(view) {
-    view.focus();
-    func(view);
-  } else {
-    // view is not created
-    chrome.tabs.onUpdated.addListener(function listener(tab_id, changed_props) {
-      if(tab_id != display_tab_id || changed_props.status != "complete")
-        return;
-      chrome.tabs.onUpdated.removeListener(listener);
-      // lookup views
-      var view = find_display_view(url);
-      if(view) {
-        view.focus();
-        func(view);
-      }
-    });
-
-    chrome.tabs.create({"url":url, "selected":true}, function on_tab_created(tab) { display_tab_id = tab.id; });
-  }
+  var display_tab_id;
+  // view is not created
+  chrome.tabs.onUpdated.addListener( function listener( tab_id, changed_props ) {
+    if(tab_id != display_tab_id || changed_props.status != "complete")
+      return;
+    chrome.tabs.onUpdated.removeListener(listener);
+    // lookup views
+    // var view = find_display_view(url);
+    chrome.tabs.get(display_tab_id, function(tab) {
+      //chrome.windows.get(tab.windowId, {}, function(view) {
+      var views = chrome.extension.getViews( { windowId: tab.windowId } );
+      var view = views[0];
+      view.focus();
+      func(view);
+      //});
+    } ) 
+  });
+  
+  chrome.tabs.create({"url":url, "selected":true}, function on_tab_created(tab) { display_tab_id = tab.id; });
 }
 
 // add commands listener

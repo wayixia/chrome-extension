@@ -34,19 +34,6 @@ function initialize () {
   content_load_ok = true;
 }
 
-function fireMouseEvent(element, evtName) {
-  if( document.createEvent ) 
-  {
-     var evObj = document.createEvent('MouseEvents');
-     evObj.initEvent( evtName, true, false );
-     element.dispatchEvent(evObj);
-  }
-  else if( document.createEventObject )
-  {
-      element.fireEvent('on'+evtName);
-  }
-}
-
 /** 简易的调色板，固定给出几组颜色
  *
  * @constructor
@@ -221,7 +208,7 @@ __init__ : function( json ) {
 Q.CanvasEditor = Q.extend({
 canvas  : null,
 context : null,
-font_size : 14,
+font_size : 16,
 is_drag : false,
 x : 0,
 y : 0,
@@ -325,6 +312,9 @@ createInterface : function() {
     "; height: " + this.canvas.offsetHeight + 
     ";";
   this.contextI = this.canvas_interface.getContext('2d');
+
+  this.context.strokeStyle = this.contextI.strokeStyle = 
+  this.context.fillStyle = this.contextI.fillStyle = "#FF0033";
 },
 
 zoom : function(v) {
@@ -402,27 +392,10 @@ drawArrow: function(pntFrom, pntTo, context) {
   var color="#ffff00";
   var rotation=0;
   context.save();
-  /*
-  context.translate(pntTo.x, pntTo.y);
-  context.rotate(rotation);
-  context.lineWidth=2;
-  context.fillStyle=color;
-  context.beginPath();
-  context.moveTo(-50,-25);
-  context.lineTo(0,-25);
-  context.lineTo(0,-50);
-  context.lineTo(50,0);
-  context.lineTo(0,50);
-  context.lineTo(0,25);
-  context.lineTo(-50,25);
-  context.lineTo(-50,-25);
-  context.closePath();
-  context.stroke();
-  */
   var arrowShape = [
-    [-8, -5],
-    [-8, 5],
-    [2, 0],
+    [-16, -8],
+    [-16, 8],
+    [6, 0],
   ];
   
 // Functions from blog tutorial
@@ -468,18 +441,8 @@ drawArrow: function(pntFrom, pntTo, context) {
   context.closePath();
   context.stroke();
   
-  //var len = Math.sqrt( ( pntTo.y-pntFrom.y ) * ( pntTo.y-pntFrom.y ) + ( pntTo.x-pntFrom.x ) * ( pntTo.x-pntFrom.x ) );
-  //var yc = ( pntTo.y-pntFrom.y ) * 10.0 / len;
-  //var xc = 
-
   var ang = Math.atan2(pntTo.y-pntFrom.y, pntTo.x-pntFrom.x);
 	drawFilledPolygon(context,translateShape(rotateShape(arrowShape,ang),pntTo.x, pntTo.y));
-  var arrowShape2 = [
-    [2, 0],
-    [-8, -4],
-    [-8, 4]
-  ]
-	//drawFilledPolygon(context,translateShape(rotateShape(arrowShape2,ang),pntFrom.x, pntFrom.y));
   context.restore();
 },
 
@@ -528,19 +491,18 @@ drawText : function(pntFrom, pntTo, context) {
   var width = Math.abs(pntTo.x-pntFrom.x);
   var height = Math.abs(pntTo.y-pntFrom.y);
   ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; "
-    + "font-size: " + this.font_size + "px; line-height: " + (this.font_size) + "px; " 
-    + "border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ this.context.fillStyle +"; width:"+width+"px; height:"+height+";padding:0;margin:0;";
+    + "font-size: " + this.font_size + "px; line-height: " + (this.font_size+2) + "px; " 
+    + "border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ this.context.fillStyle +"; width:"+width+"px; height:"+height+";";
   this.canvas.parentNode.appendChild(ta);
   ta.focus();
   ta.onblur = (function(t, a) { return function() {
-    var font_height = t.getIntValue(a.currentStyle.fontSize)
     var line_height = t.getIntValue(a.currentStyle.lineHeight);
     var textCanvasCtx = t.context;
-    textCanvasCtx.font = "normal normal normal " + a.currentStyle.fontSize + "/" + a.currentStyle.lineHeight +" " + a.currentStyle.fontFamily;
+    textCanvasCtx.font = a.currentStyle.fontSize +" " + a.currentStyle.fontFamily;
     Q.printf(textCanvasCtx.font);
     textCanvasCtx.fillStyle = a.currentStyle.color;
     textCanvasCtx.strokeStyle = a.currentStyle.color; //"rgba(0,255,0,0.8)";
-    textCanvasCtx.textBaseline = 'middle';//设置文本的垂直对齐方式  top|hanging|middle|alphabetic|ideographic|bottom
+    //textCanvasCtx.textBaseline = 'bottom';//设置文本的垂直对齐方式  top|hanging|middle|alphabetic|ideographic|bottom
     textCanvasCtx.textAlign = 'left'; //设置文本的水平对对齐方式
     a.style.display = "none";
     var text = a.value + '';
@@ -563,7 +525,7 @@ drawText : function(pntFrom, pntTo, context) {
         line += text[i];
       }
     }
-    textCanvasCtx.fillText(line, text_left, tt-((line_height-font_height)/2));
+    textCanvasCtx.fillText( line, text_left, tt );
     //a.style.display = "none";
     //a.parentNode.removeChild(a);
   }})(this, ta);
@@ -578,7 +540,6 @@ _MouseDown : function(evt) {
 
   if(target_wnd && (target_wnd == this.canvas_interface)) {
       var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop}; //Q.scrollInfo(); 
-    //fireMouseEvent(document, "mousedown");
       this.is_drag = true; 
       this.x = scrollInfo.l+evt.clientX;
       this.y = scrollInfo.t+evt.clientY; 
@@ -597,13 +558,6 @@ _MouseMove : function(evt){
   this.is_moved = true;
   evt = evt || window.event
   if (this.is_drag) {
-    //var x = evt.clientX-_this.x;
-    //var y = evt.clientY-_this.y;
-    //if(_this.hCaptureWnd.style.zoom) {
-    //  _this.hCaptureWnd.on_move(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
-    //} else {
-    //  _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
-    //}
     var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop};
     this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
     var pointFrom = {};
@@ -667,7 +621,7 @@ Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
   // debug code
-  display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+  //display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
   //display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
 });
 
@@ -697,7 +651,7 @@ function drag_screen_images_begin() {
 function drag_screen_images_update(n, total) {
   var v = n*scroll_loadding.max*1.0/total;
   console.log("drag_screen_images_update ->" + v);
-  scroll_loadding.set_value(v);
+  scroll_loadding.setValue(v);
 }
 
 function drag_screen_images_end() {
@@ -719,13 +673,7 @@ function display_full_screenshot(tab_id, canvas_data, url) {
   wayixia_track_event("display_full_screenshot", "from_menu");  
   wayixia_source_tab_id = tab_id;
   wayixia_request_data.data.pageUrl = url;
-  var wayixia_container = Q.$('wayixia-list');
-  var img = document.createElement('img');
-  img.id = 'wayixia-screenshot-image';
-  wayixia_container.innerHTML = '';
-  wayixia_container.appendChild(img);
-  merge_images(canvas_data, img);
-  Q.drag.attach_object(img, {self: true});
+  merge_images(canvas_data);
 }
 
 function display_screenshot(tab_id, image_data, url) {
@@ -745,7 +693,6 @@ function display_screenshot(tab_id, image_data, url) {
 
     drag_screen_images_end();
     var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
-    //wayixia_canvas.width = 1000;
     draw_context.putImageData(imgData,0,0);
     // init painter
     g_canvas_editor = new Q.CanvasEditor({
@@ -754,21 +701,20 @@ function display_screenshot(tab_id, image_data, url) {
     });
   };
   img.src = image_data;
-  //Q.drag.attach_object(img, {self: true});
 }
 
 /* call background script end */
 
-
-function merge_images(canvas_data, image_element) {
+function merge_images(canvas_data) {
   // initialize canvas
-  var canvas = document.createElement("canvas");
+  var canvas = Q.$('wayixia-canvas'); //  document.createElement("canvas");
 	canvas.width = canvas_data.size.full_width;
 	canvas.height = canvas_data.size.full_height;
-  draw_image(canvas, canvas_data, 0, image_element);
+ 
+  draw_image(canvas, canvas_data, 0);
 }
 
-function draw_image(canvas, canvas_data, n, image_element) {
+function draw_image(canvas, canvas_data, n) {
   var screenshots = canvas_data.screenshots;
   if(n == 0) {
        drag_screen_images_begin();
@@ -776,8 +722,12 @@ function draw_image(canvas, canvas_data, n, image_element) {
   drag_screen_images_update(n+1, screenshots.length);
   if(n >= screenshots.length ) {
     // draw completed
-    image_element.src = canvas.toDataURL('image/png');
+    //image_element.src = canvas.toDataURL('image/png');
     drag_screen_images_end();
+    g_canvas_editor = new Q.CanvasEditor({
+      id : canvas,
+      container: Q.$( 'wayixia-container' )
+    });
   } else {
     console.log('draw '+n+' image');
     var draw_context = canvas.getContext("2d");
@@ -802,7 +752,7 @@ function draw_image(canvas, canvas_data, n, image_element) {
       return function() {
         console.log('image load ok');
         ctx.drawImage(m,l,t);
-        draw_image(canvas, canvas_data, ++n, image_element);
+        draw_image(canvas, canvas_data, ++n);
       }
     })(draw_context, memory_image, x, y);
     memory_image.src = s.data_url;
