@@ -281,34 +281,22 @@ function clear_album_player() {
 
 
 /** 挖图界面初始化 */
-Q.ready(function() {
+Q.ready(function() {  
   Q.set_locale_text(locale_text);
-  initialize();
-  content_load_ok = true;
-});
-
-/** chrome插件接口，background页调用 */
-function display_images(tab_id, packet) {
-  console.log('display_images called tab_id ->' + tab_id);
-  if(packet.track_from) {
-    wayixia_track_event("display_images", packet.track_from);
-  } else {
-    wayixia_track_event("display_images", "from_menu");  
-  }
-  wayixia_source_tab_id = tab_id;
-
-  packet = packet || {};
-  packet.imgs = packet.imgs || [];
-  packet.data = packet.data || {};
-  wayixia_request_data.imgs = packet.imgs;
-  wayixia_request_data.data = packet.data;
-  if(content_load_ok) {
-    console.log('recv request, content is loaded')
-    t.display_valid_images(packet.imgs, packet.data)();
-  } else {
-    console.log('content is loadding' + packet)
+  
+  var extension = chrome.extension.getBackgroundPage();
+  chrome.tabs.getCurrent( function( tab ) {
+    /** initialize images data*/
+    var data = extension.get_display_cache(tab.id)
+    wayixia_source_tab_id = data.ctx_tab_id;
+    var packet = data.data || {};
+    packet.imgs = packet.imgs || [];
+    packet.data = packet.data || {};
+    wayixia_request_data.imgs = packet.imgs;
+    wayixia_request_data.data = packet.data;
+    
     initialize();
-  }
-}
-
+    content_load_ok = true;
+  } );
+});
 

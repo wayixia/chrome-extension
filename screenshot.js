@@ -501,9 +501,8 @@ drawText : function(pntFrom, pntTo, context) {
     textCanvasCtx.font = a.currentStyle.fontSize +" " + a.currentStyle.fontFamily;
     Q.printf(textCanvasCtx.font);
     textCanvasCtx.fillStyle = a.currentStyle.color;
-    textCanvasCtx.strokeStyle = a.currentStyle.color; //"rgba(0,255,0,0.8)";
-    //textCanvasCtx.textBaseline = 'bottom';//设置文本的垂直对齐方式  top|hanging|middle|alphabetic|ideographic|bottom
-    textCanvasCtx.textAlign = 'left'; //设置文本的水平对对齐方式
+    textCanvasCtx.strokeStyle = a.currentStyle.color; 
+    textCanvasCtx.textAlign = "left";
     a.style.display = "none";
     var text = a.value + '';
     var text_left = left+t.getIntValue(a.currentStyle.paddingLeft)+t.getIntValue(a.currentStyle.borderLeftWidth) - 15;
@@ -526,8 +525,8 @@ drawText : function(pntFrom, pntTo, context) {
       }
     }
     textCanvasCtx.fillText( line, text_left, tt );
-    //a.style.display = "none";
-    //a.parentNode.removeChild(a);
+    a.style.display = "none";
+    a.parentNode.removeChild(a);
   }})(this, ta);
 },
 
