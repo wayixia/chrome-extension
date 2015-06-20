@@ -134,7 +134,7 @@ function get_display_cache( tab_id ) {
 }
 
 function create_display_page(context_tab_id,  res) {  
-  create_tab( { url: chrome.extension.getURL("display.html"), callback: ( function( id, res ) { return function( tab_id ) { 
+  create_tab( { url: chrome.extension.getURL("display.html"), callback : ( function( id, res ) { return function( tab_id ) { 
     cache_display[tab_id] = {
       ctx_tab_id : id,
       data : res 
@@ -143,15 +143,28 @@ function create_display_page(context_tab_id,  res) {
 }
 
 function create_display_screenshot(context_tab_id,  res, url) {  
-  focus_or_create_tab( chrome.extension.getURL("screenshot.html"), ( function( id, res ) { return function( view ) { 
-    view.display_screenshot(id, res, url);
-  } } )( context_tab_id, res ) );
+  create_tab( { url : chrome.extension.getURL("screenshot.html"), callback : ( function( id, res ) { return function( tab_id ) { 
+    cache_display[tab_id] = {
+      ctx_tab_id : id,
+      data : res,
+      url : url,
+      type : "screenshot"
+    };
+    //view.display_screenshot(id, res, url);
+  } } )( context_tab_id, res ) } );
 }
 
 function create_display_full_screenshot(context_tab_id,  res, url) {  
-  focus_or_create_tab( chrome.extension.getURL("screenshot.html"), ( function( id, res ) { return function( view ) { 
-    view.display_full_screenshot(id, res, url);
-  } } )( context_tab_id, res ) );
+  create_tab( { url : chrome.extension.getURL("screenshot.html"), callback : ( function( id, res ) { return function( tab_id ) { 
+    cache_display[tab_id] = {
+      ctx_tab_id : id,
+      data : res,
+      url : url,
+      type : "full_screenshot"
+    };
+
+    // view.display_full_screenshot(id, res, url);
+  } } )( context_tab_id, res ) } );
 }
 
 /** show features of the extension */

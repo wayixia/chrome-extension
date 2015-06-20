@@ -26,12 +26,14 @@ function initialize () {
   Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.setValue(100); }
   Q.$('wayixia-screenshot-download').onclick = function() {
     wayixia_track_button_click(this);
-    //if(Q.$('wayixia-screenshot-image')) {
-      extension.download_image(Q.$('wayixia-canvas').toDataURL('image/png'));
-    //}
+    var tmp_canvas = document.createElement( 'canvas' );
+    tmp_canvas.width = Q.$( 'wayixia-canvas' ).width;
+    tmp_canvas.height = Q.$( 'wayixia-canvas' ).height;
+    var context = tmp_canvas.getContext('2d');
+    context.drawImage( Q.$( 'wayixia-canvas' ), 0, 0 );
+    context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
+    extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
   }
- 
-  content_load_ok = true;
 }
 
 /** 简易的调色板，固定给出几组颜色
@@ -244,6 +246,8 @@ __init__ : function(config) {
   toolbars["rect"] = new Q.CheckBox({id: "wayixia-screenshot-rect", onchange: toolbars_onchange});
   toolbars["eclipse"] = new Q.CheckBox({id: "wayixia-screenshot-eclipse", onchange: toolbars_onchange});
   toolbars["line"] = new Q.CheckBox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
+  toolbars["brush"] = new Q.CheckBox({id: "wayixia-screenshot-brush", onchange: toolbars_onchange});
+  toolbars["eraser"] = new Q.CheckBox({id: "wayixia-screenshot-eraser", onchange: toolbars_onchange});
   toolbars["zoom"] = new Q.CheckBox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
 
   this.createInterface();
@@ -271,8 +275,8 @@ initToolbar : function() {
    */
   this.colorTable = new Q.ColorTable( { onchange : function( color ) {
     Q.$( 'wayixia-screenshot-color-view' ).style.backgroundColor = color;
-    _this.context.strokeStyle = _this.contextI.strokeStyle = color;
-    _this.context.fillStyle = _this.contextI.fillStyle = color;
+    _this.context.strokeStyle = _this.contextI.strokeStyle = _this.contextC.strokeStyle = color;
+    _this.context.fillStyle = _this.contextI.fillStyle = _this.contextC.fillStyle = color;
   } } );
     
   Q.$( 'wayixia-screenshot-color' ).onclick = (function(t, e) { return function(evt) { 
@@ -283,7 +287,7 @@ initToolbar : function() {
    * widthSelector
    */
   this.widthSelector = new Q.WidthSelector( { onchange: function(width) { 
-    _this.context.lineWidth = _this.contextI.lineWidth = width;
+    _this.context.lineWidth = _this.contextI.lineWidth = _this.contextC.lineWidth = width;
     Q.$( 'wayixia-screenshot-line-width' ).style.height = width + 'px';
     Q.$( 'wayixia-screenshot-line-text' ).innerText = width + 'px';
   } } );
@@ -303,28 +307,35 @@ initToolbar : function() {
 },
 
 createInterface : function() {
-  // create interface canvas
-  this.canvas_interface = this.canvas.cloneNode(true);
-  this.canvas.parentNode.appendChild(this.canvas_interface);
-  this.canvas_interface.style.cssText = "position: absolute; left: " + this.canvas.offsetLeft +
+  /** create D and I interface canvas */
+  this.canvasC = this.canvas.cloneNode(true);
+  this.canvas.parentNode.appendChild(this.canvasC);
+  this.canvasI = this.canvas.cloneNode(true);
+  this.canvas.parentNode.appendChild(this.canvasI);
+  
+  this.canvasC.id = "cache-canvas";
+  this.canvasI.id = "draw-canvas";
+
+  this.canvasC.style.cssText = this.canvasI.style.cssText = "position: absolute; left: " + this.canvas.offsetLeft +
     "; top: " + this.canvas.offsetTop + 
     "; width: " + this.canvas.offsetWidth + 
     "; height: " + this.canvas.offsetHeight + 
     ";";
-  this.contextI = this.canvas_interface.getContext('2d');
-
-  this.context.strokeStyle = this.contextI.strokeStyle = 
-  this.context.fillStyle = this.contextI.fillStyle = "#FF0033";
+  this.contextC = this.canvasC.getContext('2d');
+  this.contextI = this.canvasI.getContext('2d');
+  this.contextC.strokeStyle = this.contextI.strokeStyle = 
+  this.contextC.fillStyle = this.contextI.fillStyle = "#FF0033";
 },
 
 zoom : function(v) {
   this.canvas.style.zoom = v/100.0;
-  this.canvas_interface.style.zoom = v/100.0;
+  this.canvasI.style.zoom = v/100.0;
+  this.canvasC.style.zoom = v/100.0;
 },
 
 zoomxy : function(pnt) {
-  if(this.canvas.style.zoom) {
-    var z = parseFloat(this.canvas.style.zoom);
+  if(this.canvasC.style.zoom) {
+    var z = parseFloat(this.canvasC.style.zoom);
     return {x: parseInt(pnt.x*1.0 / z, 10), y: parseInt(pnt.y*1.0/z, 10)}
   } else {
     return pnt;
@@ -387,10 +398,6 @@ drawEclipse : function(pntFrom, pntTo, context) {
 },
 
 drawArrow: function(pntFrom, pntTo, context) {
-
-
-  var color="#ffff00";
-  var rotation=0;
   context.save();
   var arrowShape = [
     [-16, -8],
@@ -446,45 +453,18 @@ drawArrow: function(pntFrom, pntTo, context) {
   context.restore();
 },
 
-wrapText : function(context, text, x, y, maxWidth, lineHeight) {
-  var cars = text.split("\n");
-  for (var ii = 0; ii < cars.length; ii++) {
-   var line = "";
-   var words = cars[ii].split(" ");
-   for (var n = 0; n < words.length; n++) {
-    var testLine = line + words[n] + " ";
-    var metrics = context.measureText(testLine);
-    var testWidth = metrics.width;
-    if (testWidth > maxWidth) {
-     context.fillText(line, x, y);
-     line = words[n] + " ";
-     y += lineHeight;
-    }
-    else {
-     line = testLine;
-    }
-   }
-   context.fillText(line, x, y);
-   y += lineHeight;
-  }
-},
-
 getIntValue : function(s) {
   return parseInt(s.replace("px", ""), 10);
 },
 
 drawText : function(pntFrom, pntTo, context) {
-  //this.drawRectangle(pntFrom, pntTo, context);
   var ta = document.createElement('textarea');
   var left = pntFrom.x;
   var top = pntFrom.y;
-  if(pntTo.x < pntFrom.x) {
+  if(pntTo.x < pntFrom.x) 
     left = pntTo.x;
-  }
-
-  if(pntTo.y < pntFrom.y) {
+  if(pntTo.y < pntFrom.y) 
     top = pntTo.y;
-  }
 
   left += this.canvas.offsetLeft;
   top  += this.canvas.offsetTop;
@@ -530,6 +510,31 @@ drawText : function(pntFrom, pntTo, context) {
   }})(this, ta);
 },
 
+drawBrush : function( pntTo, context ) {
+  this.brushPoints.push( pntTo );
+  for( var i=0; i < this.brushPoints.length; i++ )  {   
+    context.beginPath();
+    if( i > 0 ) 
+      context.moveTo( this.brushPoints[i-1].x, this.brushPoints[i-1].y );  
+    else
+      context.moveTo( this.brushPoints[i].x-1, this.brushPoints[i].y );  
+    context.lineTo( this.brushPoints[i].x, this.brushPoints[i].y ); 
+    context.closePath();
+    context.stroke();
+  }
+},
+
+eraser : function( pntTo, context )  {
+  var strokeStyle = context.strokeStyle;
+  context.globalCompositeOperation = "destination-out";
+  context.beginPath();
+  context.arc( pntTo.x, pntTo.y, 15, 0, Math.PI*2 );
+  context.strokeStyle = "rgba(250,250,250, 0)";
+  context.fill();
+  context.globalCompositeOperation = "source-over";
+  context.strokeStyle = strokeStyle;
+},
+
 _MouseDown : function(evt) {
   evt = evt || window.event;
   // 屏蔽右键拖动
@@ -537,7 +542,7 @@ _MouseDown : function(evt) {
     return; 
   var target_wnd = drag_handle = this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
 
-  if(target_wnd && (target_wnd == this.canvas_interface)) {
+  if(target_wnd && (target_wnd == this.canvasI)) {
       var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop}; //Q.scrollInfo(); 
       this.is_drag = true; 
       this.x = scrollInfo.l+evt.clientX;
@@ -549,6 +554,7 @@ _MouseDown : function(evt) {
       }})(this), 100);
 
       this.pos = Q.absPosition(this.canvas);
+      this.brushPoints = [];
       return true; 
   }
 },
@@ -558,7 +564,7 @@ _MouseMove : function(evt){
   evt = evt || window.event
   if (this.is_drag) {
     var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop};
-    this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
+    this.contextI.clearRect(0, 0, this.canvasI.offsetWidth, this.canvasI.offsetHeight);
     var pointFrom = {};
     pointFrom.x = this.x-this.pos.left+0.5;
     pointFrom.y = this.y-this.pos.top+0.5;
@@ -568,9 +574,7 @@ _MouseMove : function(evt){
     
     pointFrom = this.zoomxy(pointFrom);
     pointTo = this.zoomxy(pointTo);
-
-    console.log(pointFrom)
-    console.log(pointTo)
+    
     if(this.action == "line") {
       this.drawLine(pointFrom, pointTo, this.contextI);
     } else if(this.action == "rect" || this.action == "text") {
@@ -579,6 +583,10 @@ _MouseMove : function(evt){
       this.drawEclipse(pointFrom, pointTo, this.contextI);
     } else if(this.action == "arrow") {
       this.drawArrow(pointFrom, pointTo, this.contextI);
+    } else if(this.action == "brush") {
+      this.drawBrush(pointTo, this.contextC);
+    } else if(this.action == "eraser") {
+      this.eraser(pointTo, this.contextC);
     }
   }
 },
@@ -590,27 +598,32 @@ _MouseUp : function(evt) {
       this.is_drag=false;
       Q.removeEvent(document,'mousemove', this.MouseMove_Handler);
       Q.printf("end: x -> " + evt.clientX + ", y -> " + evt.clientY);
+
       var pointFrom = {};
       pointFrom.x = this.x-this.pos.left+0.5;
       pointFrom.y = this.y-this.pos.top+0.5;
       var pointTo = {};
       pointTo.x = scrollInfo.l+evt.clientX-this.pos.left+0.5;
       pointTo.y = scrollInfo.t+evt.clientY-this.pos.top+0.5;
-      
       pointFrom = this.zoomxy(pointFrom);
       pointTo = this.zoomxy(pointTo);
+
       if(this.action == "line") {
-        this.drawLine(pointFrom, pointTo, this.context);
+        this.drawLine(pointFrom, pointTo, this.contextC);
       } else if(this.action == "rect") {
-        this.drawRectangle(pointFrom, pointTo, this.context);
+        this.drawRectangle(pointFrom, pointTo, this.contextC);
       } else if(this.action == "eclipse") {
-        this.drawEclipse(pointFrom, pointTo, this.context);
+        this.drawEclipse(pointFrom, pointTo, this.contextC);
       } else if(this.action == "arrow") {
-        this.drawArrow(pointFrom, pointTo, this.context);
+        this.drawArrow(pointFrom, pointTo, this.contextC);
       } else if(this.action == "text") {
-        this.drawText(pointFrom, pointTo, this.context);
+        this.drawText(pointFrom, pointTo, this.contextC);
+      } else if(this.action == "brush") {
+        this.drawBrush(pointTo, this.contextC);
+      } else if(this.action == "eraser") {
+        this.eraser(pointTo, this.contextC);
       }
-      this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
+      this.contextI.clearRect(0, 0, this.canvasI.offsetWidth, this.canvasI.offsetHeight);
     }
     this.is_moved=false;
 }
@@ -619,6 +632,22 @@ _MouseUp : function(evt) {
 Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
+
+  var extension = chrome.extension.getBackgroundPage();
+  chrome.tabs.getCurrent( function( tab ) {
+    /** initialize images data*/
+    var data = extension.get_display_cache(tab.id)
+    if( !data )
+      return;
+    wayixia_source_tab_id = data.ctx_tab_id;
+    if( data.type == "screenshot" ) {
+      display_screenshot(data.ctx_tab_id, data.data, data.url);
+    } else if( data.type == "full_screenshot" ) {
+      display_full_screenshot(data.ctx_tab_id, data.data, data.url);
+    }
+    
+  } );
+
   // debug code
   //display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
   //display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");

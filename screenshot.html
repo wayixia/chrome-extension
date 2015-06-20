@@ -13,6 +13,7 @@
 <script src="Q.js/src/slider.js"></script>
 <script src="Q.js/src/checkbox.js"></script>
 <script src="Q.js/src/wndx-1-0-2.js"></script>
+<script src="Q.js/src/contextmenu.js"></script>
 <script src="Q.js/src/dropwindow.js"></script>
 <script src="tracker.js"></script>
 <script src="i18n.js"></script>
@@ -26,14 +27,17 @@
      <font style="color: #999;font-size: 16px;"> 
        __MSG_extDescription__ 
      </font>
-     <button class="wayixia-ctrl-button" id="wayixia-close"> 
-       __MSG_extCloseWindow__[ESC]
-     </button>
      <div id="wayixia-user-menu">
-        <button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
-          <span id="wayixia-bugs-num"></span>
+        <button id="wayixia-close"> 
+          __MSG_extCloseWindow__
         </button>
-     </div>
+        <button id="wayixia-help">
+          __MSG_extHelp__
+        </button>
+        <button id="wayixia-bugs">
+          &nbsp;<span id="wayixia-bugs-num"></span>
+        </button>
+    </div>
   </div>
   <div id="wayixia-toolbar-screenshot">
     <button id="wayixia-screenshot-download" class="wayixia-toolbar-button download">&nbsp;</button>
@@ -42,6 +46,8 @@
     <button id="wayixia-screenshot-rect" class="wayixia-toolbar-button rect">&nbsp;</button>
     <button id="wayixia-screenshot-eclipse" class="wayixia-toolbar-button eclipse">&nbsp;</button>
     <button id="wayixia-screenshot-line" class="wayixia-toolbar-button line">&nbsp;</button>
+    <button id="wayixia-screenshot-brush" class="wayixia-toolbar-button brush">&nbsp;</button>
+    <button id="wayixia-screenshot-eraser" class="wayixia-toolbar-button eraser">&nbsp;</button>
     <button id="wayixia-screenshot-zoom100" class="wayixia-toolbar-button restore" style="display:none;">&nbsp;</button>
     <button id="wayixia-screenshot-zoom" class="wayixia-toolbar-button zoom" style="display:none;">&nbsp;</button>
     <button id="wayixia-screenshot-color" class="wayixia-toolbar-button color">&nbsp;
@@ -54,6 +60,7 @@
     <button id="wayixia-screenshot-fontsize" class="wayixia-toolbar-button size" style="display: none;">
       1px
     </button>
+    <!--a style="font-weight: bold; margin-left: 10px;">__MSG_captureZoom__</a-->
     <!--a style="font-weight: bold; margin-left: 10px;">__MSG_captureZoom__</a-->
     <a style="display:none;">
       <div id="x-ctrl-screenshot-zoom" class="q-slider x" style="width: 150px; margin-top: 8px;">

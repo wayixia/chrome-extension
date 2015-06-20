@@ -287,7 +287,9 @@ Q.ready(function() {
   var extension = chrome.extension.getBackgroundPage();
   chrome.tabs.getCurrent( function( tab ) {
     /** initialize images data*/
-    var data = extension.get_display_cache(tab.id)
+    var data = extension.get_display_cache(tab.id);
+    if( !data )
+      return;
     wayixia_source_tab_id = data.ctx_tab_id;
     var packet = data.data || {};
     packet.imgs = packet.imgs || [];

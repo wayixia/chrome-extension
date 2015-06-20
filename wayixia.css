@@ -83,6 +83,14 @@ button:hover.wayixia-ctrl-button
   background-position:  -315px top;
 }
 
+.wayixia-toolbar-button.brush {
+  background-position:  -360px top;
+}
+
+.wayixia-toolbar-button.eraser {
+  background-position:  -405px top;
+}
+
 .wayixia-toolbar-button.color {
   background-image: none;
   background-color: transparent;
@@ -188,6 +196,7 @@ button#wayixia-close {
 
 #wayixia-bugs
 {
+  display: none;
   position: relative;
   background: transparent url(images/bug.tips.png) left 10px no-repeat;
   width: 28px;
