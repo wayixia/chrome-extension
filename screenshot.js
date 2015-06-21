@@ -274,9 +274,7 @@ initToolbar : function() {
    * colorTable
    */
   this.colorTable = new Q.ColorTable( { onchange : function( color ) {
-    Q.$( 'wayixia-screenshot-color-view' ).style.backgroundColor = color;
-    _this.context.strokeStyle = _this.contextI.strokeStyle = _this.contextC.strokeStyle = color;
-    _this.context.fillStyle = _this.contextI.fillStyle = _this.contextC.fillStyle = color;
+    _this.setColor( color );
   } } );
     
   Q.$( 'wayixia-screenshot-color' ).onclick = (function(t, e) { return function(evt) { 
@@ -287,9 +285,7 @@ initToolbar : function() {
    * widthSelector
    */
   this.widthSelector = new Q.WidthSelector( { onchange: function(width) { 
-    _this.context.lineWidth = _this.contextI.lineWidth = _this.contextC.lineWidth = width;
-    Q.$( 'wayixia-screenshot-line-width' ).style.height = width + 'px';
-    Q.$( 'wayixia-screenshot-line-text' ).innerText = width + 'px';
+    _this.setLineWidth( width );
   } } );
   
   Q.$( 'wayixia-screenshot-size' ).onclick = (function(t, e) { return function(evt) { 
@@ -325,6 +321,19 @@ createInterface : function() {
   this.contextI = this.canvasI.getContext('2d');
   this.contextC.strokeStyle = this.contextI.strokeStyle = 
   this.contextC.fillStyle = this.contextI.fillStyle = "#FF0033";
+},
+
+setColor : function( color ) {
+  Q.$( 'wayixia-screenshot-color-view' ).style.backgroundColor = color;
+  this.context.fillStyle = this.context.fillStyle = 
+  this.contextC.strokeStyle = this.contextI.strokeStyle = 
+  this.contextC.fillStyle = this.contextI.fillStyle = color;
+},
+
+setLineWidth : function( width ) {
+  this.context.lineWidth = this.contextI.lineWidth = this.contextC.lineWidth = width;
+  Q.$( 'wayixia-screenshot-line-width' ).style.height = width + 'px';
+  Q.$( 'wayixia-screenshot-line-text' ).innerText = width + 'px';
 },
 
 zoom : function(v) {
@@ -466,20 +475,19 @@ drawText : function(pntFrom, pntTo, context) {
   if(pntTo.y < pntFrom.y) 
     top = pntTo.y;
 
-  left += this.canvas.offsetLeft;
-  top  += this.canvas.offsetTop;
+  left += this.canvasC.offsetLeft;
+  top  += this.canvasC.offsetTop;
   var width = Math.abs(pntTo.x-pntFrom.x);
   var height = Math.abs(pntTo.y-pntFrom.y);
   ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; "
     + "font-size: " + this.font_size + "px; line-height: " + (this.font_size+2) + "px; " 
-    + "border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ this.context.fillStyle +"; width:"+width+"px; height:"+height+";";
-  this.canvas.parentNode.appendChild(ta);
+    + "border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ context.fillStyle +"; width:"+width+"px; height:"+height+";";
+  this.canvasI.parentNode.appendChild(ta);
   ta.focus();
-  ta.onblur = (function(t, a) { return function() {
+  ta.onblur = (function(t, a, c) { return function() {
     var line_height = t.getIntValue(a.currentStyle.lineHeight);
-    var textCanvasCtx = t.context;
+    var textCanvasCtx = c;
     textCanvasCtx.font = a.currentStyle.fontSize +" " + a.currentStyle.fontFamily;
-    Q.printf(textCanvasCtx.font);
     textCanvasCtx.fillStyle = a.currentStyle.color;
     textCanvasCtx.strokeStyle = a.currentStyle.color; 
     textCanvasCtx.textAlign = "left";
@@ -507,7 +515,7 @@ drawText : function(pntFrom, pntTo, context) {
     textCanvasCtx.fillText( line, text_left, tt );
     a.style.display = "none";
     a.parentNode.removeChild(a);
-  }})(this, ta);
+  }})(this, ta, context);
 },
 
 drawBrush : function( pntTo, context ) {

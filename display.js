@@ -146,7 +146,8 @@ function initialize () {
 
   function update_ui_count() {
     Q.$('wayixia-show-block').innerText = Q.locale_text('haveBlocked') + '('+blocked_images.length+')';
-    Q.$('wayixia-select-all').innerText = Q.locale_text('selectAll') + '('+accept_length+')';
+    //Q.$('wayixia-select-all').innerText = Q.locale_text('selectAll') + '('+accept_length+')';
+    //Q.$('wayixia-select-all').innerText = '('+accept_length+')';
   }
 
   function init_block_image_items(blocked_images) {

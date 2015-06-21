@@ -107,6 +107,18 @@ button:hover.wayixia-ctrl-button
   color: #515151;
 }
 
+/** display toolbar button */
+.wayixia-toolbar-button.block {
+  background-position: left -45px;
+}
+
+.wayixia-toolbar-button.selectall {
+  background-position: -45px -45px;
+}
+
+.wayixia-toolbar-button.selectall.checked {
+  background-position: -90px -45px;
+}
 
 
 #wayixia-overlay {
