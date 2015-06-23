@@ -200,7 +200,7 @@ function report_a_bug( evt ) {
       ]
     });
 
-    wayixia_report_window.domodal();
+    wayixia_report_window.domodal($GetDesktopWindow());
   });
 }
 

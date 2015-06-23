@@ -236,6 +236,11 @@ __init__ : function(config) {
           toolbars[name].setCheck(false);
         } else {
           t.action = name;
+          if( t.action == "eraser" ) {
+            Q.addClass( Q.$('draw-canvas'), "eraser-cur" )
+          } else {
+            Q.removeClass( Q.$('draw-canvas'), "eraser-cur" )
+          }
         } 
       } 
     } 
@@ -536,7 +541,7 @@ eraser : function( pntTo, context )  {
   var strokeStyle = context.strokeStyle;
   context.globalCompositeOperation = "destination-out";
   context.beginPath();
-  context.arc( pntTo.x, pntTo.y, 15, 0, Math.PI*2 );
+  context.arc( pntTo.x, pntTo.y, 7, 0, Math.PI*2 );
   context.strokeStyle = "rgba(250,250,250, 0)";
   context.fill();
   context.globalCompositeOperation = "source-over";
