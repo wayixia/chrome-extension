@@ -601,8 +601,8 @@ Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
   // debug code
-  display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
-  //display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
+  //display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+  display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
 });
 
 
