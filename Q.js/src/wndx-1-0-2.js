@@ -232,6 +232,15 @@ function $ShowWindow(wndNode, visible)  {
   } else {
     wndNode.style.display = 'none';
     $MaskWindow(wndNode, false);
+    var parent_container = $GetContainerWindow(wndNode);
+    var wnd = $GetTopZIndexWindow( parent_container );
+    if($IsNull(wnd)) {
+      $SetActiveChild(parent_container, null);
+    } else if( $IsWindow(wnd) ) {
+      $BindWindowMessage(wnd, MESSAGE.ACTIVATE)();
+    } else {
+      $BindWindowMessage(parent_container, MESSAGE.ACTIVATE)();
+    }
   }
 }
 
@@ -1133,7 +1142,7 @@ addBottomButton : function(text, className, click) {
  */
 domodal : function(wndNode) {
   //Q.printf('domodal window');
-  if(!$IsWindow(wndNode)) {
+  if( ( !$IsDesktopWindow( wndNode ) ) && ( !$IsWindow( wndNode ) ) ) {
     wndNode = $GetActiveChild($GetDesktopWindow());
     if(!$IsWindow(wndNode)) {
       wndNode = $GetDesktopWindow();

@@ -104,7 +104,7 @@ Q.album_player = Q.extend({
     this.image_list = Q.$('image-list');
     this.images_data = {};
     // init draging objects 
-    Q.drag.attach_object(this.image_view, {self: true});
+    Q.drag( { id: this.image_view, self: true } );
      
     // init data
     this.width = this.hwnd.offsetWidth;

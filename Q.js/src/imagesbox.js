@@ -76,13 +76,7 @@ create_element: function(config, init) {
     _this.set_check(this, !Q.hasClass(this, 'mouseselected'));
   }
 
-  Q.click(box, 
-    function(o) {
-      _this.set_check(o, !Q.hasClass(o, 'mouseselected'));
-    },
-    
-    this.on_item_dblclick
-  );
+  Q.dblclick( box, this.on_item_dblclick );
   init(box);
 },
   

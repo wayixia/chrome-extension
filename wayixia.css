@@ -1,34 +1,6 @@
-
-.wayixia-ctrl-button
-{
-  text-indent: 0px; 
-  border: 0px solid #CCC;
-  font-size: 14px;
-  color: #000;
-  padding: 5px 15px;
-  outline:0;
-  background: #FC0;
-  border-radius: 3px;
-  border-radius: 3px;
-  box-shadow:0 1px 3px rgba(0,0,0,.1);
-  -moz-box-shadow:0 1px 3px rgba(0,0,0,.1);
-  -webkit-box-shadow:0 1px 3px rgba(0,0,0,.1);
-  margin-right: 7px;
-  cursor: hand;
-}
-
-button:active.wayixia-ctrl-button
-{
-  outline:0;background-image:none;
-  -webkit-box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.225);box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.225);
-}
-
-button:hover.wayixia-ctrl-button
-{
-  background-image:none;
-  background-color: #FD0;
-}
-
+/**
+ toolbar button css style
+ */
 
 .wayixia-toolbar-button {
   background: #FFF url(images/canvas-toolbar.png) left top no-repeat;
@@ -83,21 +55,58 @@ button:hover.wayixia-ctrl-button
   background-position:  -315px top;
 }
 
-.wayixia-toolbar-button.color {
-  background-color: transparent;
-  border: 1px solid #000;
-  padding: 0;
-  margin: 4px 9px;
-  height: 28px;
-  width: 28px;
-  position: relative;
-}
-
-.wayixia-toolbar-button.size {
+.wayixia-toolbar-button.brush {
   background-position:  -360px top;
 }
 
+.wayixia-toolbar-button.eraser {
+  background-position:  -405px top;
+}
 
+.wayixia-toolbar-button.color {
+  background-image: none;
+  background-color: transparent;
+  position: relative;
+  background: transparent url(images/dropdown.png) right 16px no-repeat;
+}
+
+
+.wayixia-toolbar-button.size {
+  position: relative;
+  padding: 0;
+  line-height: 31px;
+  background: transparent url(images/dropdown.png) right 16px no-repeat;
+  color: #515151;
+}
+
+/** display toolbar button */
+.wayixia-toolbar-button.block {
+  background-position: left -45px;
+}
+
+.wayixia-toolbar-button.selectall {
+  background-position: -45px -45px;
+}
+
+.wayixia-toolbar-button.selectall.checked {
+  background-position: -90px -45px;
+}
+
+.eraser-cur {
+  cursor: url(images/eraser.cur), default;
+}
+
+.wayixia-toolbar-button.showblock {
+  background-position: -180px -45px;
+}
+
+.wayixia-toolbar-button.showblock.checked {
+  background-position: -135px -45px;
+}
+
+.wayixia-toolbar-button.filter {
+  background-position: -225px -45px;
+}
 
 #wayixia-overlay {
   position: fixed; 
@@ -130,11 +139,6 @@ button:hover.wayixia-ctrl-button
 
 #wayixia-title-bar:active {
   outline:0;background-image:none;-webkit-box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.325);box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.325);
-}
-
-#wayixia-title-bar a {
-  color: #999;
-  text-decoration: none;
 }
 
 /* wayixia user menu */
@@ -173,19 +177,9 @@ button#wayixia-close {
   visibility: visible;
 }
 
-/*
-#wayixia-help.q-active, button#wayixia-help:hover {
-  background-color: #F8F8F8;
-  color: #000;
-  box-shadow:0 1px 12px rgba(0,0,0,.1);
-  -moz-box-shadow:0 1px 12px rgba(0,0,0,.1);
-  -webkit-box-shadow:0 1px 12px rgba(0,0,0,.1)
-}
-*/
-
-
 #wayixia-bugs
 {
+  display: none;
   position: relative;
   background: transparent url(images/bug.tips.png) left 10px no-repeat;
   width: 28px;
@@ -264,8 +258,9 @@ button#wayixia-bugs {
 #wayixia-toolbar a, #wayixia-toolbar-screenshot a {
   font-size: 16px;
   color: #000;
-  height: 26px;
-  line-height: 26px;
+  padding-top: 5px;
+  height: 20px;
+  line-height: 25px;
   text-decoration: none;
   margin-left: 5px;
   display:inline-block;
@@ -283,11 +278,6 @@ a#wayixia-view
 
 #wayixia-screenshot-image {
   position: absolute;
-}
-
-a#wayixia-filter-icon {
-  background: transparent url(images/filter.png) no-repeat center center;
-  width: 23px;
 }
 
 /* user define wndx style */

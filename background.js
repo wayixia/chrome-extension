@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 //
 
-var display_tab_id = null;
 var plugin_name  = chrome.i18n.getMessage('menuDigImages');
 var block_images = {};
 // check new version for helper
@@ -121,35 +120,51 @@ function capture_page_task(tab, max, pos, canvas) {
 
 function screenshot_end(tab, canvas) {
   console.log('capture end');
-  chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
+  chrome.tabs.sendRequest( tab.id, { type : "screenshot-end" }, function(res) {
     create_display_full_screenshot(tab.id, canvas, tab.url); 
   });
 }
 
-function find_display_view(url) {
-  var views = chrome.extension.getViews();
-  for(var i=0; i < views.length; i++) {
-    var view = views[i];
-    var view_url = view.location.protocol + "//"+view.location.host+view.location.pathname;
-    if(view_url == url) {
-      return view;
-    }
-  }
+var cache_display = {};
+
+function get_display_cache( tab_id ) {
+  var obj = cache_display[tab_id];
+  delete cache_display[tab_id];
+  return obj;
 }
 
 function create_display_page(context_tab_id,  res) {  
-  var manager_url = chrome.extension.getURL("display.html");
-  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_images(id, res) } })(context_tab_id, res));
+  create_tab( { url: chrome.extension.getURL("display.html"), callback : ( function( id, res ) { return function( tab_id ) { 
+    cache_display[tab_id] = {
+      ctx_tab_id : id,
+      data : res 
+    }
+  } } )( context_tab_id, res ) } ) ;
 }
 
 function create_display_screenshot(context_tab_id,  res, url) {  
-  var manager_url = chrome.extension.getURL("screenshot.html");
-  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_screenshot(id, res, url) } })(context_tab_id, res));
+  create_tab( { url : chrome.extension.getURL("screenshot.html"), callback : ( function( id, res ) { return function( tab_id ) { 
+    cache_display[tab_id] = {
+      ctx_tab_id : id,
+      data : res,
+      url : url,
+      type : "screenshot"
+    };
+    //view.display_screenshot(id, res, url);
+  } } )( context_tab_id, res ) } );
 }
 
 function create_display_full_screenshot(context_tab_id,  res, url) {  
-  var manager_url = chrome.extension.getURL("screenshot.html");
-  focus_or_create_tab(manager_url, (function(id, res) { return function(view) { view.display_full_screenshot(id, res, url) } })(context_tab_id, res));
+  create_tab( { url : chrome.extension.getURL("screenshot.html"), callback : ( function( id, res ) { return function( tab_id ) { 
+    cache_display[tab_id] = {
+      ctx_tab_id : id,
+      data : res,
+      url : url,
+      type : "full_screenshot"
+    };
+
+    // view.display_full_screenshot(id, res, url);
+  } } )( context_tab_id, res ) } );
 }
 
 /** show features of the extension */
@@ -206,27 +221,46 @@ function get_save_path() {
 	return save_path;
 }
 
-function focus_or_create_tab(url, func) {
-  var view = find_display_view(url);
-  if(view) {
-    view.focus();
-    func(view);
-  } else {
-    // view is not created
-    chrome.tabs.onUpdated.addListener(function listener(tab_id, changed_props) {
-      if(tab_id != display_tab_id || changed_props.status != "complete")
-        return;
-      chrome.tabs.onUpdated.removeListener(listener);
-      // lookup views
-      var view = find_display_view(url);
-      if(view) {
-        view.focus();
-        func(view);
-      }
-    });
+function create_tab( json ) {
+  var display_tab_id;
+  // view is not created
+  chrome.tabs.onUpdated.addListener( function listener( tab_id, changed_props ) {
+    console.log(tab_id + "->" + changed_props.status );
+    if(tab_id != display_tab_id || changed_props.status != "complete")
+      return;
+    chrome.tabs.onUpdated.removeListener(listener);
+    // lookup views
+    chrome.tabs.get( tab_id, function( tab ) {
+      var views = chrome.extension.getViews( { windowId: tab.windowId } );
+      var view = views[0];
+      view.focus();
+    } ); 
+  });
+  
+  chrome.tabs.create( { "url" : json.url, "selected" : true }, function on_tab_created( tab ) {
+    display_tab_id = tab.id; 
+    json.callback( tab.id ); 
+  } );
+}
 
-    chrome.tabs.create({"url":url, "selected":true}, function on_tab_created(tab) { display_tab_id = tab.id; });
-  }
+function focus_or_create_tab(url, func) {
+  var display_tab_id;
+  // view is not created
+  chrome.tabs.onUpdated.addListener( function listener( tab_id, changed_props ) {
+    console.log(tab_id + "->" + changed_props.status );
+    if(tab_id != display_tab_id || changed_props.status != "complete")
+      return;
+    chrome.tabs.onUpdated.removeListener(listener);
+    // lookup views
+    chrome.tabs.get( tab_id, function( tab ) {
+      var views = chrome.extension.getViews( { windowId: tab.windowId } );
+      var view = views[0];
+      view.focus();
+      func(view); 
+    } ); 
+  });
+  
+  chrome.tabs.create( { "url" : url, "selected" : true}, function on_tab_created( tab ) { display_tab_id = tab.id; } );
 }
 
 // add commands listener
@@ -264,7 +298,6 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
 });
 
 chrome.downloads.onChanged.addListener(function(download) {
-  //console.log(download);
   var item = download_items[download.id];
   if(item) {
     if(download.error && item.view) {

@@ -5,14 +5,12 @@
  * @author: Q 
  */
 
-var t = null;
 var content_load_ok = false;
 var g_screenshot_zoom = 100;
 var g_screenshot_dialog = null;
 var g_canvas_editor = null;
 
 function initialize () {
-  var _this = t = this;
   var extension = chrome.extension.getBackgroundPage();
  
   var e_zoom = new Q.Slider({id: 'x-ctrl-screenshot-zoom', min: 25, max: 400, value: 100, 
@@ -28,24 +26,13 @@ function initialize () {
   Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.setValue(100); }
   Q.$('wayixia-screenshot-download').onclick = function() {
     wayixia_track_button_click(this);
-    //if(Q.$('wayixia-screenshot-image')) {
-      extension.download_image(Q.$('wayixia-canvas').toDataURL('image/png'));
-    //}
-  }
- 
-  content_load_ok = true;
-}
-
-function fireMouseEvent(element, evtName) {
-  if( document.createEvent ) 
-  {
-     var evObj = document.createEvent('MouseEvents');
-     evObj.initEvent( evtName, true, false );
-     element.dispatchEvent(evObj);
-  }
-  else if( document.createEventObject )
-  {
-      element.fireEvent('on'+evtName);
+    var tmp_canvas = document.createElement( 'canvas' );
+    tmp_canvas.width = Q.$( 'wayixia-canvas' ).width;
+    tmp_canvas.height = Q.$( 'wayixia-canvas' ).height;
+    var context = tmp_canvas.getContext('2d');
+    context.drawImage( Q.$( 'wayixia-canvas' ), 0, 0 );
+    context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
+    extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
   }
 }
 
@@ -168,6 +155,52 @@ __init__ : function( json ) {
 } );
 
 
+/** font size drop window
+ *
+ */
+Q.FontSizeSelector = Q.DropWindow.extend( {
+__init__ : function( json ) {
+  json = json || {};
+
+  var line_width = [14, 16, 22, 28, 40];
+  this.table = document.createElement('table');
+  this.table.width = "100%";
+  this.table.cellPadding = 3;
+  this.table.cellSpacing = 0;
+  for(var i=0; i < line_width.length; i++) {
+    var row = this.table.insertRow(-1);
+    var td1 = row.insertCell(-1);
+    var td2 = row.insertCell(-1);
+    td1.style.fontSize = line_width[i] + 'px';
+    td1.innerText = "FontSize"
+    row.onclick = (function( t, e ) { return function() {
+      if(t.onchange)
+        t.onchange( parseInt(e.style.fontSize, 10) );
+      t.hide();
+    } })(this, td1);
+    row.onmouseover = function(evt) { 
+      this.style.backgroundColor = "#EEE"; 
+    }
+    row.onmouseout = function(evt) { 
+      this.style.backgroundColor = "transparent";
+    }
+    td1.style.width = "120"
+    td2.style.width = "30";
+    td2.innerText = line_width[i] + "px";
+  }
+  
+  if( typeof json.onchange == "function" )
+    this.onchange = json.onchange;
+
+  json.content = this.table;
+  json.width = 122;
+  json.height = 200;
+  Q.DropWindow.prototype.__init__.call(this, json);
+}
+
+} );
+
+
 
 /** an editor of Canvas
  *
@@ -177,6 +210,7 @@ __init__ : function( json ) {
 Q.CanvasEditor = Q.extend({
 canvas  : null,
 context : null,
+font_size : 16,
 is_drag : false,
 x : 0,
 y : 0,
@@ -202,6 +236,11 @@ __init__ : function(config) {
           toolbars[name].setCheck(false);
         } else {
           t.action = name;
+          if( t.action == "eraser" ) {
+            Q.addClass( Q.$('draw-canvas'), "eraser-cur" )
+          } else {
+            Q.removeClass( Q.$('draw-canvas'), "eraser-cur" )
+          }
         } 
       } 
     } 
@@ -212,6 +251,8 @@ __init__ : function(config) {
   toolbars["rect"] = new Q.CheckBox({id: "wayixia-screenshot-rect", onchange: toolbars_onchange});
   toolbars["eclipse"] = new Q.CheckBox({id: "wayixia-screenshot-eclipse", onchange: toolbars_onchange});
   toolbars["line"] = new Q.CheckBox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
+  toolbars["brush"] = new Q.CheckBox({id: "wayixia-screenshot-brush", onchange: toolbars_onchange});
+  toolbars["eraser"] = new Q.CheckBox({id: "wayixia-screenshot-eraser", onchange: toolbars_onchange});
   toolbars["zoom"] = new Q.CheckBox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
 
   this.createInterface();
@@ -234,45 +275,81 @@ __init__ : function(config) {
 
 initToolbar : function() {
   var _this = this;
+  /**
+   * colorTable
+   */
   this.colorTable = new Q.ColorTable( { onchange : function( color ) {
-    Q.$( 'wayixia-screenshot-color-view' ).style.backgroundColor = color;
-    _this.context.strokeStyle = _this.contextI.strokeStyle = color;
-    _this.context.fillStyle = _this.contextI.fillStyle = color;
+    _this.setColor( color );
   } } );
     
-  Q.$( 'wayixia-screenshot-color-view' ).onclick = (function(t, e) { return function(evt) { 
+  Q.$( 'wayixia-screenshot-color' ).onclick = (function(t, e) { return function(evt) { 
     t.colorTable.showElement(e);
   } } )(this, Q.$( 'wayixia-screenshot-color' ));
 
+  /**
+   * widthSelector
+   */
   this.widthSelector = new Q.WidthSelector( { onchange: function(width) { 
-    _this.context.lineWidth = _this.contextI.lineWidth = width;
+    _this.setLineWidth( width );
   } } );
   
   Q.$( 'wayixia-screenshot-size' ).onclick = (function(t, e) { return function(evt) { 
     t.widthSelector.showElement(e);
   } } )(this, Q.$( 'wayixia-screenshot-size' ));
+
+  this.fontsizeSelector = new Q.FontSizeSelector( { onchange: function( fontsize ) {
+    _this.font_size = fontsize;
+    Q.$( 'wayixia-screenshot-fontsize' ).innerText = fontsize + 'px';
+  } } );
+  
+  Q.$( 'wayixia-screenshot-fontsize' ).onclick = (function(t, e) { return function(evt) { 
+    t.fontsizeSelector.showElement(e);
+  } } )(this, Q.$( 'wayixia-screenshot-fontsize' ));
 },
 
 createInterface : function() {
-  // create interface canvas
-  this.canvas_interface = this.canvas.cloneNode(true);
-  this.canvas.parentNode.appendChild(this.canvas_interface);
-  this.canvas_interface.style.cssText = "position: absolute; left: " + this.canvas.offsetLeft +
+  /** create D and I interface canvas */
+  this.canvasC = this.canvas.cloneNode(true);
+  this.canvas.parentNode.appendChild(this.canvasC);
+  this.canvasI = this.canvas.cloneNode(true);
+  this.canvas.parentNode.appendChild(this.canvasI);
+  
+  this.canvasC.id = "cache-canvas";
+  this.canvasI.id = "draw-canvas";
+
+  this.canvasC.style.cssText = this.canvasI.style.cssText = "position: absolute; left: " + this.canvas.offsetLeft +
     "; top: " + this.canvas.offsetTop + 
     "; width: " + this.canvas.offsetWidth + 
     "; height: " + this.canvas.offsetHeight + 
     ";";
-  this.contextI = this.canvas_interface.getContext('2d');
+  this.contextC = this.canvasC.getContext('2d');
+  this.contextI = this.canvasI.getContext('2d');
+  this.contextC.strokeStyle = this.contextI.strokeStyle = 
+  this.contextC.fillStyle = this.contextI.fillStyle = "#FF0033";
+},
+
+setColor : function( color ) {
+  Q.$( 'wayixia-screenshot-color-view' ).style.backgroundColor = color;
+  this.context.fillStyle = this.context.fillStyle = 
+  this.contextC.strokeStyle = this.contextI.strokeStyle = 
+  this.contextC.fillStyle = this.contextI.fillStyle = color;
+},
+
+setLineWidth : function( width ) {
+  this.context.lineWidth = this.contextI.lineWidth = this.contextC.lineWidth = width;
+  Q.$( 'wayixia-screenshot-line-width' ).style.height = width + 'px';
+  Q.$( 'wayixia-screenshot-line-text' ).innerText = width + 'px';
 },
 
 zoom : function(v) {
   this.canvas.style.zoom = v/100.0;
-  this.canvas_interface.style.zoom = v/100.0;
+  this.canvasI.style.zoom = v/100.0;
+  this.canvasC.style.zoom = v/100.0;
 },
 
 zoomxy : function(pnt) {
-  if(this.canvas.style.zoom) {
-    var z = parseFloat(this.canvas.style.zoom);
+  if(this.canvasC.style.zoom) {
+    var z = parseFloat(this.canvasC.style.zoom);
     return {x: parseInt(pnt.x*1.0 / z, 10), y: parseInt(pnt.y*1.0/z, 10)}
   } else {
     return pnt;
@@ -335,32 +412,11 @@ drawEclipse : function(pntFrom, pntTo, context) {
 },
 
 drawArrow: function(pntFrom, pntTo, context) {
-
-
-  var color="#ffff00";
-  var rotation=0;
   context.save();
-  /*
-  context.translate(pntTo.x, pntTo.y);
-  context.rotate(rotation);
-  context.lineWidth=2;
-  context.fillStyle=color;
-  context.beginPath();
-  context.moveTo(-50,-25);
-  context.lineTo(0,-25);
-  context.lineTo(0,-50);
-  context.lineTo(50,0);
-  context.lineTo(0,50);
-  context.lineTo(0,25);
-  context.lineTo(-50,25);
-  context.lineTo(-50,-25);
-  context.closePath();
-  context.stroke();
-  */
   var arrowShape = [
-    [-8, -5],
-    [-8, 5],
-    [2, 0],
+    [-16, -8],
+    [-16, 8],
+    [6, 0],
   ];
   
 // Functions from blog tutorial
@@ -406,42 +462,9 @@ drawArrow: function(pntFrom, pntTo, context) {
   context.closePath();
   context.stroke();
   
-  //var len = Math.sqrt( ( pntTo.y-pntFrom.y ) * ( pntTo.y-pntFrom.y ) + ( pntTo.x-pntFrom.x ) * ( pntTo.x-pntFrom.x ) );
-  //var yc = ( pntTo.y-pntFrom.y ) * 10.0 / len;
-  //var xc = 
-
   var ang = Math.atan2(pntTo.y-pntFrom.y, pntTo.x-pntFrom.x);
 	drawFilledPolygon(context,translateShape(rotateShape(arrowShape,ang),pntTo.x, pntTo.y));
-  var arrowShape2 = [
-    [2, 0],
-    [-8, -4],
-    [-8, 4]
-  ]
-	//drawFilledPolygon(context,translateShape(rotateShape(arrowShape2,ang),pntFrom.x, pntFrom.y));
   context.restore();
-},
-
-wrapText : function(context, text, x, y, maxWidth, lineHeight) {
-  var cars = text.split("\n");
-  for (var ii = 0; ii < cars.length; ii++) {
-   var line = "";
-   var words = cars[ii].split(" ");
-   for (var n = 0; n < words.length; n++) {
-    var testLine = line + words[n] + " ";
-    var metrics = context.measureText(testLine);
-    var testWidth = metrics.width;
-    if (testWidth > maxWidth) {
-     context.fillText(line, x, y);
-     line = words[n] + " ";
-     y += lineHeight;
-    }
-    else {
-     line = testLine;
-    }
-   }
-   context.fillText(line, x, y);
-   y += lineHeight;
-  }
 },
 
 getIntValue : function(s) {
@@ -449,32 +472,30 @@ getIntValue : function(s) {
 },
 
 drawText : function(pntFrom, pntTo, context) {
-  //this.drawRectangle(pntFrom, pntTo, context);
   var ta = document.createElement('textarea');
   var left = pntFrom.x;
   var top = pntFrom.y;
-  if(pntTo.x < pntFrom.x) {
+  if(pntTo.x < pntFrom.x) 
     left = pntTo.x;
-  }
-
-  if(pntTo.y < pntFrom.y) {
+  if(pntTo.y < pntFrom.y) 
     top = pntTo.y;
-  }
 
-  left += this.canvas.offsetLeft;
-  top  += this.canvas.offsetTop;
+  left += this.canvasC.offsetLeft;
+  top  += this.canvasC.offsetTop;
   var width = Math.abs(pntTo.x-pntFrom.x);
   var height = Math.abs(pntTo.y-pntFrom.y);
-  ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; font-size: 16px; border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ this.context.fillStyle +"; width:"+width+"px; height:"+height+"; line-height: 18px;";
-  this.canvas.parentNode.appendChild(ta);
+  ta.style.cssText = "overflow: hidden;position:absolute; background-color: transparent; "
+    + "font-size: " + this.font_size + "px; line-height: " + (this.font_size+2) + "px; " 
+    + "border: 0px solid red; left:"+left+"px; top:"+top+";px; color: "+ context.fillStyle +"; width:"+width+"px; height:"+height+";";
+  this.canvasI.parentNode.appendChild(ta);
   ta.focus();
-  ta.onblur = (function(t, a) { return function() {
-    var textCanvasCtx = t.context;
-    textCanvasCtx.font = a.currentStyle.fontSize + " " + a.currentStyle.fontFamily;
+  ta.onblur = (function(t, a, c) { return function() {
+    var line_height = t.getIntValue(a.currentStyle.lineHeight);
+    var textCanvasCtx = c;
+    textCanvasCtx.font = a.currentStyle.fontSize +" " + a.currentStyle.fontFamily;
     textCanvasCtx.fillStyle = a.currentStyle.color;
-    textCanvasCtx.strokeStyle = a.currentStyle.color; //"rgba(0,255,0,0.8)";
-    //textCanvasCtx.textBaseline = 'top';//设置文本的垂直对齐方式
-    textCanvasCtx.textAlign = 'left'; //设置文本的水平对对齐方式
+    textCanvasCtx.strokeStyle = a.currentStyle.color; 
+    textCanvasCtx.textAlign = "left";
     a.style.display = "none";
     var text = a.value + '';
     var text_left = left+t.getIntValue(a.currentStyle.paddingLeft)+t.getIntValue(a.currentStyle.borderLeftWidth) - 15;
@@ -482,7 +503,6 @@ drawText : function(pntFrom, pntTo, context) {
     var tt = top+t.getIntValue(a.currentStyle.paddingTop) +t.getIntValue(a.currentStyle.borderTopWidth)+t.getIntValue(a.currentStyle.marginTop);
     var line = "";
     var line_width = 0;
-    var line_height = t.getIntValue(a.currentStyle.lineHeight);
     for(var i=0; i<text.length; i++) {
       var px = textCanvasCtx.measureText(text[i]);
       line_width += px.width;
@@ -497,10 +517,35 @@ drawText : function(pntFrom, pntTo, context) {
         line += text[i];
       }
     }
-    textCanvasCtx.fillText(line, text_left, tt);
+    textCanvasCtx.fillText( line, text_left, tt );
     a.style.display = "none";
     a.parentNode.removeChild(a);
-  }})(this, ta);
+  }})(this, ta, context);
+},
+
+drawBrush : function( pntTo, context ) {
+  this.brushPoints.push( pntTo );
+  for( var i=0; i < this.brushPoints.length; i++ )  {   
+    context.beginPath();
+    if( i > 0 ) 
+      context.moveTo( this.brushPoints[i-1].x, this.brushPoints[i-1].y );  
+    else
+      context.moveTo( this.brushPoints[i].x-1, this.brushPoints[i].y );  
+    context.lineTo( this.brushPoints[i].x, this.brushPoints[i].y ); 
+    context.closePath();
+    context.stroke();
+  }
+},
+
+eraser : function( pntTo, context )  {
+  var strokeStyle = context.strokeStyle;
+  context.globalCompositeOperation = "destination-out";
+  context.beginPath();
+  context.arc( pntTo.x, pntTo.y, 7, 0, Math.PI*2 );
+  context.strokeStyle = "rgba(250,250,250, 0)";
+  context.fill();
+  context.globalCompositeOperation = "source-over";
+  context.strokeStyle = strokeStyle;
 },
 
 _MouseDown : function(evt) {
@@ -510,9 +555,8 @@ _MouseDown : function(evt) {
     return; 
   var target_wnd = drag_handle = this.nn6 ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
 
-  if(target_wnd && (target_wnd == this.canvas_interface)) {
+  if(target_wnd && (target_wnd == this.canvasI)) {
       var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop}; //Q.scrollInfo(); 
-    //fireMouseEvent(document, "mousedown");
       this.is_drag = true; 
       this.x = scrollInfo.l+evt.clientX;
       this.y = scrollInfo.t+evt.clientY; 
@@ -523,6 +567,7 @@ _MouseDown : function(evt) {
       }})(this), 100);
 
       this.pos = Q.absPosition(this.canvas);
+      this.brushPoints = [];
       return true; 
   }
 },
@@ -531,15 +576,8 @@ _MouseMove : function(evt){
   this.is_moved = true;
   evt = evt || window.event
   if (this.is_drag) {
-    //var x = evt.clientX-_this.x;
-    //var y = evt.clientY-_this.y;
-    //if(_this.hCaptureWnd.style.zoom) {
-    //  _this.hCaptureWnd.on_move(_this.begin_left+(x/_this.hCaptureWnd.style.zoom), _this.begin_top+(y/_this.hCaptureWnd.style.zoom));
-    //} else {
-    //  _this.hCaptureWnd.on_move(_this.begin_left+x, _this.begin_top+y);
-    //}
     var scrollInfo = { l: this.container.scrollLeft, t: this.container.scrollTop};
-    this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
+    this.contextI.clearRect(0, 0, this.canvasI.offsetWidth, this.canvasI.offsetHeight);
     var pointFrom = {};
     pointFrom.x = this.x-this.pos.left+0.5;
     pointFrom.y = this.y-this.pos.top+0.5;
@@ -549,9 +587,7 @@ _MouseMove : function(evt){
     
     pointFrom = this.zoomxy(pointFrom);
     pointTo = this.zoomxy(pointTo);
-
-    console.log(pointFrom)
-    console.log(pointTo)
+    
     if(this.action == "line") {
       this.drawLine(pointFrom, pointTo, this.contextI);
     } else if(this.action == "rect" || this.action == "text") {
@@ -560,6 +596,10 @@ _MouseMove : function(evt){
       this.drawEclipse(pointFrom, pointTo, this.contextI);
     } else if(this.action == "arrow") {
       this.drawArrow(pointFrom, pointTo, this.contextI);
+    } else if(this.action == "brush") {
+      this.drawBrush(pointTo, this.contextC);
+    } else if(this.action == "eraser") {
+      this.eraser(pointTo, this.contextC);
     }
   }
 },
@@ -571,27 +611,32 @@ _MouseUp : function(evt) {
       this.is_drag=false;
       Q.removeEvent(document,'mousemove', this.MouseMove_Handler);
       Q.printf("end: x -> " + evt.clientX + ", y -> " + evt.clientY);
+
       var pointFrom = {};
       pointFrom.x = this.x-this.pos.left+0.5;
       pointFrom.y = this.y-this.pos.top+0.5;
       var pointTo = {};
       pointTo.x = scrollInfo.l+evt.clientX-this.pos.left+0.5;
       pointTo.y = scrollInfo.t+evt.clientY-this.pos.top+0.5;
-      
       pointFrom = this.zoomxy(pointFrom);
       pointTo = this.zoomxy(pointTo);
+
       if(this.action == "line") {
-        this.drawLine(pointFrom, pointTo, this.context);
+        this.drawLine(pointFrom, pointTo, this.contextC);
       } else if(this.action == "rect") {
-        this.drawRectangle(pointFrom, pointTo, this.context);
+        this.drawRectangle(pointFrom, pointTo, this.contextC);
       } else if(this.action == "eclipse") {
-        this.drawEclipse(pointFrom, pointTo, this.context);
+        this.drawEclipse(pointFrom, pointTo, this.contextC);
       } else if(this.action == "arrow") {
-        this.drawArrow(pointFrom, pointTo, this.context);
+        this.drawArrow(pointFrom, pointTo, this.contextC);
       } else if(this.action == "text") {
-        this.drawText(pointFrom, pointTo, this.context);
+        this.drawText(pointFrom, pointTo, this.contextC);
+      } else if(this.action == "brush") {
+        this.drawBrush(pointTo, this.contextC);
+      } else if(this.action == "eraser") {
+        this.eraser(pointTo, this.contextC);
       }
-      this.contextI.clearRect(0, 0, this.canvas_interface.offsetWidth, this.canvas_interface.offsetHeight);
+      this.contextI.clearRect(0, 0, this.canvasI.offsetWidth, this.canvasI.offsetHeight);
     }
     this.is_moved=false;
 }
@@ -600,9 +645,29 @@ _MouseUp : function(evt) {
 Q.ready(function() {
   Q.set_locale_text(locale_text);
   initialize();
+
+  var extension = chrome.extension.getBackgroundPage();
+  chrome.tabs.getCurrent( function( tab ) {
+    /** initialize images data*/
+    var data = extension.get_display_cache(tab.id)
+    if( !data )
+      return;
+    wayixia_source_tab_id = data.ctx_tab_id;
+    if( data.type == "screenshot" ) {
+      display_screenshot(data.ctx_tab_id, data.data, data.url);
+    } else if( data.type == "full_screenshot" ) {
+      display_full_screenshot(data.ctx_tab_id, data.data, data.url);
+    }
+    
+  } );
+
   // debug code
   //display_screenshot(0, "http://s1.wayixia.com/007022b0-c338-4e92-b460-e47421d34f70", "http://wayixia.com");
+<<<<<<< HEAD
   display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
+=======
+  //display_screenshot(0, "http://tgi1.jia.com/104/839/4839808.jpg", "http://wayixia.com");
+>>>>>>> 185601bb8aa904e5453dddb1b72a5a7b13439295
 });
 
 
@@ -631,7 +696,7 @@ function drag_screen_images_begin() {
 function drag_screen_images_update(n, total) {
   var v = n*scroll_loadding.max*1.0/total;
   console.log("drag_screen_images_update ->" + v);
-  scroll_loadding.set_value(v);
+  scroll_loadding.setValue(v);
 }
 
 function drag_screen_images_end() {
@@ -653,13 +718,7 @@ function display_full_screenshot(tab_id, canvas_data, url) {
   wayixia_track_event("display_full_screenshot", "from_menu");  
   wayixia_source_tab_id = tab_id;
   wayixia_request_data.data.pageUrl = url;
-  var wayixia_container = Q.$('wayixia-list');
-  var img = document.createElement('img');
-  img.id = 'wayixia-screenshot-image';
-  wayixia_container.innerHTML = '';
-  wayixia_container.appendChild(img);
-  merge_images(canvas_data, img);
-  Q.drag.attach_object(img, {self: true});
+  merge_images(canvas_data);
 }
 
 function display_screenshot(tab_id, image_data, url) {
@@ -679,7 +738,6 @@ function display_screenshot(tab_id, image_data, url) {
 
     drag_screen_images_end();
     var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
-    //wayixia_canvas.width = 1000;
     draw_context.putImageData(imgData,0,0);
     // init painter
     g_canvas_editor = new Q.CanvasEditor({
@@ -688,21 +746,20 @@ function display_screenshot(tab_id, image_data, url) {
     });
   };
   img.src = image_data;
-  //Q.drag.attach_object(img, {self: true});
 }
 
 /* call background script end */
 
-
-function merge_images(canvas_data, image_element) {
+function merge_images(canvas_data) {
   // initialize canvas
-  var canvas = document.createElement("canvas");
+  var canvas = Q.$('wayixia-canvas'); //  document.createElement("canvas");
 	canvas.width = canvas_data.size.full_width;
 	canvas.height = canvas_data.size.full_height;
-  draw_image(canvas, canvas_data, 0, image_element);
+ 
+  draw_image(canvas, canvas_data, 0);
 }
 
-function draw_image(canvas, canvas_data, n, image_element) {
+function draw_image(canvas, canvas_data, n) {
   var screenshots = canvas_data.screenshots;
   if(n == 0) {
        drag_screen_images_begin();
@@ -710,8 +767,12 @@ function draw_image(canvas, canvas_data, n, image_element) {
   drag_screen_images_update(n+1, screenshots.length);
   if(n >= screenshots.length ) {
     // draw completed
-    image_element.src = canvas.toDataURL('image/png');
+    //image_element.src = canvas.toDataURL('image/png');
     drag_screen_images_end();
+    g_canvas_editor = new Q.CanvasEditor({
+      id : canvas,
+      container: Q.$( 'wayixia-container' )
+    });
   } else {
     console.log('draw '+n+' image');
     var draw_context = canvas.getContext("2d");
@@ -736,7 +797,7 @@ function draw_image(canvas, canvas_data, n, image_element) {
       return function() {
         console.log('image load ok');
         ctx.drawImage(m,l,t);
-        draw_image(canvas, canvas_data, ++n, image_element);
+        draw_image(canvas, canvas_data, ++n);
       }
     })(draw_context, memory_image, x, y);
     memory_image.src = s.data_url;
