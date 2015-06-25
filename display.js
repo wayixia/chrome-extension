@@ -226,10 +226,6 @@ function initialize () {
     }
   });
   
-  if(wayixia_request_data.imgs) {
-    _this.display_valid_images(wayixia_request_data.imgs, wayixia_request_data.data)();
-  }
-
   console.log('content is loaded');
 };
 
@@ -284,7 +280,9 @@ function clear_album_player() {
 /** 挖图界面初始化 */
 Q.ready(function() {  
   Q.set_locale_text(locale_text);
+  initialize();
   
+
   var extension = chrome.extension.getBackgroundPage();
   chrome.tabs.getCurrent( function( tab ) {
     /** initialize images data*/
@@ -298,7 +296,9 @@ Q.ready(function() {
     wayixia_request_data.imgs = packet.imgs;
     wayixia_request_data.data = packet.data;
     
-    initialize();
+    if(wayixia_request_data.imgs) {
+      window.display_valid_images(wayixia_request_data.imgs, wayixia_request_data.data)();
+    }
     content_load_ok = true;
   } );
 });

@@ -25,60 +25,57 @@
 <script src="display.js"></script>
 </head>
 <body style="-moz-user-select:none;-webkit-user-select: none;">
-<div id="wayixia-overlay">
-  <div id="wayixia-title-bar">
-     __MSG_extShortName__     
-     <font style="color: #999;font-size: 16px;"> 
-       __MSG_extDescription__ 
-     </font>
-     <div id="wayixia-user-menu">
-        <button id="wayixia-close"> 
-          __MSG_extCloseWindow__
-        </button>
-        <button id="wayixia-help">
-          __MSG_extHelp__
-        </button>
-        <button id="wayixia-bugs">
-          &nbsp;<span id="wayixia-bugs-num"></span>
-        </button>
-     </div>
+<div id="wayixia-title-bar">
+  __MSG_extShortName__     
+  <font style="color: #999;font-size: 16px;"> 
+    __MSG_extDescription__ 
+  </font>
+  <div id="wayixia-user-menu">
+    <button id="wayixia-close"> 
+      __MSG_extCloseWindow__
+    </button>
+    <button id="wayixia-help">
+      __MSG_extHelp__
+    </button>
+    <button id="wayixia-bugs">
+      &nbsp;<span id="wayixia-bugs-num"></span>
+    </button>
   </div>
-  <div id="wayixia-toolbar">
-    <a id="wayixia-view" target="_blank" href="#">
-      <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">
-      <option value="size_1">__MSG_viewTypeSize1__(100x100)</option>
-      <option value="size_2">__MSG_viewTypeSize2__(200x200)</option>
-      <option value="size_3">__MSG_viewTypeSize3__(500x300)</option>
-      </select>
-    </a>
-    <button id="wayixia-local-download" class="wayixia-toolbar-button download"> &nbsp; </button>
-    <button id="wayixia-select-all" class="wayixia-toolbar-button selectall ">&nbsp;</button>
-    <button id="wayixia-add-block"  class="wayixia-toolbar-button block"> &nbsp; </button>
-    <button id="wayixia-show-block" class="wayixia-toolbar-button showblock checked"> &nbsp; </button>
-    <button id="wayixia-filter-icon" class="wayixia-toolbar-button filter">&nbsp;</button>
+</div>
+<div id="wayixia-toolbar">
+  <div id="wayixia-view">
+    <select id="wayixia-select-view" style="width: 300px; height: 30px;display: none;">
+    <option value="size_1">__MSG_viewTypeSize1__(100x100)</option>
+    <option value="size_2">__MSG_viewTypeSize2__(200x200)</option>
+    <option value="size_3">__MSG_viewTypeSize3__(500x300)</option>
+    </select>
+  </div>
+  <button id="wayixia-local-download" class="wayixia-toolbar-button download"> &nbsp; </button>
+  <button id="wayixia-select-all" class="wayixia-toolbar-button selectall ">&nbsp;</button>
+  <button id="wayixia-add-block"  class="wayixia-toolbar-button block"> &nbsp; </button>
+  <button id="wayixia-show-block" class="wayixia-toolbar-button showblock checked"> &nbsp; </button>
+  <button id="wayixia-filter-icon" class="wayixia-toolbar-button filter">&nbsp;</button>
+  <button style="margin:0; border:0;outline:0; height:41px;overflow:hidden; background-color: transparent;">
     <a>__MSG_filterWidth__</a>
     <a>
-      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 100px; margin-top: 6px;">
-        <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
+      <div id="x-ctrl-mini-width" class="q-slider x" style="width: 100px; height:10px;">
+        <div class="q-thumb" style="height:16px; width: 16px;margin:-3px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-width">0px</a>
     <a>__MSG_filterHeight__</a>
     <a> 
-      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 100px; margin-top: 6px;">
-        <div class="q-thumb" style="height:16px; width: 16px;margin:7px 0;"></div> 
+      <div id="x-ctrl-mini-height" class="q-slider x" style="width: 100px; height: 10px;">
+        <div class="q-thumb" style="height:16px; width: 16px;margin:-3px 0;"></div> 
       </div>
     </a>
     <a id="wayixia-min-height">0px</a>
-    <!--button id="wayixia-bugs" href="#"  class="wayixia-ctrl-button" style="margin-left:0;">
-      <span id="wayixia-bugs-num"></span>
-    </button-->
+  </button>
+</div>
+<div id="wayixia-container">
+  <div id="wayixia-list">
   </div>
-  <div id="wayixia-container">
-    <div id="wayixia-list">
-    </div>
-    <div id="dummy-div" style="height: 0px;"></div>
-  </div>
+  <div id="dummy-div" style="height: 0px;"></div>
 </div>
 
 </body>

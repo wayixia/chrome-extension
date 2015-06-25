@@ -1,3 +1,16 @@
+
+/** \brief wayixia style css
+ *
+ */
+
+body {
+  padding:0; 
+  margin:0;
+  -moz-user-select:none;
+  -webkit-user-select: none;
+  font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif; 
+}
+
 /**
  toolbar button css style
  */
@@ -106,19 +119,12 @@
 
 .wayixia-toolbar-button.filter {
   background-position: -225px -45px;
+  background-color: transparent;
 }
 
-#wayixia-overlay {
-  position: fixed; 
-  left: 0px; 
-  top: 0px; 
-  right: 0px; 
-  bottom: 0px; 
-  opacity: 0.95; 
-  /*background: rgb(242, 242, 242); */
-  background: #FFF;
-}
-
+/** \brief layout of wayixia panel
+ *
+ */
 #wayixia-title-bar {
   position: fixed; 
   left: 0px; 
@@ -131,7 +137,6 @@
   text-indent: 10px; 
   cursor: default; 
   text-align: left;
-  font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif; 
   text-shadow: 1px 1px #000; 
   font-size: 18px; 
   background: rgb(45, 45, 45);
@@ -247,40 +252,31 @@ button#wayixia-bugs {
   height: 41px;
   border-bottom: 1px solid #ebebeb;
   background-color: #FCFCFC;
-  /*
-  background-color: transparent;
-  box-shadow:0 1px 12px rgba(0,0,0,.1);
-  -moz-box-shadow:0 1px 12px rgba(0,0,0,.1);
-  -webkit-box-shadow:0 1px 12px rgba(0,0,0,.1)
-  */  
 }
 
 #wayixia-toolbar a, #wayixia-toolbar-screenshot a {
-  font-size: 16px;
+  font-size: 14px;
   color: #000;
-  padding-top: 5px;
-  height: 20px;
-  line-height: 25px;
   text-decoration: none;
   margin-left: 5px;
   display:inline-block;
+  position: relative;
 }
 
 
-a#wayixia-view
+#wayixia-view
 {
   float: right;
   margin: 0 10px 0 0;
   text-decoration: underline;
   height:42px;
 }
-/* */
 
 #wayixia-screenshot-image {
   position: absolute;
 }
 
-/* user define wndx style */
+/** user define wndx style */
 #wayixia-progress {
   visibility: hidden;
   z-index: 90000;
@@ -464,6 +460,7 @@ a#wayixia-view
   box-shadow: 0 1px 9px rgba(0,0,0,.1);
 -moz-box-shadow: 0 1px 9px rgba(0,0,0,.1);
 -webkit-box-shadow: 0 1px 9px rgba(0,0,0,.1);
+ z-index: auto;
 }
 
 .q-images-box .q-box-item:hover,

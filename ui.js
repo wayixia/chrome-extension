@@ -60,14 +60,14 @@ var menu_report_a_bug = new Q.MenuItem( {
 } );
 
 var menu_about = new Q.MenuItem( {
-  text : "联系我们",
+  text : "关于我们",
   callback : function( menuitem ) {
     window.open( 'http://wayixia.com/chrome/about' );
   }
 } );
 
-wayixia_help_menu.addMenuItem(menu_suggest);
 wayixia_help_menu.addMenuItem(menu_report_a_bug);
+wayixia_help_menu.addMenuItem(menu_suggest);
 wayixia_help_menu.addMenuItem(menu_about);
 wayixia_help_menu.hide();
 
