@@ -23,6 +23,11 @@
     "message": "About",
     "description": "About"
   },
+  
+  "extContact": {
+    "message": "Contact us",
+    "description": ""
+  },
 
   "extVersion" : {
     "message": "Version",

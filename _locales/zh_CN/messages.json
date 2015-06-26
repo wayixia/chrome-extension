@@ -23,6 +23,11 @@
     "message": "关于插件",
     "description": "关于插件"
   },
+  
+  "extContact": {
+    "message": "联系我们",
+    "description": "联系我们"
+  },
 
   "extVersion" : {
     "message": "版本",

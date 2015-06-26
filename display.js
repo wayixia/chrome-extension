@@ -6,7 +6,6 @@
 ---------------------------------------------------------*/
 
 var t = null;
-var content_load_ok = false;
 
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
@@ -50,13 +49,11 @@ function initialize () {
     on_change: function(text, value) {
       wayixia_images_box.set_style(value);
       extension.view_type_set(value);
-      wayixia_track_button_click(Q.$('wayixia-view'), value);
+      if(!t.__first_display)
+        wayixia_track_button_click(Q.$('wayixia-view'), value);
+      t.__first_display = true;
     }  
   });
-
-  
-  //view_type.set_value(extension.view_type());
-  //wayixia_images_box.set_style(extension.view_type());
 
   var checkbox_show_block = new Q.CheckBox({id:'wayixia-show-block',
     checked: true,
@@ -281,7 +278,6 @@ function clear_album_player() {
 Q.ready(function() {  
   Q.set_locale_text(locale_text);
   initialize();
-  
 
   var extension = chrome.extension.getBackgroundPage();
   chrome.tabs.getCurrent( function( tab ) {
@@ -299,7 +295,6 @@ Q.ready(function() {
     if(wayixia_request_data.imgs) {
       window.display_valid_images(wayixia_request_data.imgs, wayixia_request_data.data)();
     }
-    content_load_ok = true;
   } );
 });
 

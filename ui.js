@@ -60,7 +60,7 @@ var menu_report_a_bug = new Q.MenuItem( {
 } );
 
 var menu_about = new Q.MenuItem( {
-  text : "关于我们",
+  text : Q.locale_text( 'extContact' ),
   callback : function( menuitem ) {
     window.open( 'http://wayixia.com/chrome/about' );
   }
