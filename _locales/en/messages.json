@@ -82,12 +82,12 @@
   },
 
   "haveBlocked": {
-    "message": "Blocked",
-    "description": "Blocked"
+    "message": "show/hide blocked images",
+    "description": ""
   },
 
   "addBlock": {
-    "message": "Block",
+    "message": "Block selected images",
     "description": "Block"
   },
   
@@ -342,6 +342,60 @@
     "message" : "Size",
     "description": ""
   },
+
+  "toolSave" : {
+    "message": "Save",
+    "description": ""
+  },
+
+  "toolText" : {
+    "message": "Text",
+    "description": ""
+  },
+
+  "toolArrow" : {
+    "message": "Arrow",
+    "description": ""
+  },
+
+
+  "toolRectangle" : {
+    "message": "Rectangle",
+    "description": ""
+  },
+
+  "toolEllipse" : {
+    "message": "Ellipse",
+    "description": ""
+  },
+
+  "toolLine" : {
+    "message": "Line",
+    "description": ""
+  },
+
+
+  "toolBrush" : {
+    "message": "Brush",
+    "description": ""
+  },
+
+  "toolEraser" : {
+    "message": "Eraser",
+    "description": ""
+  },
+
+
+  "toolColorTable" : {
+    "message": "Color table",
+    "description": ""
+  },
+
+  "toolLineSize" : {
+    "message": "Line size",
+    "description": ""
+  },
+
 
  
   "dummy" : {

@@ -31,6 +31,7 @@ create_element: function(config, init) {
   // init box
   box.innerHTML = '<span class="q-box-info"> \
     <span class="wh">'+config.width+'x'+config.height+' </span> \
+    <button class="preview">&nbsp</button> \
     </span>';
   // image container
   var img_container = document.createElement('div');
@@ -72,11 +73,18 @@ create_element: function(config, init) {
     Q.removeClass(this, "mouseover");
   }
 
-  box.onclick = function() {
+  box.onclick = function(evt) {
+    _this.set_check(this, !Q.hasClass(this, 'mouseselected'));
+    evt = evt || window.event;
+    var target = Q.isNS6() ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
+    if( target.className == "preview" ) {
+      _this.on_item_dblclick(this);
+    }
+    
     _this.set_check(this, !Q.hasClass(this, 'mouseselected'));
   }
 
-  Q.dblclick( box, this.on_item_dblclick );
+  //Q.dblclick( box, this.on_item_dblclick );
   init(box);
 },
   

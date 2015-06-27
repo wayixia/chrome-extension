@@ -222,6 +222,12 @@ function initialize () {
       Q.$('wayixia-min-height').innerText = t.g_min_height + 'px';
     }
   });
+
+  /** initialize title of buttons */
+  Q.$( 'wayixia-local-download' ).title = Q.locale_text( 'toolSave' );
+  Q.$( 'wayixia-select-all' ).title = Q.locale_text( 'selectAll' );
+  Q.$( 'wayixia-add-block' ).title = Q.locale_text( 'addBlock' );
+  Q.$( 'wayixia-show-block' ).title = Q.locale_text( 'haveBlocked' );
   
   console.log('content is loaded');
 };

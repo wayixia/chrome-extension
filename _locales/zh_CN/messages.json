@@ -354,6 +354,59 @@
     "description": ""
   },
 
+  "toolSave" : {
+    "message": "保存到本地",
+    "description": ""
+  },
+
+  "toolText" : {
+    "message": "文字",
+    "description": ""
+  },
+
+  "toolArrow" : {
+    "message": "箭头",
+    "description": ""
+  },
+
+
+  "toolRectangle" : {
+    "message": "矩形",
+    "description": ""
+  },
+
+  "toolEllipse" : {
+    "message": "椭圆",
+    "description": ""
+  },
+
+  "toolLine" : {
+    "message": "直线",
+    "description": ""
+  },
+
+
+  "toolBrush" : {
+    "message": "画笔",
+    "description": ""
+  },
+
+  "toolEraser" : {
+    "message": "橡皮擦",
+    "description": ""
+  },
+
+
+  "toolColorTable" : {
+    "message": "选择颜色",
+    "description": ""
+  },
+
+  "toolLineSizeSave" : {
+    "message": "线条大小",
+    "description": ""
+  },
+
   "dummy" : {
     "message": "",
     "description": ""

@@ -34,6 +34,20 @@ function initialize () {
     context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
     extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
   }
+
+  Q.$( 'wayixia-screenshot-download' ).title = Q.locale_text( 'toolSave' );
+  Q.$( 'wayixia-screenshot-text' ).title = Q.locale_text( 'toolText' );
+  Q.$( 'wayixia-screenshot-arrow' ).title = Q.locale_text( 'toolArrow' );
+  Q.$( 'wayixia-screenshot-rect' ).title = Q.locale_text( 'toolRectangle' );
+
+  Q.$( 'wayixia-screenshot-eclipse' ).title = Q.locale_text( 'toolEllipse' );
+  Q.$( 'wayixia-screenshot-line' ).title = Q.locale_text( 'toolLine' );
+  Q.$( 'wayixia-screenshot-brush' ).title = Q.locale_text( 'toolBrush' );
+  Q.$( 'wayixia-screenshot-eraser' ).title = Q.locale_text( 'toolEraser' );
+
+  Q.$( 'wayixia-screenshot-color' ).title = Q.locale_text( 'toolColorTable' );
+  Q.$( 'wayixia-screenshot-size' ).title = Q.locale_text( 'toolLineSize' );
+
 }
 
 /** 简易的调色板，固定给出几组颜色

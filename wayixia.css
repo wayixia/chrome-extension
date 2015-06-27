@@ -468,3 +468,9 @@ button#wayixia-bugs {
   borders: #FFF 5px solid;
 }
 
+.q-images-box .q-box-item .preview {
+  background: transparent url(images/canvas-toolbar.png) no-repeat left -160px;
+  border-width: 0;
+  outline: 0;
+}
+
