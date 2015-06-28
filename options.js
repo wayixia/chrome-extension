@@ -137,7 +137,7 @@ function display_filter_rules() {
           rules.push(filter_rules.rules[name]);
         }
         var store = new Q.Store({
-          datasource: rules
+          data: rules
         });
         d.table = new Q.Table({ 
           title: Q.locale_text('filterRulesList'), 
@@ -148,7 +148,7 @@ function display_filter_rules() {
           ],
           store: store,
           row_onclick : function(row) {
-            var url = this.get_text(row, "url");
+            var url = this.getRecord(row).url;
           },
           row_onmouseover : function(row) {},
           row_onmouseout : function(row) {},

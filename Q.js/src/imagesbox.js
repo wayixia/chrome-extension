@@ -7,17 +7,19 @@
 
 Q.ImagesBox = Q.extend({
 hwnd: null,
+buttons: [],
 __init__ : function(json) {
   json = json || {};
   var container = Q.$(json.id);
   this.hwnd = document.createElement('div');
   container.appendChild(this.hwnd);
   this.hwnd.className = "q-images-box";
+  this.buttons = json.buttons || [];
 
   this.on_item_changed = json.on_item_changed || function(item, checked) {};
   this.is_item_enabled = json.is_item_enabled || function(item) { return true; };
-  if(typeof json.on_item_dblclick == 'function') 
-    this.on_item_dblclick= json.on_item_dblclick;
+  if(typeof json.on_item_click == 'function') 
+    this.on_item_click= json.on_item_click;
 },
 
 create_element: function(config, init) {
@@ -29,10 +31,16 @@ create_element: function(config, init) {
   box.className = 'q-box-item';
   this.hwnd.appendChild(box);
   // init box
-  box.innerHTML = '<span class="q-box-info"> \
-    <span class="wh">'+config.width+'x'+config.height+' </span> \
-    <button class="preview">&nbsp</button> \
-    </span>';
+  var html = '<span class="q-box-info"><span class="wh">'+config.width+'x'+config.height+' </span>';
+
+  var buttons_html = '';
+  for( var i=0; i < this.buttons.length; i++ ) 
+    buttons_html += '<button class="' + this.buttons[i] + '">&nbsp;</button>';
+  if( this.buttons.length > 0 )
+    html += '<em class="split"></em>' + buttons_html;
+  html += '</span>';
+
+  box.innerHTML = html;
   // image container
   var img_container = document.createElement('div');
   var a = document.createElement('a');
@@ -74,11 +82,14 @@ create_element: function(config, init) {
   }
 
   box.onclick = function(evt) {
-    _this.set_check(this, !Q.hasClass(this, 'mouseselected'));
     evt = evt || window.event;
     var target = Q.isNS6() ? evt.target : evt.srcElement; // 获取鼠标悬停所在的对象句柄
-    if( target.className == "preview" ) {
-      _this.on_item_dblclick(this);
+    for( var i=0; i < _this.buttons.length; i++ ) {
+      if( target.className == _this.buttons[i] ) {
+        _this.on_item_click(this, target);
+        event.cancelBubble = true;
+        return;
+      }
     }
     
     _this.set_check(this, !Q.hasClass(this, 'mouseselected'));

@@ -7,7 +7,11 @@
 ## 功能
 1. 网页智能图片采集
 2. 网页截屏
-3. 支持大图下载（目前支持新浪微博）
+3. 支持大图下载（目前支持新浪微博, 新增QZONE）
+4. 网页截屏和图片标注
+
+# 建议反馈
++QQ群 321442108
 
 ## 插件安装：
 https://chrome.google.com/webstore/detail/ahajhopfbfpekcljjjppolcmapaidldc

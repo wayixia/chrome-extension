@@ -16,7 +16,7 @@ setTimeout(function() {
   http_call.onreadystatechange = (function(callee) { return function() {
     if (this.readyState==4) {  // 4 = "loaded"
       if (this.status==200) { // 200 = OK
-        //console.log(this.responseText);
+        console.log(this.responseText);
         try {
           var rules = JSON.parse(this.responseText);
           if(rules) {
@@ -172,6 +172,11 @@ function create_upgrade_page() {
   var manager_url = "http://wayixia.com/chrome/#v."+chrome.runtime.getManifest().version;
   focus_or_create_tab(manager_url, function(view) { });
   user_config_version_ok();
+}
+
+
+function edit_image( url, view ) {
+  focus_or_create_tab(chrome.extension.getURL("screenshot.html") + "?img=" + url, function(view) { });
 }
 
 var download_items = {};

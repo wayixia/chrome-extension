@@ -18,7 +18,8 @@ function initialize () {
   var accept_length  = 0;
   var extension = chrome.extension.getBackgroundPage();
  
-  var wayixia_images_box = new Q.ImagesBox({id: 'wayixia-list', 
+  var wayixia_images_box = new Q.ImagesBox({id: 'wayixia-list',
+    buttons : ['preview', 'edit', 'save'],
     on_item_changed: function(item, check) {
       if(item.style.display == '') { 
         update_ui_count();
@@ -27,17 +28,23 @@ function initialize () {
     is_item_enabled: function(item) {
       return (item.style.display != 'none');
     },
-    on_item_dblclick : function(item) {
-      var imgs = [];
-      wayixia_images_box.each_item(function(item2) {
-        if(item2.style.display == '') {
-          imgs.push({
-            src: item2.getAttribute('data-url')
-          });
-        }
-      });
-
-      album_player_display(item.getAttribute('data-url'), imgs);
+    on_item_click : function( item, target ) {
+      console.log(target.className);
+      if( target.className == "preview" ) {
+        var imgs = [];
+        wayixia_images_box.each_item( function(item2) {
+          if(item2.style.display == '') {
+            imgs.push({
+              src: item2.getAttribute('data-url')
+            });
+          }
+        } );
+        album_player_display(item.getAttribute('data-url'), imgs);
+      } else if( target.className == "save" ) {
+        download_item(item);
+      } else if( target.className == "edit" ) {
+        edit_item(item);
+      }
     }
   });
 
@@ -116,7 +123,9 @@ function initialize () {
   Q.$('wayixia-local-download').onclick=function() {
     wayixia_track_button_click(this);
     wayixia_images_box.each_item(function(item) {
-      download_item(item);
+      if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+        download_item(item);
+      }
     });
   }
   
@@ -132,13 +141,18 @@ function initialize () {
   }
 
   function download_item(item) {
-    if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+    //if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
       var extension = chrome.extension.getBackgroundPage();
       var url = item.getAttribute('data-url');
       extension.download_image(url, window);
       Q.addClass(item, 'downloaded');
       item.style.display = 'none';
-    }
+    //}
+  }
+
+  function edit_item( item ) {
+    var extension = chrome.extension.getBackgroundPage();
+    extension.edit_image( item.getAttribute('data-url'), window );
   }
 
   function update_ui_count() {

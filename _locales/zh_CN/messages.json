@@ -82,8 +82,8 @@
   },
 
   "haveBlocked": {
-    "message": "已屏蔽",
-    "description": "已屏蔽"
+    "message": "显示/隐藏已屏蔽图片",
+    "description": ""
   },
 
   "addBlock": {
@@ -356,6 +356,16 @@
 
   "toolSave" : {
     "message": "保存到本地",
+    "description": ""
+  },
+
+  "toolUndo" : {
+    "message": "还原",
+    "description": ""
+  },
+
+  "toolRedo" : {
+    "message": "重做",
     "description": ""
   },
 

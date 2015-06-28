@@ -1,5 +1,5 @@
 /**
- * @file:  screenshot.js
+ * @file: screenshot.js
  * @powered by wayixia.com
  * @date: 2014-11-8
  * @author: Q 
@@ -25,7 +25,9 @@ function initialize () {
   Q.$('wayixia-screenshot-zoomtext').innerText = e_zoom.getValue() + '%';
   Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.setValue(100); }
   Q.$('wayixia-screenshot-download').onclick = function() {
+    /** track event */
     wayixia_track_button_click(this);
+    /** merge canvas */
     var tmp_canvas = document.createElement( 'canvas' );
     tmp_canvas.width = Q.$( 'wayixia-canvas' ).width;
     tmp_canvas.height = Q.$( 'wayixia-canvas' ).height;
@@ -35,7 +37,20 @@ function initialize () {
     extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
   }
 
+  Q.$( 'wayixia-screenshot-undo' ).onclick = function() { 
+    if(g_canvas_editor)
+      g_canvas_editor.undo(); ///100.0;  
+    
+  }
+
+  Q.$( 'wayixia-screenshot-redo' ).onclick = function() {
+    if(g_canvas_editor)
+      g_canvas_editor.redo(); ///100.0;
+  }
+  
   Q.$( 'wayixia-screenshot-download' ).title = Q.locale_text( 'toolSave' );
+  Q.$( 'wayixia-screenshot-undo' ).title = Q.locale_text( 'toolUndo' );
+  Q.$( 'wayixia-screenshot-redo' ).title = Q.locale_text( 'toolRedo' );
   Q.$( 'wayixia-screenshot-text' ).title = Q.locale_text( 'toolText' );
   Q.$( 'wayixia-screenshot-arrow' ).title = Q.locale_text( 'toolArrow' );
   Q.$( 'wayixia-screenshot-rect' ).title = Q.locale_text( 'toolRectangle' );
@@ -48,6 +63,12 @@ function initialize () {
   Q.$( 'wayixia-screenshot-color' ).title = Q.locale_text( 'toolColorTable' );
   Q.$( 'wayixia-screenshot-size' ).title = Q.locale_text( 'toolLineSize' );
 
+  /** location parse */
+  var imgs = location.search.match(/img=([^&]+)/ig);
+  if( imgs && imgs.length > 0 ) {
+    var src = imgs[0].replace( /img=/i, '' );
+    display_screenshot( -1, src, src );
+  }
 }
 
 /** 简易的调色板，固定给出几组颜色
@@ -234,26 +255,30 @@ MouseUp_Handler : null,
 MouseMove_Handler : null,
 is_moved : false,
 tmr : null,
+logs : null,
+index : -1,
 __init__ : function(config) {
   config = config || {};
   this.canvas = config.id;
   this.context = this.canvas.getContext('2d');
   this.pos = Q.absPosition(this.canvas);
   this.container = Q.$(config.container);
- 
+  this.logs = [];
+  this.index = 0;
   // init toolbar
   var toolbars = {};
   var  toolbars_onchange = (function(t) { return function(checked) {
     if(checked) {
-      for(var name in toolbars) {
-        if(toolbars[name] != this) {
-          toolbars[name].setCheck(false);
+      for( var name in toolbars ) {
+        if( toolbars[name] != this ) {
+          toolbars[name].setCheck( false );
         } else {
           t.action = name;
-          if( t.action == "eraser" ) {
-            Q.addClass( Q.$('draw-canvas'), "eraser-cur" )
+          wayixia_track_event( 'toolbar.clicked', name );
+          if( t.action == 'eraser' ) {
+            Q.addClass( Q.$('draw-canvas'), "eraser-cur" );
           } else {
-            Q.removeClass( Q.$('draw-canvas'), "eraser-cur" )
+            Q.removeClass( Q.$('draw-canvas'), "eraser-cur" );
           }
         } 
       } 
@@ -267,7 +292,7 @@ __init__ : function(config) {
   toolbars["line"] = new Q.CheckBox({id: "wayixia-screenshot-line", onchange: toolbars_onchange});
   toolbars["brush"] = new Q.CheckBox({id: "wayixia-screenshot-brush", onchange: toolbars_onchange});
   toolbars["eraser"] = new Q.CheckBox({id: "wayixia-screenshot-eraser", onchange: toolbars_onchange});
-  toolbars["zoom"] = new Q.CheckBox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
+  //toolbars["zoom"] = new Q.CheckBox({id: "wayixia-screenshot-zoom", onchange: toolbars_onchange});
 
   this.createInterface();
 
@@ -285,6 +310,7 @@ __init__ : function(config) {
   Q.addEvent(document, 'mousedown', this.MouseDown_Hanlder);
   Q.addEvent(document, 'mouseup', this.MouseUp_Handler);
   this.initToolbar();
+  this.logDrawing();
 },
 
 initToolbar : function() {
@@ -298,6 +324,7 @@ initToolbar : function() {
     
   Q.$( 'wayixia-screenshot-color' ).onclick = (function(t, e) { return function(evt) { 
     t.colorTable.showElement(e);
+    wayixia_track_event( 'toolbar.clicked', 'colortable' );
   } } )(this, Q.$( 'wayixia-screenshot-color' ));
 
   /**
@@ -309,6 +336,7 @@ initToolbar : function() {
   
   Q.$( 'wayixia-screenshot-size' ).onclick = (function(t, e) { return function(evt) { 
     t.widthSelector.showElement(e);
+    wayixia_track_event( 'toolbar.clicked', 'linesize' );
   } } )(this, Q.$( 'wayixia-screenshot-size' ));
 
   this.fontsizeSelector = new Q.FontSizeSelector( { onchange: function( fontsize ) {
@@ -318,6 +346,7 @@ initToolbar : function() {
   
   Q.$( 'wayixia-screenshot-fontsize' ).onclick = (function(t, e) { return function(evt) { 
     t.fontsizeSelector.showElement(e);
+    wayixia_track_event( 'toolbar.clicked', 'fontsize' );
   } } )(this, Q.$( 'wayixia-screenshot-fontsize' ));
 },
 
@@ -370,10 +399,52 @@ zoomxy : function(pnt) {
   }
 },
 
+undo : function() {
+  if( this.index > 0 ) {
+    this.contextC.clearRect(0, 0, this.canvasC.offsetWidth, this.canvasC.offsetHeight);
+    this.index--;
+    this.showLogAtIndex( this.index );
+  }
+},
+
+redo : function() {
+  if( this.index < this.logs.length-1 ) {
+    this.contextC.clearRect(0, 0, this.canvasC.offsetWidth, this.canvasC.offsetHeight);
+    this.index++;
+    this.showLogAtIndex( this.index );
+  }
+},
+
+logDrawing : function() {
+  var array;
+  var imageObject = this.canvasC.toDataURL();
+  if (this.index == this.logs.length-1) {
+    this.logs.push(imageObject);
+    array = this.logs;
+  } else {
+    var tempArray = this.logs.slice(0, this.index+1);
+    tempArray.push(imageObject);
+    array = tempArray;
+  }
+  if (array.length > 1) {
+    this.index++;
+  }
+
+  this.logs = array;
+},
+
+showLogAtIndex : function( index ) {
+  var img = new Image();
+  img.onload = ( function( t, e ) { return function () { 
+    t.contextC.drawImage( e, 0, 0 ); 
+  } } )( this, img );
+  img.src = this.logs[ index ];
+},
+
 drawRectangle: function(pntFrom, pntTo, context) {
-		context.beginPath();
-		context.strokeRect(pntFrom.x, pntFrom.y, pntTo.x - pntFrom.x, pntTo.y - pntFrom.y);
-		context.closePath();
+  context.beginPath();
+  context.strokeRect(pntFrom.x, pntFrom.y, pntTo.x - pntFrom.x, pntTo.y - pntFrom.y);
+  context.closePath();
 },
 
 drawCircle: function (pntFrom, pntTo, context) {
@@ -651,6 +722,7 @@ _MouseUp : function(evt) {
         this.eraser(pointTo, this.contextC);
       }
       this.contextI.clearRect(0, 0, this.canvasI.offsetWidth, this.canvasI.offsetHeight);
+      this.logDrawing();
     }
     this.is_moved=false;
 }

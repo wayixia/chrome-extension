@@ -348,6 +348,16 @@
     "description": ""
   },
 
+  "toolUndo" : {
+    "message": "Undo",
+    "description": ""
+  },
+
+  "toolRedo" : {
+    "message": "Redo",
+    "description": ""
+  },
+
   "toolText" : {
     "message": "Text",
     "description": ""

@@ -45,7 +45,7 @@ wayixia_help_menu = new Q.Menu({
   }
 }); 
 
-var menu_suggest = new Q.MenuItem({
+var menu_help= new Q.MenuItem({
   text: Q.locale_text("extHelpFAQ"),
   callback : function(menuitem) {
     window.open("http://wayixia.com/chrome/faq");
@@ -67,8 +67,19 @@ var menu_about = new Q.MenuItem( {
 } );
 
 wayixia_help_menu.addMenuItem(menu_report_a_bug);
-wayixia_help_menu.addMenuItem(menu_suggest);
+wayixia_help_menu.addMenuItem(menu_help);
 wayixia_help_menu.addMenuItem(menu_about);
+
+if( /^zh(-)?/ig.test( navigator.language ) ) {
+  var menu_qq_qun = new Q.MenuItem( {
+    text : '加入QQ群',
+    callback : function( menuitem ) {
+      window.open( 'http://shang.qq.com/wpa/qunwpa?idkey=3c8fbe3b139d688a48eb8d1031f8d96bc9472d41904ecb78764170f4866b6e85' );
+    }
+  } );
+
+  wayixia_help_menu.addMenuItem(menu_qq_qun);
+}
 wayixia_help_menu.hide();
 
 // init menu button
@@ -148,8 +159,8 @@ function report_a_bug( evt ) {
     extract_document(tpl);
     wayixia_report_window = new Q.Dialog({
       title: Q.locale_text('extReportABug'),
-      width: 350,
-      height: 350, 
+      width: 650,
+      height: 450, 
       wstyle: "q-attr-no-icon",
       content:  tpl,
       on_close: function() { delete wayixia_report_window; wayixia_report_window = null; },

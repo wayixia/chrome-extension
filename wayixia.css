@@ -122,6 +122,13 @@ body {
   background-color: transparent;
 }
 
+.wayixia-toolbar-button.undo {
+  background-position: -270px -45px;
+}
+
+.wayixia-toolbar-button.redo {
+  background-position: -315px -45px;
+}
 /** \brief layout of wayixia panel
  *
  */
@@ -468,9 +475,44 @@ button#wayixia-bugs {
   borders: #FFF 5px solid;
 }
 
+
+.q-images-box .q-box-item .save {
+  background: transparent url(images/canvas-toolbar.png) no-repeat -20px -160px;
+  border-width: 0;
+  outline: 0;
+}
+
+.q-images-box .q-box-item .save:hover {
+  background: #000 url(images/canvas-toolbar.png) no-repeat -20px -180px;
+}
+
 .q-images-box .q-box-item .preview {
   background: transparent url(images/canvas-toolbar.png) no-repeat left -160px;
   border-width: 0;
   outline: 0;
+}
+
+.q-images-box .q-box-item .preview:hover {
+  background: #000 url(images/canvas-toolbar.png) no-repeat left -180px;
+}
+
+.q-images-box .q-box-item .edit {
+  background: transparent url(images/canvas-toolbar.png) no-repeat -40px -160px;
+  border-width: 0;
+  outline: 0;
+}
+
+.q-images-box .q-box-item .edit:hover {
+  background: #000 url(images/canvas-toolbar.png) no-repeat -40px -180px;
+}
+
+
+.q-images-box .q-box-item .split {
+  border-right: 1px solid #999;
+  margin-right: 2px;
+}
+
+.q-images-box .q-box-item .q-box-info {
+  padding: 5px;  
 }
 
