@@ -24,7 +24,7 @@
    },
    "browser_action" : {
      "default_title" : "__MSG_extName__",
-     "default_icon"  : "icon16.png",
+     "default_icon"  : "images/icon19.png",
      "default_popup" : "popup.html"
    },
 
