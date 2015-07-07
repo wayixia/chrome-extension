@@ -19,7 +19,7 @@ function initialize () {
   var extension = chrome.extension.getBackgroundPage();
  
   var wayixia_images_box = new Q.ImagesBox({id: 'wayixia-list',
-    buttons : ['preview', 'edit', 'save'],
+    buttons : ['preview', 'edit', 'tocloud', 'save'],
     on_item_changed: function(item, check) {
       if(item.style.display == '') { 
         update_ui_count();
@@ -39,11 +39,13 @@ function initialize () {
             });
           }
         } );
-        album_player_display(item.getAttribute('data-url'), imgs);
+        album_player_display( item.getAttribute( 'data-url' ), imgs );
       } else if( target.className == "save" ) {
-        download_item(item);
+        download_item( item );
       } else if( target.className == "edit" ) {
-        edit_item(item);
+        edit_item( item );
+      } else if( target.className == "tocloud" ) {
+        tocloud_item( item );
       }
     }
   });
@@ -153,6 +155,10 @@ function initialize () {
   function edit_item( item ) {
     var extension = chrome.extension.getBackgroundPage();
     extension.edit_image( item.getAttribute('data-url'), window );
+  }
+
+  function tocloud_item( item ) {
+    alert( item.getAttribute( 'data-url' ) );
   }
 
   function update_ui_count() {

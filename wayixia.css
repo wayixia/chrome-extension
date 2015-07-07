@@ -475,6 +475,15 @@ button#wayixia-bugs {
   borders: #FFF 5px solid;
 }
 
+.q-images-box .q-box-item .tocloud {
+  background: transparent url(images/canvas-toolbar.png) no-repeat -60px -160px;
+  border-width: 0;
+  outline: 0;
+}
+
+.q-images-box .q-box-item .tocloud:hover {
+  background: #000 url(images/canvas-toolbar.png) no-repeat -60px -180px;
+}
 
 .q-images-box .q-box-item .save {
   background: transparent url(images/canvas-toolbar.png) no-repeat -20px -160px;
