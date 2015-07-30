@@ -48,7 +48,7 @@ function get_document_images(doc) {
         url = e.style.backgroundImage;        
       }
       if(url !="" && /^url\(/.test(url)) {
-        url =url.replace(/^url\(/, '').replace(/\)$/, '');       
+        url =url.replace(/^url\("?/, '').replace(/"?\)$/, '');       
         links.push({src: url});
       }
     }
