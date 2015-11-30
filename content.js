@@ -17,10 +17,16 @@ if(isNS6()) { //firefox innerText define
 
 function get_all_images() {
   var links  = [];
-  var docs = [].slice.apply(window.frames);
-  docs = docs.map(function(e) {
-    return e.document;
-  });
+  var docs = [];
+  try { 
+    docs = [].slice.apply(window.frames);
+    docs = docs.map(function(e) {
+      return e.document;
+    });
+  } catch(e) {
+    console.log( "[content] error-> " + e );
+    docs = [];
+  }
   docs.push(document);
   for(var i=0; i < docs.length; i++) {
     var images = get_document_images(docs[i]);

@@ -1,6 +1,6 @@
 {
    "name": "__MSG_extName__",
-   "version": "1.12.1",
+   "version": "1.12.3",
    "default_locale" : "en",
    "manifest_version": 2,
    "short_name": "__MSG_extShortName__",
@@ -16,7 +16,7 @@
       "run_at": "document_end"
      } 
    ],
-   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+   "content_security_policy": "script-src 'self' http://ssl.google-analytics.com https://www.wayixia.com; object-src 'self'",
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",

@@ -6,11 +6,15 @@
 ---------------------------------------------------------*/
 
 var t = null;
+var checking_login = true;
+var xdm = null;
 
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
   return extension.is_block_image(url); 
 }
+
+
 
 function initialize () {
   var _this = t = this;
@@ -158,7 +162,12 @@ function initialize () {
   }
 
   function tocloud_item( item ) {
-    alert( item.getAttribute( 'data-url' ) );
+    wa_image( {
+       src : item.getAttribute( 'data-url' ),
+       width : item.getAttribute( 'data-width' ),
+       height : item.getAttribute( 'data-height' ),
+    } )( item );
+    //alert( item.getAttribute( 'data-url' ) );
   }
 
   function update_ui_count() {
@@ -248,6 +257,143 @@ function initialize () {
   Q.$( 'wayixia-select-all' ).title = Q.locale_text( 'selectAll' );
   Q.$( 'wayixia-add-block' ).title = Q.locale_text( 'addBlock' );
   Q.$( 'wayixia-show-block' ).title = Q.locale_text( 'haveBlocked' );
+
+  /** Check login status */
+  _xdm = new easyXDM.Rpc( {
+    swf: "http://www.wayixia.com/plugin/easyXDM/easyxdm.swf",
+    remote: "http://www.wayixia.com/plugin/xdm.htm",
+    remoteHelper: "http://www.wayixia.com/plugin/easyXDM/name.html",
+    onReady: function() {
+      check_login();
+    },
+  },
+  {
+    remote: {
+      request: {}
+    }
+  } );
+
+  function check_login() {
+    checking_login = true;
+    _xdm.request(
+      {
+        command: "http://www.wayixia.com/?mod=user&action=do-check-login&inajax=true",
+        data: {},
+      },
+
+      function(response) {
+        var resp = Q.json_decode( response );
+        _login_user = ( resp && ( resp.data == 1 ) );
+        checking_login = false;
+      },
+          
+      function() {}
+    );
+  }
+
+  function check_login_dialog() {
+    if(!_login_user) {
+      // must login
+      var wnd = _this.open_window(
+          "http://www.wayixia.com/index.php?mod=user&action=login&refer="+encodeURIComponent('http://www.wayixia.com/close.htm'), 
+          {width:580, height:250}
+      );
+
+      var timer = setInterval( function() {
+        if(wnd.closed) {
+          clearInterval(timer);
+          check_login();
+        }
+      }, 1000 );
+    }
+
+    return _login_user;
+  }
+
+  _this.open_window = function(uri, json) {  
+    return window.open( uri );
+  }
+
+  var _state_message = {
+    ing: '正在努力地挖...',
+    ok : '成功挖到了此图!',
+    error: '挖一下，失败!',
+    warn: '已经挖过了哦!',
+  }
+
+  // state: 
+  function set_image_state( e, state ) {
+    if(!_state_message[state]) {
+      state = 'ing';
+    }
+    var wing_box = qid( e, 'layer-mask' );
+    wing_box.className = 'layer-mask wing-box-'+state;
+    e.state = state;
+    wing_box.innerHTML = _state_message[state];
+    if(state == 'ok') {
+      var _alpha_object = new alpha();
+      _alpha_object.push(e);
+      setTimeout(function() {_alpha_object.play();}, 3000);
+      e.disabled = false;
+    } else {
+      setTimeout(function() {
+        wing_box.className = 'layer-mask wing-box';
+      }, 3000);
+      e.disabled = true;
+    }
+  }
+
+  function wa_image(config) { return function(item) {
+    if(!check_login_dialog()) 
+      return;
+    //quick wa
+    //_this.open_image_window(inner_img.src);
+    var json_data = {};
+    json_data.pageUrl = location.href;
+    json_data.srcUrl = config.src, 
+    json_data.cookie = document.cookie,
+    json_data.title = document.title,
+    json_data.width = config.width;
+    json_data.height = config.height;
+    json_data.album_id = 0;
+    set_image_state( item, 'ing' );
+    _xdm&&_xdm.request&&_xdm.request( {
+      command:"http://www.wayixia.com:10086/getimage",
+      data: {img: json_data},
+      withCredentials: true,
+      noCache:true,
+      method:"post"
+    },
+
+    function(response){
+      var resp = {}; 
+      try {
+        resp = Q.json_decode(response);
+      } catch(e) {
+        resp.header = -1;
+        resp.data = e.description;
+      }
+      var result = resp.header;
+      if(result == 0) {
+          set_image_state( item, 'ok' );
+        } else if(result == -2) {
+          _login_user = false;
+          check_login_dialog();
+          return;
+        } else if(result == -100){
+          set_image_state( item, 'warn' );
+        } else {
+          set_image_state( item, 'error' );
+        }
+      }, // ok
+
+      function() {
+        set_image_state( item, 'error' );
+      }  // error
+    );
+  } }
+
+
   
   console.log('content is loaded');
 };
