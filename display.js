@@ -7,7 +7,6 @@
 
 var t = null;
 var checking_login = true;
-var xdm = null;
 
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
@@ -258,38 +257,21 @@ function initialize () {
   Q.$( 'wayixia-add-block' ).title = Q.locale_text( 'addBlock' );
   Q.$( 'wayixia-show-block' ).title = Q.locale_text( 'haveBlocked' );
 
+  check_login();
   /** Check login status */
-  _xdm = new easyXDM.Rpc( {
-    swf: "http://www.wayixia.com/plugin/easyXDM/easyxdm.swf",
-    remote: "http://www.wayixia.com/plugin/xdm.htm",
-    remoteHelper: "http://www.wayixia.com/plugin/easyXDM/name.html",
-    onReady: function() {
-      check_login();
-    },
-  },
-  {
-    remote: {
-      request: {}
-    }
-  } );
-
   function check_login() {
     checking_login = true;
-    _xdm.request(
-      {
-        command: "http://www.wayixia.com/?mod=user&action=do-check-login&inajax=true",
-        data: {},
-      },
-
-      function(response) {
+    Q.ajaxc( {
+      command: "http://www.wayixia.com/?mod=user&action=do-check-login&inajax=true",
+      data: {},
+      oncomplete : function( xmlhttp ) {
+        var response = xmlhttp.responseText;
         var resp = Q.json_decode( response );
         _login_user = ( resp && ( resp.data == 1 ) );
         checking_login = false;
-      },
-          
-      function() {}
-    );
-  }
+      }
+    } );
+  } // check_login();
 
   function check_login_dialog() {
     if(!_login_user) {
@@ -331,9 +313,18 @@ function initialize () {
     e.state = state;
     wing_box.innerHTML = _state_message[state];
     if(state == 'ok') {
-      var _alpha_object = new alpha();
-      _alpha_object.push(e);
-      setTimeout(function() {_alpha_object.play();}, 3000);
+      setTimeout( function() {
+      (new Q.Animate({ tween: 'cubic', ease: 'easyin',
+        max: 2000, begin: 0, duration: 100,
+        bind : function(x) {
+          if(x == this.max) {
+            e.style.display = 'none';
+          } else {
+            e.style.opacity = ((this.max-x)*1.0) / this.max;
+          }
+        }
+      })).play();
+      }, 3000 );
       e.disabled = false;
     } else {
       setTimeout(function() {
@@ -357,43 +348,41 @@ function initialize () {
     json_data.height = config.height;
     json_data.album_id = 0;
     set_image_state( item, 'ing' );
-    _xdm&&_xdm.request&&_xdm.request( {
-      command:"http://www.wayixia.com:10086/getimage",
+    
+    Q.ajaxc( { command:"https://ssl.wayixia.com/getimage",
       data: {img: json_data},
       withCredentials: true,
       noCache:true,
-      method:"post"
-    },
-
-    function(response){
+      method:"post",
+      oncomplete: function(xmlhttp){
       var resp = {}; 
-      try {
-        resp = Q.json_decode(response);
-      } catch(e) {
-        resp.header = -1;
-        resp.data = e.description;
-      }
-      var result = resp.header;
-      if(result == 0) {
+        try {
+          resp = Q.json_decode( xmlhttp.responseText );
+        } catch(e) {
+          resp.header = -1;
+          resp.data = e.description;
+        }
+        var result = resp.header;
+        if(result == 0) {
           set_image_state( item, 'ok' );
+          Q.addClass(item, 'downloaded');
         } else if(result == -2) {
           _login_user = false;
           check_login_dialog();
           return;
         } else if(result == -100){
           set_image_state( item, 'warn' );
+          Q.addClass(item, 'downloaded');
         } else {
           set_image_state( item, 'error' );
         }
       }, // ok
 
-      function() {
+      onerror: function( xmlhttp ) {
         set_image_state( item, 'error' );
       }  // error
-    );
-  } }
-
-
+    } );
+  } } // end wa_image
   
   console.log('content is loaded');
 };

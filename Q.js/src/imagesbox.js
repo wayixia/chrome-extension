@@ -53,7 +53,14 @@ create_element: function(config, init) {
   // mask layer
   var mask = document.createElement('div');
   mask.className = 'select-mask';
-  box.appendChild(mask);
+  mask.setAttribute( 'q:id', 'select-mask' );
+  var layer = document.createElement('div');
+  layer.className = 'layer-mask';
+  layer.setAttribute( 'q:id', 'layer-mask' );
+  box.appendChild( mask );
+  box.appendChild( layer );
+
+
 
   // init event
   img_container.className = 'wayixia-image';
