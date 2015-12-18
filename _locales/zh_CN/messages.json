@@ -19,9 +19,14 @@
     "description": "图片批量下载 | 网页截屏"
   },
  
+  "extLogin": {
+    "message": "登 录",
+    "description": ""
+  },
+ 
   "extAbout": {
     "message": "关于插件",
-    "description": "关于插件"
+    "description": "关于"
   },
   
   "extContact": {
@@ -166,7 +171,7 @@
   
   "extOptions" : {
     "message": "选 项",
-    "description": "选 项"
+    "description": ""
   },
 
   "extHelp": {

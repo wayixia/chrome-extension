@@ -33,7 +33,7 @@ setTimeout(function() {
       setTimeout(callee, 60*60*1000);
     }
   }})(arguments.callee); 
-  http_call.open("GET", "http://wayixia.com/filter-rules.json?"+Math.floor(+new Date/1E7), true);
+  http_call.open("GET", "http://www.wayixia.com/filter-rules.json?"+Math.floor(+new Date/1E7), true);
   http_call.send(null);
 }, 1000)
 
@@ -129,7 +129,7 @@ var cache_display = {};
 
 function get_display_cache( tab_id ) {
   var obj = cache_display[tab_id];
-  delete cache_display[tab_id];
+  //delete cache_display[tab_id];
   return obj;
 }
 
@@ -210,9 +210,9 @@ function get_date_path() {
 }
 
 function get_save_path() {
-  var save_path = user_config_get('save_path');
+  var save_path = user_config_get('save_path') || "";
   var date_folder = (user_config_get('date_folder') != '0');
-  if(save_path != "") {
+  if( ( save_path != "" ) ) {
     save_path += "/";
   }
 	if(date_folder) {
@@ -296,7 +296,11 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
       filename = item.filename.replace(/\.\w+$/, '').replace(/[:*?\"<>|]/, "-") + "-w" + item.id;
 	  }
 
-    suggest({filename: save_path + filename + "." + item.mime.replace(/\w+\//, ''), conflict_action: 'uniquify',conflictAction: 'uniquify'});
+    var ftype = "";
+    if( item.mime != "" ) {
+       ftype = "." + item.mime.replace(/\w+\//, '');
+    }
+    suggest({filename: save_path + filename + ftype , conflict_action: 'uniquify',conflictAction: 'uniquify'});
   } else {
     //suggest({conflict_action: 'uniquify',conflictAction: 'uniquify'});
   }

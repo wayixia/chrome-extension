@@ -340,16 +340,16 @@ function initialize () {
     //quick wa
     //_this.open_image_window(inner_img.src);
     var json_data = {};
-    json_data.pageUrl = location.href;
+    json_data.pageUrl = wayixia_request_data.data.pageUrl;
     json_data.srcUrl = config.src, 
-    json_data.cookie = document.cookie,
-    json_data.title = document.title,
+    json_data.cookie = wayixia_request_data.data.cookie,
+    json_data.title = wayixia_request_data.data.title,
     json_data.width = config.width;
     json_data.height = config.height;
     json_data.album_id = 0;
     set_image_state( item, 'ing' );
     
-    Q.ajaxc( { command:"https://ssl.wayixia.com/getimage",
+    Q.ajaxc( { command:"http://www.wayixia.com:10086/getimage",
       data: {img: json_data},
       withCredentials: true,
       noCache:true,

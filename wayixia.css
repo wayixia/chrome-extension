@@ -475,46 +475,30 @@ button#wayixia-bugs {
   borders: #FFF 5px solid;
 }
 
-.q-images-box .q-box-item .tocloud {
-  background: transparent url(images/canvas-toolbar.png) no-repeat -60px -160px;
+
+.q-images-box .q-box-item .tocloud, 
+.q-images-box .q-box-item .save,
+.q-images-box .q-box-item .preview,
+.q-images-box .q-box-item .edit 
+{
+  background-color: transparent;
+  background-image: url(images/canvas-toolbar.png);
+  background-repeat: no-repeat;
   border-width: 0;
   outline: 0;
+  margin-right:2px;
 }
 
-.q-images-box .q-box-item .tocloud:hover {
-  background: #000 url(images/canvas-toolbar.png) no-repeat -60px -180px;
-}
 
-.q-images-box .q-box-item .save {
-  background: transparent url(images/canvas-toolbar.png) no-repeat -20px -160px;
-  border-width: 0;
-  outline: 0;
-}
 
-.q-images-box .q-box-item .save:hover {
-  background: #000 url(images/canvas-toolbar.png) no-repeat -20px -180px;
-}
-
-.q-images-box .q-box-item .preview {
-  background: transparent url(images/canvas-toolbar.png) no-repeat left -160px;
-  border-width: 0;
-  outline: 0;
-}
-
-.q-images-box .q-box-item .preview:hover {
-  background: #000 url(images/canvas-toolbar.png) no-repeat left -180px;
-}
-
-.q-images-box .q-box-item .edit {
-  background: transparent url(images/canvas-toolbar.png) no-repeat -40px -160px;
-  border-width: 0;
-  outline: 0;
-}
-
-.q-images-box .q-box-item .edit:hover {
-  background: #000 url(images/canvas-toolbar.png) no-repeat -40px -180px;
-}
-
+.q-images-box .q-box-item .tocloud { background-position: -60px -160px; }
+.q-images-box .q-box-item .tocloud:hover {  background-position: -60px -180px; background-color: #000; }
+.q-images-box .q-box-item .save { background-position: -20px -160px; }
+.q-images-box .q-box-item .save:hover { background-position: -20px -180px; background-color: #000; }
+.q-images-box .q-box-item .preview { background-position: left -160px; }
+.q-images-box .q-box-item .preview:hover { background-position: left -180px;background-color: #000; }
+.q-images-box .q-box-item .edit { background-position: -40px -160px; }
+.q-images-box .q-box-item .edit:hover { background-position: -40px -180px; background-color: #000; }
 
 .q-images-box .q-box-item .split {
   border-right: 1px solid #999;
@@ -522,7 +506,7 @@ button#wayixia-bugs {
 }
 
 .q-images-box .q-box-item .q-box-info {
-  padding: 5px;  
+  padding: 5px 10px;  
 }
 
 

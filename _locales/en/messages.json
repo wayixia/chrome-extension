@@ -19,6 +19,11 @@
     "description": "image download & full page screen capture"
   },
 
+  "extLogin": {
+    "message": "Login",
+    "description": ""
+  },
+  
   "extAbout": {
     "message": "About",
     "description": "About"
