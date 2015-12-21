@@ -136,7 +136,7 @@ function dismiss(d) {
     max: 1000, begin: 0, duration: 100,
     bind : function(x) {
       if(x == this.max) {
-        d.end_dialog();
+        d.end();
       } else {
         d.wnd().style.opacity = ((this.max-x)*1.0) / this.max;
       }
@@ -227,7 +227,7 @@ __init__: function(json) {
 
 call : function(method, params, f) {
   var invalid_data = -2;
-  Q.Ajax({
+  Q.ajaxc({
     command: this.api + method,
     data: params,
     oncomplete : function(xmlhttp) {
