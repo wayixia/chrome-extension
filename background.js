@@ -11,6 +11,41 @@ if(user_config_is_new()) {
   setTimeout(create_upgrade_page(), 60*1000);
 }
 
+function ajax( json ) 
+{
+  var http_call = new XMLHttpRequest();
+  http_call.onreadystatechange = (function(callee) { return function() {
+    if (this.readyState==4) {  // 4 = "loaded"
+      if (this.status==200) { // 200 = OK
+        console.log(this.responseText);
+        try {
+          var result = JSON.parse(this.responseText);
+          if( json.oncomplete ) {
+            json.oncomplete( result );
+          }
+        } catch(e) {
+          console.log(e);
+          if( json.onerror ) {
+            json.onerror( this );
+          }
+        }
+      } else {
+        if( json.onerror ) {
+          json.onerror( this );
+        }
+        console.log("Problem retrieving data");
+      }
+    }
+  }})(arguments.callee); 
+  if( json.command.indexOf("?") == -1 ) {
+    http_call.open(json.method, json.command + "?rnd="+Math.floor(+new Date/1E7), true);
+  } else {
+    http_call.open(json.method, json.command + "&rnd="+Math.floor(+new Date/1E7), true);
+  }
+  //http_call.open("GET", "http://www.wayixia.com/?mod=user&action=status&inajax=true&rnd="+Math.floor(+new Date/1E7), true);
+  http_call.send(null);
+}
+
 setTimeout(function() {
   var http_call = new XMLHttpRequest();
   http_call.onreadystatechange = (function(callee) { return function() {
@@ -320,6 +355,21 @@ chrome.downloads.onChanged.addListener(function(download) {
     delete download_items[download.id];
   }
 });
+
+chrome.extension.onMessage.addListener( function( o ) {
+  console.log(o.action);
+  switch( o.action ) {
+  case "userstatus":
+    ajax( { command: "http://www.wayixia.com/?mod=user&action=status&inajax=true",
+      method: "GET",
+      oncomplete : function( r ) {
+        console.log( r );
+      }
+    } );    
+    break;
+  }
+} );
+
 
 console.log('background.js init');
 

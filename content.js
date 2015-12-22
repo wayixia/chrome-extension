@@ -112,6 +112,9 @@ var g_fullscreen_capture = {
   }
 };
 
+chrome.extension.sendMessage( { action:"userstatus" } );
+
+
 // listener
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) 
 {
