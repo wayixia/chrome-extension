@@ -44,18 +44,10 @@ function init(){
     extension.on_click_open_about();
   }  
 
-  Q.ajaxc( { command: "http://www.wayixia.com/?mod=user&action=status&inajax=true", 
-    oncomplete : function( xmlhttp ) {
-      var o = Q.json_decode( xmlhttp.responseText );
-      if( o.header == 0 ) {
-        //logined
-        Q.$('wayixia-login-text').innerHTML = o.data.nickname.toUpperCase();
-      }
-    },
-
-  } );
-
   extension = chrome.extension.getBackgroundPage();
+  if( extension.wayixia_nickname != "" ) {
+    Q.$('wayixia-login-text').innerHTML = extension.wayixia_nickname.toUpperCase();
+  }
   document.body.style.visibility='visible';
 };
 

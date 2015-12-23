@@ -5,6 +5,8 @@
 
 var plugin_name  = chrome.i18n.getMessage('menuDigImages');
 var block_images = {};
+var wayixia_nickname = "";
+var wayixia_uid = 0;
 // check new version for helper
 if(user_config_is_new()) {
   // display new features of wayixia extension
@@ -364,6 +366,16 @@ chrome.extension.onMessage.addListener( function( o ) {
       method: "GET",
       oncomplete : function( r ) {
         console.log( r );
+        wayixia_nickname = "";
+        wayixia_uid = 0;
+        if( r.header == 0 && r.data ) {
+          if( r.data.nickname ) {
+            wayixia_nickname = r.data.nickname;
+          }
+          if( r.data.uid ) {
+            wayixia_uid = r.data.uid;
+          }
+        }
       }
     } );    
     break;
