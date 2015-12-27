@@ -17,6 +17,16 @@ function init_about() {
 
   Q.$('layer-about').style.visibility = 'visible';
   Q.$('layer-about-version').innerText = locale_text('extVersion') + ': v.' + chrome.runtime.getManifest().version;
+
+  
+  Q.$('donate-with-alipay').onclick = function() {
+    Q.alert({
+      title: '扫描二维码资助',
+      wstyle: 'w-window q-attr-no-icon',
+      width: 256, height: 325,
+      content: '<img src="http://www.wayixia.com/themes/default/donate-with-alipay-code.png">'
+    });
+  } // donate-with-alipay
 }
 
 function init_setting() {

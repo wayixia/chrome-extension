@@ -606,3 +606,6 @@ button#wayixia-bugs {
   background:#FFF url(images/sprite_warn.png) 20px center no-repeat;
 }
 
+.q-window-mask.q-top-mask {
+  filter:alpha(opacity=50);-moz-opacity:0.5;-khtml-opacity: 0.5;opacity: 0.5;
+}

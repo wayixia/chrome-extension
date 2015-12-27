@@ -231,6 +231,11 @@
     "description": "关 闭"
   },
 
+  
+  "btnDonate" : {
+    "message": "捐 赠",
+    "description": ""
+  },
 
   "qYes" : {
     "message": " 是 ",

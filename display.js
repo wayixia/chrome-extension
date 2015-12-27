@@ -6,7 +6,6 @@
 ---------------------------------------------------------*/
 
 var t = null;
-var checking_login = true;
 
 function is_block_image(url) {
   var extension = chrome.extension.getBackgroundPage();
@@ -20,7 +19,7 @@ function initialize () {
   var blocked_images = [];
   var accept_length  = 0;
   var extension = chrome.extension.getBackgroundPage();
- 
+  
   var wayixia_images_box = new Q.ImagesBox({id: 'wayixia-list',
     buttons : ['preview', 'edit', 'tocloud', 'save'],
     on_item_changed: function(item, check) {
@@ -257,24 +256,8 @@ function initialize () {
   Q.$( 'wayixia-add-block' ).title = Q.locale_text( 'addBlock' );
   Q.$( 'wayixia-show-block' ).title = Q.locale_text( 'haveBlocked' );
 
-  check_login();
-  /** Check login status */
-  function check_login() {
-    checking_login = true;
-    Q.ajaxc( {
-      command: "http://www.wayixia.com/?mod=user&action=do-check-login&inajax=true",
-      data: {},
-      oncomplete : function( xmlhttp ) {
-        var response = xmlhttp.responseText;
-        var resp = Q.json_decode( response );
-        _login_user = ( resp && ( resp.data == 1 ) );
-        checking_login = false;
-      }
-    } );
-  } // check_login();
-
   function check_login_dialog() {
-    if(!_login_user) {
+    if( !extension.user_is_login() ) {
       // must login
       var wnd = _this.open_window(
           "http://www.wayixia.com/index.php?mod=user&action=login&refer="+encodeURIComponent('http://www.wayixia.com/close.htm'), 
@@ -284,12 +267,14 @@ function initialize () {
       var timer = setInterval( function() {
         if(wnd.closed) {
           clearInterval(timer);
-          check_login();
+          chrome.extension.sendMessage( { action:"userstatus" } );
         }
       }, 1000 );
+      
+      return false;
     }
 
-    return _login_user;
+    return true;
   }
 
   _this.open_window = function(uri, json) {  

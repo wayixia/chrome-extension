@@ -13,6 +13,11 @@ if(user_config_is_new()) {
   setTimeout(create_upgrade_page(), 60*1000);
 }
 
+function user_is_login()
+{
+  return ( wayixia_nickname != "" );
+}
+
 function ajax( json ) 
 {
   var http_call = new XMLHttpRequest();
