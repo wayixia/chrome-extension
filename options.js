@@ -21,7 +21,7 @@ function init_about() {
   
   Q.$('donate-with-alipay').onclick = function() {
     Q.alert({
-      title: '扫描二维码资助',
+      title: '[资助]支付宝二维码',
       wstyle: 'w-window q-attr-no-icon',
       width: 256, height: 325,
       content: '<img src="http://www.wayixia.com/themes/default/donate-with-alipay-code.png">'

@@ -89,6 +89,13 @@ Q.$('wayixia-help').onclick = function(evt) {
 
 } // wayixia-help
 
+
+if( Q.$('wayixia-donate') ) {
+  Q.$('wayixia-donate').onclick = function() {
+    window.open( 'http://www.wayixia.com/chrome/about#donate' );
+  }
+}
+
 });
 
 function background_warning(o) {

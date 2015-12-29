@@ -132,7 +132,17 @@ function initialize () {
       }
     });
   }
-  
+
+  Q.$('wayixia-tocloud').onclick = function() {
+    wayixia_track_button_click(this);
+    wayixia_images_box.each_item(function(item) {
+      if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+        tocloud_item(item);
+        wayixia_images_box.set_check(item, false);
+      }
+    });
+  }
+
   function block_item(item, blocked) {
     if(blocked) {
       Q.addClass(item, 'blocked');
@@ -297,7 +307,8 @@ function initialize () {
     wing_box.className = 'layer-mask wing-box-'+state;
     e.state = state;
     wing_box.innerHTML = _state_message[state];
-    if(state == 'ok') {
+    if( ( state == 'ok' ) || ( state == 'warn' ) ) 
+    {
       setTimeout( function() {
       (new Q.Animate({ tween: 'cubic', ease: 'easyin',
         max: 2000, begin: 0, duration: 100,
@@ -311,11 +322,13 @@ function initialize () {
       })).play();
       }, 3000 );
       e.disabled = false;
+    } else if( state== "ing" ) {
+      e.disabled = true;
     } else {
       setTimeout(function() {
         wing_box.className = 'layer-mask wing-box';
       }, 3000);
-      e.disabled = true;
+      e.disabled = false;
     }
   }
 
@@ -339,15 +352,16 @@ function initialize () {
       withCredentials: true,
       noCache:true,
       method:"post",
+      queue: true,
       oncomplete: function(xmlhttp){
-      var resp = {}; 
+        var res = {}; 
         try {
-          resp = Q.json_decode( xmlhttp.responseText );
+          res = Q.json_decode( xmlhttp.responseText );
         } catch(e) {
-          resp.header = -1;
-          resp.data = e.description;
+          res.header = -1;
+          res.data = e.description;
         }
-        var result = resp.header;
+        var result = res.header;
         if(result == 0) {
           set_image_state( item, 'ok' );
           Q.addClass(item, 'downloaded');

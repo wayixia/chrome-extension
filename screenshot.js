@@ -34,7 +34,7 @@ function initialize () {
     var context = tmp_canvas.getContext('2d');
     context.drawImage( Q.$( 'wayixia-canvas' ), 0, 0 );
     context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
-    extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
+    //extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
   }
 
   Q.$( 'wayixia-screenshot-undo' ).onclick = function() { 

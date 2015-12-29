@@ -21,10 +21,22 @@ body {
   width:45px;
   border: 0;
   outline: 0;
+  position: relative;
 }
 
 .wayixia-toolbar-button:hover {
   background-color: #FFDD00;
+}
+
+.wayixia-toolbar-button .split 
+{
+  border-width: 0;
+  border-right: 1px solid #ddd;
+  width: 0px;
+  position: absolute;
+  right:0;
+  top: 8px;
+  height: 28px;
 }
 
 .wayixia-toolbar-button.checked {
@@ -41,6 +53,10 @@ body {
 
 .wayixia-toolbar-button.download {
   background-position:  -225px top;
+}
+
+.wayixia-toolbar-button.tocloud {
+  background-position:  -360px -45px;
 }
 
 .wayixia-toolbar-button.restore {
@@ -75,6 +91,15 @@ body {
 .wayixia-toolbar-button.eraser {
   background-position:  -405px top;
 }
+
+/*
+.wayixia-toolbar-button.save {
+  background-image: none;
+  background-color: transparent;
+  position: relative;
+  background: transparent url(images/dropdown.png) right 16px no-repeat;
+}
+*/
 
 .wayixia-toolbar-button.color {
   background-image: none;
