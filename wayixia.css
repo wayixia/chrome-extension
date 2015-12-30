@@ -442,6 +442,11 @@ button#wayixia-bugs {
   background-color: none;
 }
 
+.q-contextmenu.wayixia-menu .q-item-seperator .q-line {
+  left: 5px;
+  background-color: #CCC;
+}
+
 .q-contextmenu.wayixia-menu .q-item .q-item-title {
   line-height: 30px;
   font-size: 14px;

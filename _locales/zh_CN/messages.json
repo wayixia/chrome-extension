@@ -68,7 +68,12 @@
   
   "menuScreencapturing": {
     "message": "正在截屏中...",
-    "description": "正在截屏中..."
+    "description": ""
+  },
+  
+  "menuSaveToNewAlbum": {
+    "message": "新建画板并保存图片",
+    "description": ""
   },
   
   "filterWidth": {
