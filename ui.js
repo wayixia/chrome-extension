@@ -2,6 +2,7 @@
 var wayixia_errors = [];
 var wayixia_source_tab_id = null;
 var wayixia_help_menu = null;
+var wayixia_tocloud_menu = null;
 var wayixia_report_window = null;
 var wayixia_ui_wndx = null;
 var wayixia_request_data = {imgs: [], data: {}};
@@ -150,6 +151,152 @@ function dismiss(d) {
     }
   })).play();
 }
+
+
+/** \brief Check user is login
+ *
+ */
+function check_login_dialog() 
+{
+  var extension = chrome.extension.getBackgroundPage();
+  if( !extension.user_is_login() ) {
+    // must login
+    var wnd = window.open( 
+      "http://www.wayixia.com/index.php?mod=user&action=login&refer=" + encodeURIComponent( 'http://www.wayixia.com/close.htm' ) );
+    var timer = setInterval( function() {
+    if(wnd.closed) {
+      clearInterval(timer);
+      chrome.extension.sendMessage( { action:"userstatus" } );
+      }
+    }, 1000 );
+      
+    return false;
+  }
+
+  return true;
+}
+
+function popup_tocloud_menu( e, evt, f ) 
+{
+  var extension = chrome.extension.getBackgroundPage();
+  evt = evt || window.event;
+  // init drop menu
+  if( wayixia_tocloud_menu ) {
+    delete wayixia_tocloud_menu;
+  }
+  wayixia_tocloud_menu = new Q.Menu({
+    style: "wayixia-menu", 
+    on_popup: function(popup) {
+      if(popup) {
+        Q.addClass( e, "checked");
+      } else {
+        Q.removeClass( e, "checked");
+      }
+    }
+  });   
+  wayixia_tocloud_menu.hide();
+  var albums = [{id: -1, name: Q.locale_text("menuSaveToNewAlbum") } ];
+  var last_album = extension.get_last_album();
+  if( last_album && ( last_album.id > 0 ) ) {
+    albums.push( last_album );
+  }
+  albums.push({ type: "seperate" });
+  albums = albums.concat( extension.wayixia_albums);
+  var more_menu = null;
+
+  for( var i=0; i < albums.length; i++ ) {
+    // Add submenu item
+    var album = albums[i];
+    var item = new Q.MenuItem( {
+      text : album.name,
+      type: ( ( album.type && album.type=="seperate" ) ? MENU_SEPERATOR : MENU_ITEM ),
+      callback : ( function(a) { return function( menuitem ) {
+        if( a.id == -1 ) {
+          // Save to new album
+          create_newalbum_save( f );
+        } else {
+          // Save last album
+          extension.set_last_album( a );
+          f( a );
+        }
+      } } )(album)
+    } );
+
+    if( i > 22 ) {
+      if( !more_menu ) {
+        more_menu = new Q.MenuItem( {
+          text: Q.locale_text('stringMoreBoards'),
+          style: "wayixia-menu", 
+          callback: function(menuitem) {
+          
+          }
+        } );
+        wayixia_tocloud_menu.addMenuItem( more_menu );
+      }
+
+      more_menu.addSubMenuItem( item );
+      continue;
+    }
+    wayixia_tocloud_menu.addMenuItem( item );
+  }
+
+  wayixia_tocloud_menu.showElement( e, evt );
+}
+
+
+/** @brief Create new album and execute f when operation is ok 
+ *
+ */
+function create_newalbum_save( f ) 
+{
+// load template
+ui( function(t) {    
+  var tpl = t.template('wndx-newalbum');
+  // i18n 
+  extract_document(tpl);
+  var dlg = Q.alert({
+    wstyle: 'q-attr-no-icon',
+    title: Q.locale_text("menuSaveToNewAlbum"),
+    content: tpl,
+    width: 350,
+    height: 200,
+    on_ok : function() {
+      var album_name = this.item( 'album-name' ).value;
+      if(!album_name) {
+        this.item('msg').innerText = Q.locale_text('stringBoardNameEmpty');
+        return false;
+      }
+
+      Q.ajaxc({
+        command: 'http://www.wayixia.com/?mod=album&action=create-new&inajax=true',
+        withCredentials: true,
+        noCache:true,
+        method:"post",
+        queue: true,
+        continueError: true,
+        data : {album_name:album_name},
+        oncomplete : function(xmlhttp) {
+          try {
+          var res = Q.json_decode(xmlhttp.responseText);
+          if( ( res.header == 0 ) && ( res.data.album_id > 0 ) ) {
+            var extension = chrome.extension.getBackgroundPage();
+            var newalbum = { id: res.data.album_id, name: res.data.album_name };
+            extension.set_last_album( newalbum );
+            f( newalbum );
+            dismiss( dlg );
+          } else {
+            dlg.item('msg').innerText = res.data;
+          }
+          } catch (e) {
+            dlg.item('msg').innerText = "error: " + e.message + "\n" + xmlhttp.responseText ;
+          }        
+        }
+      }); // end ajax
+      return false;
+    }
+  });
+}); // end ui
+} // end create_newalbum_save
 
 function clear_errors() {
   wayixia_errors = [];

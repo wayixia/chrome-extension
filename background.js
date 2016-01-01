@@ -1,4 +1,4 @@
-// Copyright (c) 2014 The Wayixia Authors. All rights reserved.
+// Copyright (c) 2014-2016 The Wayixia Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -400,6 +400,16 @@ chrome.extension.onMessage.addListener( function( o ) {
           }
           if( r.data.albums ) {
             wayixia_albums = wayixia_albums.concat( r.data.albums );
+            // Clear old albums
+            var last_album = get_last_album();
+            if( last_album.id && last_album.id > 0 ) {
+              for( var i=0; i < wayixia_albums.length; i++) {
+                if( last_album.id == wayixia_albums[i].id ) {
+                  return;
+                }
+              }
+              set_last_album( {} );
+            }
           }
         }
       }

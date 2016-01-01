@@ -369,8 +369,24 @@
     "description": ""
   },
 
+  "stringBoardNameEmpty" : {
+    "message" : "画板名称不能为空",
+    "description": ""
+  },
+
+  "stringMoreBoards": { "message": "更多画板", "description": "" },
+  "stringDigging": { "message": "正在努力地挖图...", "description": "" },
+  "stringDigOk": { "message": "成功挖到了图片!", "description": "" },
+  "stringDigError": { "message": "挖一下，失败!", "description": "" },
+  "stringHadDig": { "message": "图片已经挖过了哦!", "description": "" },
+
   "toolSave" : {
     "message": "保存到本地",
+    "description": ""
+  },
+  
+  "toolSaveToCloud" : {
+    "message": "保存到挖一下云",
     "description": ""
   },
 

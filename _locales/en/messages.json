@@ -353,8 +353,24 @@
     "description": ""
   },
 
+  "stringMoreBoards": { "message": "More boards", "description": "" },
+  "stringDigging": { "message": "Digging image...", "description": "" },
+  "stringDigOk": { "message": "Dig image OK", "description": "" },
+  "stringDigError": { "message": "Error occurred when dig image", "description": "" },
+  "stringHadDig": { "message": "The image had digged!", "description": "" },
+  
+  "stringBoardNameEmpty" : {
+    "message" : "Board name is empty!",
+    "description": ""
+  },
+  
   "toolSave" : {
     "message": "Save",
+    "description": ""
+  },
+
+  "toolSaveToCloud" : {
+    "message": "Save to cloud of wayixia",
     "description": ""
   },
 

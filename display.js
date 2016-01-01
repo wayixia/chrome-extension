@@ -18,7 +18,6 @@ function initialize () {
   var _this = t = this;
   var blocked_images = [];
   var accept_length  = 0;
-  var wayixia_tocloud_menu = null;
   var extension = chrome.extension.getBackgroundPage();
   
   // Image box
@@ -141,57 +140,15 @@ function initialize () {
     wayixia_track_button_click(this);
     if(!check_login_dialog()) 
       return;
-    // init drop menu
-    if( wayixia_tocloud_menu ) {
-      delete wayixia_tocloud_menu;
-    }
-    wayixia_tocloud_menu = new Q.Menu({
-        style: "wayixia-menu", 
-        on_popup: function(popup) {
-          if(popup) {
-            Q.addClass(Q.$('wayixia-tocloud'), "checked");
-          } else {
-            Q.removeClass(Q.$('wayixia-tocloud'), "checked");
-          }
+
+    popup_tocloud_menu( this, evt, function(album) {
+      wayixia_images_box.each_item(function(item) {
+        if( ( item.className.indexOf( 'mouseselected' ) != -1 ) && ( item.style.display == '' ) ) {
+          tocloud_item( item, album.id );
+          wayixia_images_box.set_check(item, false);
         }
-    });   
-    wayixia_tocloud_menu.hide();
-    var albums = [{id: -1, name: Q.locale_text("menuSaveToNewAlbum") } ];
-    var last_album = extension.get_last_album();
-    if( last_album && ( last_album.id > 0 ) ) {
-      albums.push( last_album );
-    }
-    albums.push({ type: "seperate" });
-    albums = albums.concat( extension.wayixia_albums);
-
-    for( var i=0; i < albums.length; i++ ) {
-      // Add submenu item
-      var album = albums[i];
-      var item = new Q.MenuItem( {
-        text : album.name,
-        type: ( ( album.type && album.type=="seperate" ) ? MENU_SEPERATOR : MENU_ITEM ),
-        callback : ( function(a) { return function( menuitem ) {
-          if( a.id == -1 ) {
-            // Save to new album
-            create_newalbum_save( wayixia_images_box, tocloud_item );
-          } else {
-            // Save last album
-            extension.set_last_album( a );
-            // Save images to album
-            wayixia_images_box.each_item(function(item) {
-            if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-              tocloud_item( item, a.id );
-              wayixia_images_box.set_check(item, false);
-            }
-          });
-
-          }
-        } } )(album)
-      } );
-      wayixia_tocloud_menu.addMenuItem( item );
-    }
-
-    wayixia_tocloud_menu.showElement(this, evt)
+      })
+    } );
   }
 
   function block_item(item, blocked) {
@@ -314,44 +271,20 @@ function initialize () {
 
   /** initialize title of buttons */
   Q.$( 'wayixia-local-download' ).title = Q.locale_text( 'toolSave' );
+  Q.$( 'wayixia-tocloud' ).title = Q.locale_text( 'toolSaveToCloud' );
   Q.$( 'wayixia-select-all' ).title = Q.locale_text( 'selectAll' );
   Q.$( 'wayixia-add-block' ).title = Q.locale_text( 'addBlock' );
   Q.$( 'wayixia-show-block' ).title = Q.locale_text( 'haveBlocked' );
 
-  function check_login_dialog() {
-    if( !extension.user_is_login() ) {
-      // must login
-      var wnd = _this.open_window(
-          "http://www.wayixia.com/index.php?mod=user&action=login&refer="+encodeURIComponent('http://www.wayixia.com/close.htm'), 
-          {width:580, height:250}
-      );
-
-      var timer = setInterval( function() {
-        if(wnd.closed) {
-          clearInterval(timer);
-          chrome.extension.sendMessage( { action:"userstatus" } );
-        }
-      }, 1000 );
-      
-      return false;
+  // Set image item state
+  function set_image_state( e, state ) {
+    var _state_message = {
+      ing:  Q.locale_text('stringDigging'),
+      ok :  Q.locale_text('stringDigOk'), 
+      error: Q.locale_text('stringDigError'), 
+      warn: Q.locale_text('stringHadDigged') 
     }
 
-    return true;
-  }
-
-  _this.open_window = function(uri, json) {  
-    return window.open( uri );
-  }
-
-  var _state_message = {
-    ing: '正在努力地挖...',
-    ok : '成功挖到了此图!',
-    error: '挖一下，失败!',
-    warn: '已经挖过了哦!',
-  }
-
-  // state: 
-  function set_image_state( e, state ) {
     if(!_state_message[state]) {
       state = 'ing';
     }
@@ -359,8 +292,7 @@ function initialize () {
     wing_box.className = 'layer-mask wing-box-'+state;
     e.state = state;
     wing_box.innerHTML = _state_message[state];
-    if( ( state == 'ok' ) || ( state == 'warn' ) ) 
-    {
+    if( ( state == 'ok' ) || ( state == 'warn' ) ) {
       setTimeout( function() {
       (new Q.Animate({ tween: 'cubic', ease: 'easyin',
         max: 2000, begin: 0, duration: 100,
@@ -388,7 +320,6 @@ function initialize () {
     if(!check_login_dialog()) 
       return;
     //quick wa
-    //_this.open_image_window(inner_img.src);
     var json_data = {};
     json_data.pageUrl = wayixia_request_data.data.pageUrl;
     json_data.srcUrl = config.src, 
@@ -441,54 +372,6 @@ function initialize () {
   
   console.log('content is loaded');
 };
-
-function create_newalbum_save( wayixia_images_box, tocloud_item ) {
-  var dlg = Q.alert({
-    wstyle: 'q-attr-no-icon',
-    title: Q.locale_text("menuSaveToNewAlbum"),
-    content: Q.$('create-album-panel'),
-    width: 350,
-    height: 200,
-    on_ok : function() {
-      var album_name = Q.$('album-name').value;
-      if(!album_name) {
-        alert('输入不能为空!');
-        return false;
-      }
-
-      Q.ajaxc({
-        command: 'http://www.wayixia.com/?mod=album&action=create-new&inajax=true',
-        withCredentials: true,
-        noCache:true,
-        method:"post",
-        queue: true,
-        continueError: true,
-        data : {album_name:album_name},
-        oncomplete : function(xmlhttp) {
-          try {
-          var res = Q.json_decode(xmlhttp.responseText);
-          if( ( res.header == 0 ) && ( res.data.album_id > 0 ) ) {
-            dlg.end();
-            var extension = chrome.extension.getBackgroundPage();
-            extension.set_last_album( { id: res.data.album_id, name: res.data.album_name } );
-            wayixia_images_box.each_item(function(item) {
-              if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-                tocloud_item( item, res.data.album_id );
-                wayixia_images_box.set_check(item, false);
-              }
-            });
-          } else {
-            alert(res.data);
-          }
-          } catch (e) {
-            alert("error: " + e.description + "\n" + xmlhttp.responseText );
-          }        
-        }
-      });
-      return false;
-    }
-  });
-}
 
 /** 开放平台接口 */
 function api_share2sina(image_src) {

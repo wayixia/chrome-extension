@@ -34,7 +34,31 @@ function initialize () {
     var context = tmp_canvas.getContext('2d');
     context.drawImage( Q.$( 'wayixia-canvas' ), 0, 0 );
     context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
-    //extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
+    extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
+  }
+
+  Q.$('wayixia-screenshot-tocloud').onclick = function(evt) {
+    evt = evt || window.event;
+    wayixia_track_button_click(this);
+    if(!check_login_dialog()) 
+      return;
+
+    popup_tocloud_menu( this, evt, function(album) {
+      /** merge canvas */
+      var tmp_canvas = document.createElement( 'canvas' );
+      tmp_canvas.width = Q.$( 'wayixia-canvas' ).width;
+      tmp_canvas.height = Q.$( 'wayixia-canvas' ).height;
+      var context = tmp_canvas.getContext('2d');
+      context.drawImage( Q.$( 'wayixia-canvas' ), 0, 0 );
+      context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
+      
+      wa_data_image( {
+        src : tmp_canvas.toDataURL( 'image/png' ),
+        width : tmp_canvas.width,
+        height : tmp_canvas.height,
+        album_id: album.id, 
+      } )( null );
+    } );
   }
 
   Q.$( 'wayixia-screenshot-undo' ).onclick = function() { 
@@ -49,6 +73,7 @@ function initialize () {
   }
   
   Q.$( 'wayixia-screenshot-download' ).title = Q.locale_text( 'toolSave' );
+  Q.$( 'wayixia-screenshot-tocloud' ).title = Q.locale_text( 'toolSaveToCloud' );
   Q.$( 'wayixia-screenshot-undo' ).title = Q.locale_text( 'toolUndo' );
   Q.$( 'wayixia-screenshot-redo' ).title = Q.locale_text( 'toolRedo' );
   Q.$( 'wayixia-screenshot-text' ).title = Q.locale_text( 'toolText' );
@@ -70,6 +95,87 @@ function initialize () {
     display_screenshot( -1, src, src );
   }
 }
+
+function set_image_state( item, state )
+{
+  var dlg = null;
+  if( state == "ing" ) {
+    // create dialog of screen capture
+    dlg = new Q.Dialog({
+      wstyle: "q-attr-no-title|q-attr-progress",
+      width: 500, height: 100,
+      title: Q.locale_text("extName"),
+      content: 'progressing...'
+    });
+    Q.$('wayixia-progress').style.visibility = "visible";
+    g_screenshot_dialog.domodal();
+    g_screenshot_dialog.center();
+    var w = Q.$("wayixia-progress-bar").offsetWidth;
+    scroll_loadding = new Q.Slider({id: 'x-ctrl-loadding', min: 0, max: 100, value: 100, 
+      on_xscroll: function(v) {
+        Q.$("wayixia-progress-bar-thumb").style.width = (v*w/100)+'px';
+      }
+    });
+  } else {
+    if( dlg ) {
+      dismiss( dlg );
+    }
+  }
+}
+
+function wa_data_image(config) { return function(item) {
+    if(!check_login_dialog()) 
+      return;
+    //quick wa
+    //_this.open_image_window(inner_img.src);
+    var json_data = {};
+    json_data.pageUrl = "http://www.wayixia.com/chrome"
+    json_data.srcUrl = config.src, 
+    json_data.cookie = "",
+    json_data.title = "",
+    json_data.width = config.width;
+    json_data.height = config.height;
+    if( !config.album_id ) {
+      json_data.album_id = 0;
+    } else {
+      json_data.album_id = config.album_id;
+    }
+    
+    set_image_state( item, 'ing' );
+    Q.ajaxc( { command:"http://www.wayixia.com:10086/getimage?type=data",
+      data: {img: json_data},
+      withCredentials: true,
+      noCache:true,
+      method:"post",
+      queue: true,
+      continueError: true,
+      oncomplete: function(xmlhttp){
+        var res = {}; 
+        try {
+          res = Q.json_decode( xmlhttp.responseText );
+        } catch(e) {
+          res.header = -1;
+          res.data = e.description;
+        }
+        var result = res.header;
+        if(result == 0) {
+          set_image_state( item, 'ok' );
+        } else if(result == -2) {
+          check_login_dialog();
+          return;
+        } else if(result == -100){
+          set_image_state( item, 'warn' );
+        } else {
+          set_image_state( item, 'error' );
+        }
+      }, // ok
+
+      onerror: function( xmlhttp ) {
+        set_image_state( item, 'error' );
+      }  // error
+    } );
+} } // end wa_data_image
+
 
 /** 简易的调色板，固定给出几组颜色
  *
