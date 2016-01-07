@@ -57,7 +57,7 @@
   },
   
   "menuPopupWidth": {
-    "message": "200",
+    "message": "220",
     "description": "200"
   },
   
@@ -236,6 +236,10 @@
     "description": "Close"
   },
 
+  "btnDonate" : {
+    "message": "Donate",
+    "description": ""
+  },
 
   "qYes" : {
     "message": " YES ",
