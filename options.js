@@ -33,9 +33,19 @@ function init_setting() {
   var extension = chrome.extension.getBackgroundPage();
   // save path
   Q.$('save_path').value = extension.user_config_get('save_path');
+  new Q.PlaceHolder( {
+      holder: "label_save_path", 
+      id: "save_path", 
+  } );
+  
   // date folder
   var option_date_folder = (extension.user_config_get('date_folder') != '0');
   var date_folder = new Q.CheckBox({ id : "date_folder", checked: option_date_folder});
+
+  // Sitename folder
+  var option_sitename_folder = (extension.user_config_get('sitename_folder') != '0');
+  var sitename_folder = new Q.CheckBox({ id : "sitename_folder", checked: option_sitename_folder});
+
   // filter rules
   var option_filter_rules = extension.filter_rule_is_enabled();
   Q.$('manager_filter_rules').disabled = !option_filter_rules;
@@ -60,8 +70,9 @@ function init_setting() {
          // save settings
          extension.user_config_set('save_path', Q.$('save_path').value);
          extension.user_config_set('date_folder', (date_folder.checked())?1:0);
+         extension.user_config_set('sitename_folder', (sitename_folder.checked())?1:0);
          extension.filter_rule_enable(filter_rules.checked());
-         new Q.MessageBox({title: locale_text('extShortName'), 
+         new Q.alert({title: locale_text('extShortName'), 
            content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('saveOptions')+'</div>'});
          return false;
         }

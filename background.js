@@ -133,7 +133,7 @@ function on_click_open_about() {
 function on_click_screenshot(tab) {
 //  chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
 //    setTimeout(function() {
-      chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {  
+      chrome.tabs.captureVisibleTab( null, {format:'png'}, function(screenshotUrl) {  
         //chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
           create_display_screenshot(tab.id, screenshotUrl, tab.url); 
         //});
@@ -159,7 +159,7 @@ function capture_page_task(tab, max, pos, canvas) {
   console.log('capture page (row='+pos.row+', col='+pos.col);
   chrome.tabs.sendRequest(tab.id, { type : "screenshot-page", row:pos.row, col:pos.col}, function(res) {
     setTimeout(function() {
-      chrome.tabs.captureVisibleTab({format:'png'}, function(screenshotUrl) {
+      chrome.tabs.captureVisibleTab( null, {format:'jpeg', quality: 30}, function(screenshotUrl) {
         canvas.screenshots.push({row: pos.row, col: pos.col, data_url: screenshotUrl});
         pos.col++;
         pos.col = pos.col % max.cols; 
@@ -180,8 +180,32 @@ function capture_page_task(tab, max, pos, canvas) {
 function screenshot_end(tab, canvas) {
   console.log('capture end');
   chrome.tabs.sendRequest( tab.id, { type : "screenshot-end" }, function(res) {
-    create_display_full_screenshot(tab.id, canvas, tab.url); 
+    // if size is too large then process with server
+    var size = canvas.size;
+    if( ( size.full_width * size.full_width ) > ( 2000 * 16000 ) ) {
+      // process with server
+    } else {
+      create_display_full_screenshot(tab.id, canvas, tab.url); 
+    }
   });
+}
+
+function merge_images_with_server( res ) {
+   ajax( { command: "http://www.wayixia.com:10086/merge",
+    method: "POST",
+    oncomplete : function( res ) {
+      try {
+        if( res ) {
+        }
+      } catch(e) {
+        console.log(e);
+      }
+    },
+    onerror: function( xmlhttp ) {
+      console.log("Problem retrieving data");
+    }
+  } );
+
 }
 
 var cache_display = {};

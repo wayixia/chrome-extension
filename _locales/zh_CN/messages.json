@@ -127,19 +127,25 @@
   },
  
   "savePath":  {
-    "message" : "图片保存路径",
-    "description": "图片保存路径"
+    "message" : "图片保存文件夹",
+    "description": ""
   },
 
   "savePathAttention" : {
-    "message": "相对于系统默认下载目录, 留空则使用系统默认路径",
-    "description": "相对于系统默认下载目录, 留空则使用系统默认路径"
+    "message": "相对于浏览器下载目录",
+    "description": ""
   },
 
   "saveWithDateFolder" : {
     "message": "按日期归类",
-    "description": "按日期归类"
+    "description": ""
   },
+  
+  "saveWithSiteNameFolder" : {
+    "message": "按网站名称归类",
+    "description": ""
+  },
+  
 
 
   "blockImageManage" : {
@@ -447,6 +453,8 @@
     "message": "线条大小",
     "description": ""
   },
+
+
 
   "dummy" : {
     "message": "",

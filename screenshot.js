@@ -921,8 +921,8 @@ function display_screenshot(tab_id, image_data, url) {
     draw_context.drawImage(this, 0, 0);
 
     drag_screen_images_end();
-    var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
-    draw_context.putImageData(imgData,0,0);
+    //var imgData = draw_context.getImageData(0,0, wayixia_canvas.width, wayixia_canvas.height);
+    //draw_context.putImageData(imgData,0,0);
     // init painter
     g_canvas_editor = new Q.CanvasEditor({
       id : Q.$('wayixia-canvas'),

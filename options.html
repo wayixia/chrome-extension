@@ -4,7 +4,8 @@
 <title> __MSG_extName__  </title>
 <link href="Q.js/ui.css" rel="stylesheet" type="text/css"/>
 <link href="wayixia.css" rel="stylesheet" type="text/css"/>
-<script src="Q.js/Q.js"></script>
+<script src="Q.js/Q.debug.js"></script>
+<!--script src="Q.js/Q.js"></script>
 <script src="Q.js/src/json2.js"></script>
 <script src="Q.js/src/stl.js"></script>
 <script src="Q.js/src/ajax.js"></script>
@@ -13,7 +14,7 @@
 <script src="Q.js/src/contextmenu.js"></script>
 <script src="Q.js/src/checkbox.js"></script>
 <script src="Q.js/src/imagesbox.js"></script>
-<script src="Q.js/src/table.js"></script>
+<script src="Q.js/src/table.js"></script-->
 <script src="tracker.js"></script>
 <script src="i18n.js"></script>
 <script src="ui.js"></script>
@@ -58,10 +59,16 @@
 </head>
 <body style="-moz-user-select:none;-webkit-user-select: none;">
 <div id="layer">
-  <b> __MSG_savePath__</b>（<font color="#999">__MSG_savePathAttention__</font>）<br> 
-  <input id="save_path" size="50"> <br>
-  <a id="date_folder" class="q-checkbox">__MSG_saveWithDateFolder__</a>
-  <br>
+  <b> __MSG_savePath__</b>(<font color="#999">__MSG_savePathAttention__</font>)<br>
+  <div class="q-placeholder" id="label_save_path">
+    wayixia
+    <input id="save_path" size="50"> 
+  </div>
+  
+  <a id="date_folder" class="q-checkbox">__MSG_saveWithDateFolder__</a> 
+  <a id="sitename_folder" class="q-checkbox">__MSG_saveWithSiteNameFolder__</a> <br>
+
+
   <br>
   <!--b class="q-checkbox" id="close_after_download">__MSG_closeAfterDownload__</b>（<font color="#999">__MSG_closeAfterDownloadWarning__</font>）
   <br>
@@ -83,7 +90,7 @@
   <p style="font-size: 22px;line-height: 30px;"><b>__MSG_extShortName__</b> __MSG_extShortDescription__</p>
   <p id="layer-about-version"></p> 
   <p>__MSG_developer__: life.qm@gmail.com <!--a class="syscancelbtn" href="http://www.wayixia.com/chrome/about#donate" target="_blank" style="text-decoration: none;">__MSG_btnDonate__</a--></p>
-  <p style="color: #666;">2016&copy;www.wayixia.com</p>
+  <p style="color: #666;">2017&copy;www.wayixia.com</p>
   <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
     <div>
     <input type="hidden" name="cmd" value="_donations" />     <input type="hidden" name="business" value="Y948MMS98FJGS" />     <input type="hidden" name="lc" value="C2" />     <input type="hidden" name="item_name" value="Donate for plugin" />     <input type="hidden" name="currency_code" value="USD" />     <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" />     <input style="border:none;margin-right:10px;" type="image" src="http://www.wayixia.com/themes/default/donate-with-paypal.png" name="submit" alt="" /><a rel="nofollow external" id="donate-with-alipay"><img style="width:auto;border:none;" src="http://www.wayixia.com/themes/default/donate-with-alipay.png" alt="" /></a><br />

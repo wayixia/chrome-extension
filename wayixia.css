@@ -639,3 +639,17 @@ button#wayixia-bugs {
 .q-window-mask.q-top-mask {
   filter:alpha(opacity=50);-moz-opacity:0.5;-khtml-opacity: 0.5;opacity: 0.5;
 }
+
+
+.q-placeholder, .q-placeholder input {
+  height: 22px;;
+  line-height: 22px;
+}
+
+.q-placeholder {
+  width: 480px;
+}
+
+.q-placeholder input {
+  width: 472px;
+}

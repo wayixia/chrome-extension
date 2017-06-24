@@ -63,10 +63,15 @@
 }
 
 /* q-window's mask */
-.q-window-mask {position:absolute; background: #000000; display:; left:0;top:0;right:0;bottom:0;}
-.q-window-mask.q-top-mask {
-  z-index: 100000;
+.q-window-mask {position:absolute; background: #000000; display:; left:0;top:0;right:0;bottom:0;
+  filter:alpha(opacity=10);-moz-opacity:0.1;-khtml-opacity: 0.1;opacity: 0.1;
 }
+.q-window-mask.q-top-mask 
+{
+  z-index: 100000;
+  position: fixed;
+}
+
 /* q-window's cient area */
 .q-window .q-window-client { overflow: hidden; position:absolute; left:0; top:30px; right:0; bottom:0;margin:0;padding:0;}
 .q-window.q-attr-no-title .q-window-client { top:0px; }
@@ -323,8 +328,8 @@
 
 /* q-table control */
 
-.q-table { background: #99bbe8; overflow:hidden; position:absolute; left:0; top:0; right:0; bottom:0;}
-.q-table.q-attr-border {left:1; top:1; right:1; bottom:1;}
+.q-table { backgrounds: #99bbe8; overflow:hidden; position:absolute; left:0; top:0; right:0; bottom:0;}
+.q-table.q-attr-border {left:1px; top:1px; right:1px; bottom:1px;}
 .q-table TD {CURSOR: default;}
 .q-table TR.q-selected
 { 
@@ -614,6 +619,38 @@
   background : transparent url(images/checkbox/checked.gif) no-repeat 0 center;
 }
 
+
+.q-placeholder {
+  margin:0px 1px 0 1px;
+  border: 1px solid #999;
+  height: 25px;
+  line-height: 25px;
+  width: 258px;
+  text-indent: 5px;
+  color: #666;
+  position:relative;
+  background:transparent;
+}
+
+
+.q-placeholder input { 
+  background-color: transparent; 
+  position:absolute;
+  left: 3px;
+  top: 0px;
+  height: 25px;
+  border: 0;
+  padding:0;
+  font-size: 16px;
+  outline:none;
+  width: 252px;
+  border-width: 0;
+}
+
+.q-placeholder input.q-inplace {
+  background-color: #FFF;
+}
+
 .q-images-box {
   font-family: arial, 'helvetica neue', sans-serif;
   position: absolute;
@@ -795,3 +832,44 @@
   height: 15px;
   background-color: none;
 }
+
+.q-tabs.property {
+
+}
+
+.q-tabs.property .q-panel {
+  line-height: 30px;
+  font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;
+	padding: 10px 20px;
+}
+
+.q-tabs.property input,
+.q-tabs.property select
+{
+  height: 25px;
+}
+
+.q-tabs.property .q-tabs-header {
+  background: none;
+  height: 30px;
+  line-height: 30px;
+}
+
+.q-tabs.property .q-tabs-header a {
+  color: #000;
+  text-decoration: none;
+  padding: 0 10px;
+}
+
+.q-tabs.propertyn .q-tabs-header a:hover {
+  color: #FFF;
+}
+
+.q-tabs.property .q-tabs-header a.q-selected {
+  background: #FFF;
+	z-index: 1px;
+}
+
+
+
+
