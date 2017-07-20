@@ -3,6 +3,7 @@ var wayixia_errors = [];
 var wayixia_source_tab_id = null;
 var wayixia_help_menu = null;
 var wayixia_tocloud_menu = null;
+var wayixia_save_menu = null;
 var wayixia_report_window = null;
 var wayixia_ui_wndx = null;
 var wayixia_request_data = {imgs: [], data: {}};
@@ -152,6 +153,15 @@ function dismiss(d) {
   })).play();
 }
 
+function message_box( json ) {
+  var json = json || {};
+  json.title = document.title;
+  json.icon = json.icon || "info";
+  json.content = "<div class=\"q-alert-content q-alert-"+json.icon+"\">"+json.content+"</div>";
+
+  Q.alert( json );
+}
+
 
 /** \brief Check user is login
  *
@@ -196,12 +206,12 @@ function popup_tocloud_menu( e, evt, f )
   });   
   wayixia_tocloud_menu.hide();
   var albums = [{id: -1, name: Q.locale_text("menuSaveToNewAlbum") } ];
-  var last_album = extension.get_last_album();
+  var last_album = extension.wayixia.last_album;
   if( last_album && ( last_album.id > 0 ) ) {
     albums.push( last_album );
   }
   albums.push({ type: "seperate" });
-  albums = albums.concat( extension.wayixia_albums);
+  albums = albums.concat( extension.wayixia.albums);
   var more_menu = null;
 
   for( var i=0; i < albums.length; i++ ) {
@@ -242,6 +252,74 @@ function popup_tocloud_menu( e, evt, f )
 
   wayixia_tocloud_menu.showElement( e, evt );
 }
+
+function popup_save_menu( e, evt, f ) 
+{
+  var extension = chrome.extension.getBackgroundPage();
+  evt = evt || window.event;
+  // init drop menu
+  if( wayixia_save_menu ) {
+    delete wayixia_save_menu;
+  }
+  wayixia_save_menu = new Q.Menu({
+    style: "wayixia-menu", 
+    on_popup: function(popup) {
+      if(popup) {
+        Q.addClass( e, "checked");
+      } else {
+        Q.removeClass( e, "checked");
+      }
+    }
+  });   
+  wayixia_save_menu.hide();
+  var sites = [{id: -1, name: Q.locale_text("menuSaveToSiteFolder") } ];
+  var last_site = extension.last_site();
+  if( last_site.name ) {
+    sites.push( last_site );
+  }
+  sites.push({ type: "seperate" });
+  sites = sites.concat( extension.sites() );
+  var more_menu = null;
+
+  for( var i=0; i < sites.length; i++ ) {
+    // Add submenu item
+    var site = sites[i];
+    var item = new Q.MenuItem( {
+      text : site.name,
+      type: ( ( site.type && site.type=="seperate" ) ? MENU_SEPERATOR : MENU_ITEM ),
+      callback : ( function(a) { return function( menuitem ) {
+        if( a.id == -1 ) {
+          // Save to new album
+          create_newsite_save( f );
+        } else {
+          // Save last album
+          extension.set_last_site( a );
+          f( a );
+        }
+      } } )(site)
+    } );
+
+    if( i > 22 ) {
+      if( !more_menu ) {
+        more_menu = new Q.MenuItem( {
+          text: Q.locale_text('stringMoreBoards'),
+          style: "wayixia-menu", 
+          callback: function(menuitem) {
+          
+          }
+        } );
+        wayixia_save_menu.addMenuItem( more_menu );
+      }
+
+      more_menu.addSubMenuItem( item );
+      continue;
+    }
+    wayixia_save_menu.addMenuItem( item );
+  }
+
+  wayixia_save_menu.showElement( e, evt );
+}
+
 
 
 /** @brief Create new album and execute f when operation is ok 
@@ -297,6 +375,51 @@ ui( function(t) {
   });
 }); // end ui
 } // end create_newalbum_save
+
+
+/** @brief Create new site folder to save folder 
+ *
+ */
+function create_newsite_save( f ) 
+{
+// load template
+ui( function(t) {    
+  var tpl = t.template('wndx-newsite');
+  // i18n 
+  extract_document(tpl);
+  var dlg = Q.alert({
+    wstyle: 'q-attr-no-icon',
+    title: Q.locale_text("menuSaveToSiteFolder"),
+    content: tpl,
+    width: 350,
+    height: 200,
+    on_ok : function() {
+      var album_name = this.item( 'site-name' ).value;
+      if(!album_name) {
+        this.item('msg').innerText = Q.locale_text('stringNameEmpty');
+        return false;
+      }
+
+      var extension = chrome.extension.getBackgroundPage();
+      var newsite = { id: 0, name: album_name };
+      if( extension.is_site_exists( newsite ) ) {
+        this.item('msg').innerText = Q.locale_text('stringNameExists');
+      } else {
+        extension.add_site( newsite );
+        extension.set_last_site( newsite );
+        f( newsite );
+        dismiss( dlg );
+      }
+      return false;
+    }
+  });
+}); // end ui
+} // end create_newsite_save
+
+
+
+
+
 
 function clear_errors() {
   wayixia_errors = [];

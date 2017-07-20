@@ -56,9 +56,29 @@ function init_setting() {
     }
   });
 
+  // Account buttons
+  var wayixia_account_text = "" ;
+  if( extension.nickname() != "" ) {
+    wayixia_account_text = locale_text('accountLogout') + " ( " + extension.nickname().toUpperCase() + " )";
+  } else {
+    wayixia_account_text = locale_text('accountLogin');
+  }
+  Q.$('wayixia_account').innerHTML = wayixia_account_text;  
+  Q.$('wayixia_account').onclick = ( function( ext ) { return function() {
+    if( extension.nickname() != "" ) {
+      ext.wayixia_logout( function(ok) {
+        location.reload(); 
+      } );
+    } else {
+      // login
+      window.open("http://www.wayixia.com/?mod=user&action=login&refer="+location.href);
+    }
+  } } )( extension );
+
+
   g_option_window = new Q.Dialog({
     width: 706,
-    height: 530,
+    height: 570,
     wstyle: "q-attr-no-icon",
     title: locale_text('extOptions'),
     content: Q.$('layer'),
@@ -72,8 +92,7 @@ function init_setting() {
          extension.user_config_set('date_folder', (date_folder.checked())?1:0);
          extension.user_config_set('sitename_folder', (sitename_folder.checked())?1:0);
          extension.filter_rule_enable(filter_rules.checked());
-         new Q.alert({title: locale_text('extShortName'), 
-           content: '<div style="margin:auto; padding:20px;font-size:14px;">'+locale_text('saveOptions')+'</div>'});
+         message_box( {title: locale_text('extShortName'), content: locale_text('saveOptions'), icon: "ok" } );
          return false;
         }
       },

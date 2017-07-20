@@ -45,8 +45,8 @@ function init(){
   }  
 
   extension = chrome.extension.getBackgroundPage();
-  if( extension.wayixia_nickname != "" ) {
-    Q.$('wayixia-login-text').innerHTML = extension.wayixia_nickname.toUpperCase();
+  if( extension.nickname() != "" ) {
+    Q.$('wayixia-login-text').innerHTML = extension.nickname().toUpperCase();
     Q.$('wayixia-login-text').onclick = function() {
       deactive();
       window.open("http://www.wayixia.com/?mod=user&action=home");

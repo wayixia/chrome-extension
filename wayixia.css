@@ -653,3 +653,28 @@ button#wayixia-bugs {
 .q-placeholder input {
   width: 472px;
 }
+
+
+.q-alert-content {
+  padding: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+  background-repeat: no-repeat;
+  background-position: 20px 20px;
+
+}
+
+.q-alert-content.q-alert-info {
+  background-image: url(images/sprite_warn.png);
+}
+
+.q-alert-content.q-alert-error {
+  background-image: url(images/sprite_error.png);
+}
+
+.q-alert-content.q-alert-ok {
+  background-image: url(images/sprite_ok.png);
+}
+
+
+

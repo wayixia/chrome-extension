@@ -75,7 +75,13 @@
     "message": "新建画板并保存图片",
     "description": ""
   },
+ 
   
+  "menuSaveToSiteFolder": {
+    "message": "新建网站文件夹",
+    "description": ""
+  },
+
   "filterWidth": {
     "message": "宽度",
     "description": "宽度"
@@ -374,9 +380,19 @@
     "message" : "大小",
     "description": ""
   },
+  
+  "stringName" : {
+    "message" : "名称",
+    "description": ""
+  },
 
-  "stringBoardNameEmpty" : {
-    "message" : "画板名称不能为空",
+  "stringNameEmpty" : {
+    "message" : "名称不能为空",
+    "description": ""
+  },
+
+  "stringNameExists" : {
+    "message" : "名称已经存在",
     "description": ""
   },
 
@@ -453,6 +469,28 @@
     "message": "线条大小",
     "description": ""
   },
+
+  "account" : {
+    "message": "挖一下帐号",
+    "description": ""
+  },
+
+  "accountAttention" : {
+    "message": "帐号配置将自动云同步",
+    "description": ""
+  },
+
+  "accountLogin": {
+    "message": "登 录",
+    "description": ""
+  },
+
+  "accountLogout": {
+    "message": "退 出",
+    "description": ""
+  },
+
+
 
 
 

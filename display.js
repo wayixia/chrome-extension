@@ -126,13 +126,27 @@ function initialize () {
   }
 
 
-  Q.$('wayixia-local-download').onclick=function() {
+  Q.$('wayixia-local-download').onclick=function( evt ) {
+    evt = evt || window.event;
     wayixia_track_button_click(this);
-    wayixia_images_box.each_item(function(item) {
-      if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-        download_item(item);
-      }
-    });
+
+    var extension = chrome.extension.getBackgroundPage();
+    if( !extension.enabled_site() ) {
+      wayixia_images_box.each_item( function( item ) {
+        if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+          download_item( item );
+        }
+      } );
+
+      return;
+    }
+    popup_save_menu( this, evt, function( folder ) {
+      wayixia_images_box.each_item(function(item) {
+        if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+          download_item(item, folder );
+        }
+      });
+    } );
   }
 
   Q.$('wayixia-tocloud').onclick = function( evt ) {
@@ -162,11 +176,11 @@ function initialize () {
     }
   }
 
-  function download_item(item) {
+  function download_item( item, folder ) {
     //if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
       var extension = chrome.extension.getBackgroundPage();
       var url = item.getAttribute('data-url');
-      extension.download_image(url, window);
+      extension.download_image(url, window, folder.name );
       Q.addClass(item, 'downloaded');
       item.style.display = 'none';
     //}

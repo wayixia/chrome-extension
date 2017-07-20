@@ -4,11 +4,19 @@
 //
 
 var plugin_name  = chrome.i18n.getMessage('menuDigImages');
+var wayixia = {};
+
+
 var block_images = {};
-var wayixia_nickname = "";
-var wayixia_uid = 0;
-var wayixia_albums = [];
-var wayixia_last_album = {};
+wayixia.nickname = "";
+wayixia.uid = 0;
+wayixia.albums = [];
+wayixia.last_album = {};
+//wayixia.enabled_site = false;
+//wayixia.sites = [];
+//wayixia.last_site = {};
+
+
 
 // check new version for helper
 if(user_config_is_new()) {
@@ -18,22 +26,100 @@ if(user_config_is_new()) {
 
 function user_is_login()
 {
-  return ( wayixia_nickname != "" );
+  return ( wayixia.nickname != "" );
 }
 
-function set_last_album( album )
-{
-  if( album.id && album.name ) { 
-    wayixia_last_album.id=album.id;
-    wayixia_last_album.name = album.name;
+function nickname() {
+  return wayixia.nickname;
+}
+
+
+function uid() {
+  return wayixia.uid;
+}
+
+
+function albums() {
+  return wayixia.albums;
+}
+
+function last_album() {
+  return wayixia.last_album;
+}
+
+function set_last_album( album ) {
+  wayixia.last_album = album;
+}
+
+
+function enabled_site() {
+  return user_config_get( "site.enabled" ) != '0';
+}
+
+function set_enabled_site( enabled ) {
+  user_config_set( "site.enabled", enabled ? '1':'0' );
+}
+
+
+function sites() {
+  var sites = user_config_get( 'site.items' ) || "[]";
+  sites = JSON.parse( sites );
+  
+  return sites;
+}
+
+function last_site() {
+  var site = user_config_get( "site.last" ) || "{}";
+  return JSON.parse( site );
+}
+
+function set_last_site( site ) {
+  user_config_set( "site.last", JSON.stringify( site ) );
+}
+
+function is_site_exists( site ) {
+  var sites = user_config_get( 'site.items' ) || "[]";
+  sites = JSON.parse( sites );
+
+  for( var i=0; i < sites.length; i++ ) {
+    if( sites[i].name == site.name ) {
+      return true;
+    }
+  } 
+
+  return false;
+}
+
+function add_site( site ) {
+  var sites = user_config_get( 'site.items' ) || "[]";
+  sites = JSON.parse( sites );
+
+  sites.push( site );
+  user_config_set( "site.items", JSON.stringify( sites ) );
+}
+
+
+function ajax_execute( json ) {
+  var http_call = new XMLHttpRequest();
+  http_call.onreadystatechange = (function(callee) { return function() {
+    if (this.readyState==4) {  // 4 = "loaded"
+      if (this.status==200) { // 200 = OK
+        console.log(this.responseText);
+        json.oncomplete( this );
+      } else {
+        if( json.onerror ) {
+          json.onerror( this );
+        }
+        console.log("Problem retrieving data");
+      }
+    }
+  }})(arguments.callee); 
+  if( json.command.indexOf("?") == -1 ) {
+    http_call.open(json.method, json.command + "?rnd="+Math.floor(+new Date/1E7), true);
   } else {
-    wayixia_last_album = {};
+    http_call.open(json.method, json.command + "&rnd="+Math.floor(+new Date/1E7), true);
   }
-}
-
-function get_last_album()
-{
-  return wayixia_last_album;
+  http_call.send(null);
 }
 
 function ajax( json ) 
@@ -95,6 +181,22 @@ setTimeout(function() {
     }
   } );
 }, 1000)
+
+function wayixia_logout( fn ) {
+  ajax_execute( { command: "http://www.wayixia.com/?mod=user&action=logout",
+    method: "GET",
+    oncomplete : function( res ) {
+      // Clear user data
+      wayixia.nickname = "";
+      wayixia.uid = 0;
+      wayixia.albums = [];
+      wayixia.last_album = {};
+      fn( true );
+    },
+  } );
+}
+
+
 
 // create context menu
 var contexts = ["page", "image", "selection","editable","link","video","audio"];
@@ -264,22 +366,23 @@ function edit_image( url, view ) {
 
 var download_items = {};
 
-function download_image(url, view) {
+function download_image(url, view, folder ) {
   var options = {url: url};
-  chrome.downloads.download(options, function(id) {
+  chrome.downloads.download( options, ( function( u, v, f ) { return function(id) {
     if(!id) {
-      view.background_warning({
+      v.background_warning({
         error: chrome.runtime.lastError,
-        page: view.location,
-        url: url
+        page: v.location,
+        url: u
       });
     } else {
       download_items[id] = {
-        url: url,
-        view: view
+        url: u,
+        view: v,
+        folder: f
       };
     }
-  }); 
+  } } )( url, view, folder ) ); 
 }
 
 function get_date_path() {
@@ -288,23 +391,29 @@ function get_date_path() {
   var day = date.getDate();   
   month = month>9?month:('0'+month);
   day   = day>9?day:('0'+day);
-  date_path = date.getFullYear()+'-'+month+'-'+day;
+  date_path = date.getFullYear()+month+day;
   return date_path;
 }
 
-function get_save_path() {
-  var save_path = user_config_get('save_path') || "";
+function get_save_path( folder ) {
+  var save_path = "wayixia/" + ( user_config_get('save_path') || "" );
   var date_folder = (user_config_get('date_folder') != '0');
-  if( ( save_path != "" ) ) {
+  
+  if( save_path != "" ) {
     save_path += "/";
   }
+
+  if( folder != "" ) {
+    save_path += folder + "/";
+  }
+
 	if(date_folder) {
     var date_path = get_date_path();
     if(date_path != "") {
-		  save_path += date_path + "/";
+		  save_path += "/" + date_path + "/";
 	  }
   }
-	save_path = save_path.replace(/[\\\/]+/, '/');
+	save_path = save_path.replace(/[\\\/]+/g, '/');
 
 	return save_path;
 }
@@ -369,7 +478,8 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
   // if downloaded not by wayixia, then use default
   if(item.byExtensionId == chrome.runtime.id) {
     console.log(item.id + ":" + item.state)
-	  var save_path = get_save_path();
+    var cfg = download_items[item.id];
+	  var save_path = get_save_path( cfg.folder );
 	  var filename = "";
 	  var re = /data:(.+?);(\w+?),(.+)/;
     if(re.test(item.url)) { // data
@@ -412,27 +522,27 @@ chrome.extension.onMessage.addListener( function( o ) {
       method: "GET",
       oncomplete : function( r ) {
         console.log( r );
-        wayixia_nickname = "";
-        wayixia_uid = 0;
-        wayixia_albums = [];
+        wayixia.nickname = "";
+        wayixia.uid = 0;
+        wayixia.albums = [];
         if( r.header == 0 && r.data ) {
           if( r.data.nickname ) {
-            wayixia_nickname = r.data.nickname;
+            wayixia.nickname = r.data.nickname;
           }
           if( r.data.uid ) {
-            wayixia_uid = r.data.uid;
+            wayixia.uid = r.data.uid;
           }
           if( r.data.albums ) {
-            wayixia_albums = wayixia_albums.concat( r.data.albums );
+            wayixia.albums = wayixia.albums.concat( r.data.albums );
             // Clear old albums
-            var last_album = get_last_album();
+            var last_album = wayixia.last_album;
             if( last_album.id && last_album.id > 0 ) {
-              for( var i=0; i < wayixia_albums.length; i++) {
-                if( last_album.id == wayixia_albums[i].id ) {
+              for( var i=0; i < wayixia.albums.length; i++) {
+                if( last_album.id == wayixia.albums[i].id ) {
                   return;
                 }
               }
-              set_last_album( {} );
+              wayixia.last_album = {};
             }
           }
         }
