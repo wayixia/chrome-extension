@@ -52,52 +52,6 @@ function set_last_album( album ) {
 }
 
 
-function enabled_site() {
-  return user_config_get( "site.enabled" ) != '0';
-}
-
-function set_enabled_site( enabled ) {
-  user_config_set( "site.enabled", enabled ? '1':'0' );
-}
-
-
-function sites() {
-  var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-  
-  return sites;
-}
-
-function last_site() {
-  var site = user_config_get( "site.last" ) || "{}";
-  return JSON.parse( site );
-}
-
-function set_last_site( site ) {
-  user_config_set( "site.last", JSON.stringify( site ) );
-}
-
-function is_site_exists( site ) {
-  var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-
-  for( var i=0; i < sites.length; i++ ) {
-    if( sites[i].name == site.name ) {
-      return true;
-    }
-  } 
-
-  return false;
-}
-
-function add_site( site ) {
-  var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-
-  sites.push( site );
-  user_config_set( "site.items", JSON.stringify( sites ) );
-}
-
 
 function ajax_execute( json ) {
   var http_call = new XMLHttpRequest();

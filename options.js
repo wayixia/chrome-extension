@@ -43,8 +43,7 @@ function init_setting() {
   var date_folder = new Q.CheckBox({ id : "date_folder", checked: option_date_folder});
 
   // Sitename folder
-  var option_sitename_folder = (extension.user_config_get('sitename_folder') != '0');
-  var sitename_folder = new Q.CheckBox({ id : "sitename_folder", checked: option_sitename_folder});
+  var enabled_site = new Q.CheckBox({ id : "enabled_site", checked: extension.enabled_site() });
 
   // filter rules
   var option_filter_rules = extension.filter_rule_is_enabled();
@@ -90,7 +89,7 @@ function init_setting() {
          // save settings
          extension.user_config_set('save_path', Q.$('save_path').value);
          extension.user_config_set('date_folder', (date_folder.checked())?1:0);
-         extension.user_config_set('sitename_folder', (sitename_folder.checked())?1:0);
+         extension.set_enabled_site( enabled_site.checked() );
          extension.filter_rule_enable(filter_rules.checked());
          message_box( {title: locale_text('extShortName'), content: locale_text('saveOptions'), icon: "ok" } );
          return false;

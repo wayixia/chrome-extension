@@ -15,12 +15,13 @@ body {
  toolbar button css style
  */
 
-.wayixia-toolbar-button {
+button.wayixia-toolbar-button {
   background: #FFF url(images/canvas-toolbar.png) left top no-repeat;
-  height: 41px;
+  height: 40px;
   width:45px;
-  border: 0;
+  border-width: 0;
   outline: 0;
+  padding: 0;
   position: relative;
 }
 
@@ -119,7 +120,7 @@ body {
 
 /** display toolbar button */
 .wayixia-toolbar-button.block {
-  background-position: left -45px;
+  background-position: 2px -45px;
 }
 
 .wayixia-toolbar-button.selectall {
@@ -263,7 +264,7 @@ button#wayixia-bugs {
 #wayixia-container {
   font-family: arial, 'helvetica neue', sans-serif;
   position: absolute;
-  top: 80;
+  top: 82;
   left: 0;
   right: 0;
   bottom: 0;
@@ -280,7 +281,9 @@ button#wayixia-bugs {
   top: 38px;
   left: 0px;
   right: 0px;
-  height: 41px;
+  height: 42px;
+  padding:0;
+  margin:0;
   border-bottom: 1px solid #ebebeb;
   background-color: #FCFCFC;
 }

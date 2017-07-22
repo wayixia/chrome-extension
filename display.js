@@ -180,7 +180,11 @@ function initialize () {
     //if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
       var extension = chrome.extension.getBackgroundPage();
       var url = item.getAttribute('data-url');
-      extension.download_image(url, window, folder.name );
+      var name = "";
+      if( folder && folder.name ) {
+        name = folder.name;
+      }
+      extension.download_image(url, window, name );
       Q.addClass(item, 'downloaded');
       item.style.display = 'none';
     //}
