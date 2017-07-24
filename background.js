@@ -167,7 +167,7 @@ chrome.contextMenus.create({
 });
 
 function on_click_wa_single(info, tab) {
-  download_image(info.srcUrl);
+  download_image(info.srcUrl, null, "" );
 }
 
 function on_click_wa_all(info, tab) {  

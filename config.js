@@ -180,7 +180,7 @@ function sites() {
 }
 
 function last_site() {
-  var site = user_config_get( "site.last" ) || "{}";
+  var site = user_config_get( "site.last" ) || "{ name: '' }";
   return JSON.parse( site );
 }
 
@@ -208,5 +208,26 @@ function add_site( site ) {
   sites.push( site );
   user_config_set( "site.items", JSON.stringify( sites ) );
 }
+
+
+function filter_width() {
+  var width = user_config_get( "filter.width" ) || "0";
+  return parseInt( width, 10 );
+}
+
+function set_filter_width( width ) {
+  user_config_set( "filter.width", width );
+}
+
+
+function filter_height() {
+  var height = user_config_get( "filter.height" ) || "0";
+  return parseInt( height, 10 );
+}
+
+function set_filter_height( height ) {
+  user_config_set( "filter.height", height );
+}
+
 
 

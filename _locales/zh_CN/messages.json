@@ -72,13 +72,13 @@
   },
   
   "menuSaveToNewAlbum": {
-    "message": "新建画板并保存图片",
+    "message": "新建挖一下云画板并保存图片",
     "description": ""
   },
  
   
   "menuSaveToSiteFolder": {
-    "message": "新建网站文件夹",
+    "message": "新建本地网站文件夹",
     "description": ""
   },
 

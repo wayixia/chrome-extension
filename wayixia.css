@@ -120,15 +120,15 @@ button.wayixia-toolbar-button {
 
 /** display toolbar button */
 .wayixia-toolbar-button.block {
-  background-position: 2px -45px;
+  background-position: 1px -45px;
 }
 
 .wayixia-toolbar-button.selectall {
-  background-position: -45px -45px;
+  background-position: -46px -45px;
 }
 
 .wayixia-toolbar-button.selectall.checked {
-  background-position: -90px -45px;
+  background-position: -91px -45px;
 }
 
 .eraser-cur {
@@ -264,7 +264,7 @@ button#wayixia-bugs {
 #wayixia-container {
   font-family: arial, 'helvetica neue', sans-serif;
   position: absolute;
-  top: 82;
+  top: 79px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -281,10 +281,10 @@ button#wayixia-bugs {
   top: 38px;
   left: 0px;
   right: 0px;
-  height: 42px;
+  height: 40px;
   padding:0;
   margin:0;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid #EEE;
   background-color: #FCFCFC;
 }
 
@@ -303,7 +303,7 @@ button#wayixia-bugs {
   float: right;
   margin: 0 10px 0 0;
   text-decoration: underline;
-  height:42px;
+  height:40px;
 }
 
 #wayixia-screenshot-image {
@@ -480,6 +480,12 @@ button#wayixia-bugs {
 }
 
 /* images-box style */
+
+.q-images-box {
+  background-color: #F1F1F1;
+  overflow:scroll;
+}
+
 .q-images-box.size_1 .q-box-item {
   width: 100px;
   height: 100px;

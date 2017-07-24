@@ -211,7 +211,7 @@ function initialize () {
     //Q.$('wayixia-select-all').innerText = '('+accept_length+')';
   }
 
-  function init_block_image_items(blocked_images) {
+  function init_filter_image_items( blocked_images ) {
     return function(item) {
       var is_blocked = false;
       var url = item.getAttribute('data-url');
@@ -225,6 +225,7 @@ function initialize () {
       if(!is_blocked) {
         accept_length++;
         update_ui_count();
+        wayixia_images_box.check_size( item, extension.filter_width(), extension.filter_height() );
       }
     }
   }
@@ -234,8 +235,8 @@ function initialize () {
     // clear errors
     clear_errors();
     clear_album_player();
-    this.e_width.setValue(0);
-    this.e_height.setValue(0);
+    this.e_width.setValue( extension.filter_width()/10  );
+    this.e_height.setValue( extension.filter_height()/10 );
     // init datacheckbox_show_block.checked()
     var accept_images  = {};
     accept_length  = 0;
@@ -260,12 +261,12 @@ function initialize () {
     }
     //accept_length -= blocked_images.length;
     update_ui_count();
-    return wayixia_images_box.display_images(accept_images, data, init_block_image_items(blocked_images));
+    return wayixia_images_box.display_images(accept_images, data, init_filter_image_items( blocked_images));
   }
 
   this.g_min_width = 0;
   this.g_min_height= 0; 
-  this.e_width = new Q.Slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: 0, 
+  this.e_width = new Q.Slider({id: 'x-ctrl-mini-width', min: 0, max: 100, value: extension.filter_width()/10, 
     on_xscroll: function(v) {
       g_min_width = v*10;
       wayixia_images_box.each_item(function(item) {
@@ -273,17 +274,21 @@ function initialize () {
           wayixia_images_box.check_size(item, t.g_min_width, t.g_min_height);
       });
       Q.$('wayixia-min-width').innerText = t.g_min_width + 'px';
+      extension.set_filter_width( t.g_min_width );
     }
   });
   
-  this.e_height = new Q.Slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: 0, 
-    on_xscroll: function(v) { 
+  this.e_height = new Q.Slider({id: 'x-ctrl-mini-height', min: 0, max: 100, value: extension.filter_height()/10, 
+    on_xscroll: function(v) {
+
       t.g_min_height = v*10;
+      console.log( "eheight scroll " + t.g_min_height );
       wayixia_images_box.each_item(function(item) {
         if(!(checkbox_show_block.checked() && Q.hasClass(item, 'blocked')))
           wayixia_images_box.check_size(item, t.g_min_width, t.g_min_height);
       });
       Q.$('wayixia-min-height').innerText = t.g_min_height + 'px';
+      extension.set_filter_height( t.g_min_height );
     }
   });
 
@@ -423,7 +428,7 @@ function album_player_display(url, imgs) {
         
         download : function(src) {
           var extension = chrome.extension.getBackgroundPage();
-          extension.download_image(src, window);
+          extension.download_image(src, window, extension.last_site().name );
         }
       }); 
       g_album_player.render(url, imgs); 
