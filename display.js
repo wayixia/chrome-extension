@@ -165,6 +165,44 @@ function initialize () {
     } );
   }
 
+  // Initialize gotop button
+  Q.$('wayixia-gotop').onclick = function( evt ) {
+    (new Q.Animate({
+      tween: 'Cubic',
+      ease: 'easyIn',
+      max: wayixia_images_box.hwnd.scrollTop,
+      begin: 0,
+      duration: 25,
+      bind : (function(z, b) { return function(x) {
+        // console.log(x);
+        if( x == this.max ) {
+          b.style.display = "none";
+        } else {
+          b.style.display = '';
+        }
+        z.scrollTop = ( this.max - x );
+
+      }})( wayixia_images_box.hwnd, this )
+    })).play();
+  }
+
+  Q.$('wayixia-gotop').style.display = 'none';
+  
+  var gotop_func = ( function(box, btn) { return function(evt) {
+    if( box.scrollTop > 0 ) {
+      btn.style.display = '';
+    } else {
+      btn.style.display = 'none';
+    }
+  } } )( wayixia_images_box.hwnd, Q.$('wayixia-gotop') ) ;
+ 
+  // Add event listener
+  Q.addEvent( wayixia_images_box.hwnd, 'mousewheel', gotop_func );
+  Q.addEvent( wayixia_images_box.hwnd, 'scroll', gotop_func );
+
+
+
+
   function block_item(item, blocked) {
     if(blocked) {
       Q.addClass(item, 'blocked');
