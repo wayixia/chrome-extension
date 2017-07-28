@@ -53,7 +53,11 @@ button.wayixia-toolbar-button {
 }
 
 .wayixia-toolbar-button.download {
-  background-position:  -225px top;
+  background-position:  -228px top;
+}
+
+.wayixia-toolbar-button.download.ext, .wayixia-toolbar-button.tocloud.ext {
+  width: 52px;
 }
 
 .wayixia-toolbar-button.tocloud {
@@ -155,6 +159,33 @@ button.wayixia-toolbar-button {
 .wayixia-toolbar-button.redo {
   background-position: -315px -45px;
 }
+
+
+
+.wayixia-toolbar-button .dropdown {
+  position: absolute;
+  width: 15px;
+  height:100%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: transparent url(images/dropmenu.png) center center no-repeat;
+  border-width:0;
+  border-lefts: 1px solid #EEE;
+}
+
+.wayixia-toolbar-button .dropdown:hover {
+  background-color: #FC0;
+}
+
+
+.wayixia-toolbar-button.download.checked .dropdown,
+.wayixia-toolbar-button.tocloud.checked .dropdown
+{
+  background-color: transparent;
+}
+
+
 /** \brief layout of wayixia panel
  *
  */

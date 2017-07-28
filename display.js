@@ -131,15 +131,16 @@ function initialize () {
     wayixia_track_button_click(this);
 
     var extension = chrome.extension.getBackgroundPage();
-    if( !extension.enabled_site() ) {
-      wayixia_images_box.each_item( function( item ) {
+    //if( !extension.enabled_site() ) {
+      wayixia_images_box.each_item( ( function( folder ) { return function( item ) {
         if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-          download_item( item );
+          download_item( item, folder );
         }
-      } );
+      } } )( extension.last_site() ) );
 
-      return;
-    }
+    //  return;
+    //}
+    /*
     popup_save_menu( this, evt, function( folder ) {
       wayixia_images_box.each_item(function(item) {
         if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
@@ -147,6 +148,20 @@ function initialize () {
         }
       });
     } );
+    */
+  }
+
+  Q.$('wayixia-local-download-menu').onclick = function( evt ) {
+    evt = evt || window.event;
+    wayixia_track_button_click(this);
+     popup_save_menu( Q.$('wayixia-local-download'), evt, function( folder ) {
+      wayixia_images_box.each_item(function(item) {
+        if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+          download_item(item, folder );
+        }
+      });
+    } );
+   
   }
 
   Q.$('wayixia-tocloud').onclick = function( evt ) {
