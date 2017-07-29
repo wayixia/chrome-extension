@@ -335,6 +335,12 @@
     "description": "下载错误"
   },
 
+  "stringSelectNone": {
+    "message": "请选择图片",
+    "description": ""
+  
+  },
+
   "closeAfterDownload" : {
     "message": "下载完成后自动关闭采集窗口",
     "description": ""

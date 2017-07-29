@@ -91,6 +91,7 @@ function init_setting() {
          extension.user_config_set('date_folder', (date_folder.checked())?1:0);
          extension.set_enabled_site( enabled_site.checked() );
          extension.filter_rule_enable(filter_rules.checked());
+         extension.saveconfig();
          message_box( {title: locale_text('extShortName'), content: locale_text('saveOptions'), icon: "ok" } );
          return false;
         }

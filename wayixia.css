@@ -29,6 +29,13 @@ button.wayixia-toolbar-button {
   background-color: #FFDD00;
 }
 
+.wayixia-toolbar-button:active,
+.dropdown:active
+{
+  outline:0;-webkit-box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.225);box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.225);
+}
+
+
 .wayixia-toolbar-button .split 
 {
   border-width: 0;
@@ -288,10 +295,14 @@ button#wayixia-bugs {
   height: 44px;
   right: 50px;
   bottom: 50px;
-
+  z-index: 1000;
   box-shadow:0 1px 15px rgba(0,0,0,.2);
   -moz-box-shadow:0 1px 15px rgba(0,0,0,.2);
   -webkit-box-shadow:0 1px 15px rgba(0,0,0,.2)
+}
+
+#wayixia-gotop:active {
+  outline:0;-webkit-box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.325);box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.325);
 }
 
 /* wayixia container */

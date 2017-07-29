@@ -24,14 +24,14 @@ function user_config_load(data) {
 }
 
 function user_config_tostring() {
-  var config_names = ['save_path', 'date_folder', 'view_type'];
+  var config_names = ['save_path', 'date_folder', 'view_type', 'block_images', 'site.items', 'site.last', 'filter.width', 'filter.height'];
   var config = {};
   for(var i=0; i<config_names.length; i++) {
     var name = config_names[i];
     config[name] = user_config_get(name);
   }
 
-  console.log(JSON.stringify(config));
+  return(JSON.stringify(config));
 }
 
 function user_config_set(key, value) {

@@ -1,13 +1,13 @@
 {
    "name": "__MSG_extName__",
-   "version": "1.13.5",
+   "version": "1.15.0",
    "default_locale" : "en",
    "manifest_version": 2,
    "short_name": "__MSG_extShortName__",
    "description": "__MSG_extDescription__",
    "permissions": ["activeTab", "tabs", "contextMenus", "downloads", "http://*/*", "https://*/*" ],
    "background": {
-      "scripts": [ "config.js", "background.js" ]
+      "scripts": [ "config.js", "background_ajax.js", "background.js" ]
    },
    "content_scripts": [ 
      {

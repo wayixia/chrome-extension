@@ -131,37 +131,35 @@ function initialize () {
     wayixia_track_button_click(this);
 
     var extension = chrome.extension.getBackgroundPage();
-    //if( !extension.enabled_site() ) {
-      wayixia_images_box.each_item( ( function( folder ) { return function( item ) {
-        if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-          download_item( item, folder );
-        }
-      } } )( extension.last_site() ) );
+    var selected_items = 0;
+    wayixia_images_box.each_item( ( function( folder ) { return function( item ) {
+      if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
+        download_item( item, folder );
+        selected_items ++;
+      }
+    } } )( extension.last_site() ) );
 
-    //  return;
-    //}
-    /*
-    popup_save_menu( this, evt, function( folder ) {
-      wayixia_images_box.each_item(function(item) {
-        if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
-          download_item(item, folder );
-        }
-      });
-    } );
-    */
+    if( selected_items == 0 ) {
+      message_box( { content: Q.locale_text('stringSelectNone'), icon: 'info' } ); 
+    }
   }
 
   Q.$('wayixia-local-download-menu').onclick = function( evt ) {
     evt = evt || window.event;
     wayixia_track_button_click(this);
-     popup_save_menu( Q.$('wayixia-local-download'), evt, function( folder ) {
+    event.cancelBubble = true;
+    popup_save_menu( Q.$('wayixia-local-download'), evt, function( folder ) {
+      var selected_items = 0;
       wayixia_images_box.each_item(function(item) {
         if((item.className.indexOf('mouseselected') != -1) && item.style.display == '') {
           download_item(item, folder );
+          selected_items ++;
         }
       });
+      if( selected_items == 0 ) {
+        message_box( { content: Q.locale_text('stringSelectNone'), icon: 'info' } ); 
+      }
     } );
-   
   }
 
   Q.$('wayixia-tocloud').onclick = function( evt ) {
@@ -170,13 +168,20 @@ function initialize () {
     if(!check_login_dialog()) 
       return;
 
+
     popup_tocloud_menu( this, evt, function(album) {
+      var selected_items = 0;
       wayixia_images_box.each_item(function(item) {
         if( ( item.className.indexOf( 'mouseselected' ) != -1 ) && ( item.style.display == '' ) ) {
           tocloud_item( item, album.id );
           wayixia_images_box.set_check(item, false);
+          selected_items ++;
         }
       })
+      if( selected_items == 0 ) {
+        message_box( { content: Q.locale_text('stringSelectNone'), icon: 'info' } ); 
+      }
+      
     } );
   }
 

@@ -12,9 +12,6 @@ wayixia.nickname = "";
 wayixia.uid = 0;
 wayixia.albums = [];
 wayixia.last_album = {};
-//wayixia.enabled_site = false;
-//wayixia.sites = [];
-//wayixia.last_site = {};
 
 
 
@@ -24,8 +21,7 @@ if(user_config_is_new()) {
   setTimeout(create_upgrade_page(), 60*1000);
 }
 
-function user_is_login()
-{
+function user_is_login() {
   return ( wayixia.nickname != "" );
 }
 
@@ -52,6 +48,22 @@ function set_last_album( album ) {
 }
 
 
+function saveconfig() {
+ Q.ajaxc( { command: "http://www.wayixia.com/?mod=user&action=do-save-config&inajax=true",
+    data: { config: user_config_tostring() },
+    oncomplete : function( xmlhttp ) {
+      try {
+        console.log( xmlhttp.responseText );
+      } catch(e) {
+        console.log(e);
+      }
+    },
+    onerror: function( xmlhttp ) {
+      console.log("Problem save config");
+    }
+  } );
+
+}
 
 function ajax_execute( json ) {
   var http_call = new XMLHttpRequest();
