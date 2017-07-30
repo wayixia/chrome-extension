@@ -210,6 +210,22 @@ function add_site( site ) {
 }
 
 
+function remove_site( site ) {
+  var sites = user_config_get( 'site.items' ) || "[]";
+  sites = JSON.parse( sites );
+  
+  for( var i=0; i < sites.length; i++ ) {
+    if( sites[i].name == site.name ) {
+      sites.splice( i, 1 );
+      break;
+    }
+  } 
+ 
+  user_config_set( "site.items", JSON.stringify( sites ) );
+
+}
+
+
 function filter_width() {
   var width = user_config_get( "filter.width" ) || "0";
   return parseInt( width, 10 );

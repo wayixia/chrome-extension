@@ -78,7 +78,12 @@
  
   
   "menuSaveToSiteFolder": {
-    "message": "新建本地网站文件夹",
+    "message": "新建网站文件夹",
+    "description": ""
+  },
+  
+  "menuManageSiteFolder": {
+    "message": "管理网站文件夹",
     "description": ""
   },
 

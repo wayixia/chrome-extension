@@ -272,7 +272,10 @@ function popup_save_menu( e, evt, f )
     }
   });   
   wayixia_save_menu.hide();
-  var sites = [{id: -1, name: Q.locale_text("menuSaveToSiteFolder") } ];
+  var sites = [
+    {id: -1, name: Q.locale_text("menuSaveToSiteFolder") }, 
+    {id: -2, name: Q.locale_text("menuManageSiteFolder") } 
+  ];
   var last_site = extension.last_site();
   if( last_site.name ) {
     sites.push( last_site );
@@ -284,15 +287,21 @@ function popup_save_menu( e, evt, f )
   for( var i=0; i < sites.length; i++ ) {
     // Add submenu item
     var site = sites[i];
+    if( !site ) {
+      continue;
+    }
     var item = new Q.MenuItem( {
       text : site.name,
       type: ( ( site.type && site.type=="seperate" ) ? MENU_SEPERATOR : MENU_ITEM ),
       callback : ( function(a) { return function( menuitem ) {
         if( a.id == -1 ) {
-          // Save to new album
+          // Save to new site
           create_newsite_save( f );
+        } else if( a.id == -2 ) {
+          // Manage sites
+          manage_sites_folder();
         } else {
-          // Save last album
+          // Save last site
           extension.set_last_site( a );
           f( a );
         }
@@ -416,6 +425,66 @@ ui( function(t) {
 }); // end ui
 } // end create_newsite_save
 
+
+/** @brief Manage sites folder
+ *
+ */
+function manage_sites_folder() {
+// load template
+ui( function( t ) {
+  var tpl = t.template('wndx-sites');
+  extract_document( tpl );
+  var dlg = new Q.Dialog( {
+    wstyle: 'q-attr-no-icon',
+    title: Q.locale_text("menuManageSiteFolder"),
+    content: tpl,
+    width: 380,
+    height: 300,
+    on_create: function() {
+      var extension = chrome.extension.getBackgroundPage();
+      var columns = [
+        { name: 'name', title: Q.locale_text('stringName'), align:'left', width: 280, isHTML: true },
+        { name: 'name', title: '操作', align:'center', width: 80, isHTML: true, renderer : function(record) { return "<button class=\"remove-site\"> Remove </button>"; }, }
+      ];
+
+      var store = new Q.Store({
+        data: extension.sites()
+      });
+    
+      //init Q.table
+      this.table = new Q.Table({ 
+        id: tpl,
+        title: "",
+        wstyle: "q-attr-no-title",
+        columns: columns,  
+        store: store,
+        row_height: 21,
+        row_onclick : function( row, evt ) {
+          var data = this.getRecord(row);
+          var e = Q.isNS6() ? evt.target : evt.srcElement;
+          if( e.className == "remove-site" ) {
+            this.row_remove( row );
+            extension.remove_site( data );
+            if( data.name == extension.last_site().name ) {
+              extension.set_last_site( { name : "" } );
+            }
+          }
+        }
+      });
+    
+      
+    },
+    on_ok : function() {
+      return true;
+    }
+  } );
+  
+  dlg.domodal();
+  dlg.table.autosize();
+
+} );
+
+}
 
 
 
