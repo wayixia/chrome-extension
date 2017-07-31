@@ -332,7 +332,9 @@ function initialize () {
           wayixia_images_box.check_size(item, t.g_min_width, t.g_min_height);
       });
       Q.$('wayixia-min-width').innerText = t.g_min_width + 'px';
-      extension.set_filter_width( t.g_min_width );
+      if( extension.save_lastconfig() ) {
+        extension.set_filter_width( t.g_min_width );
+      }
     }
   });
   
@@ -346,7 +348,10 @@ function initialize () {
           wayixia_images_box.check_size(item, t.g_min_width, t.g_min_height);
       });
       Q.$('wayixia-min-height').innerText = t.g_min_height + 'px';
-      extension.set_filter_height( t.g_min_height );
+      
+      if( extension.save_lastconfig() ) {
+        extension.set_filter_height( t.g_min_height );
+      }
     }
   });
 

@@ -43,7 +43,7 @@ function init_setting() {
   var date_folder = new Q.CheckBox({ id : "date_folder", checked: option_date_folder});
 
   // Sitename folder
-  var enabled_site = new Q.CheckBox({ id : "enabled_site", checked: extension.enabled_site() });
+  var save_lastconfig = new Q.CheckBox({ id : "save_lastconfig", checked: extension.save_lastconfig() });
 
   // filter rules
   var option_filter_rules = extension.filter_rule_is_enabled();
@@ -89,7 +89,12 @@ function init_setting() {
          // save settings
          extension.user_config_set('save_path', Q.$('save_path').value);
          extension.user_config_set('date_folder', (date_folder.checked())?1:0);
-         extension.set_enabled_site( enabled_site.checked() );
+         extension.set_save_lastconfig( save_lastconfig.checked() );
+         if( !save_lastconfig.checked() ) {
+           // reset default value
+           extension.set_filter_width( 0 );
+           extension.set_filter_height( 0 );
+         }
          extension.filter_rule_enable(filter_rules.checked());
          extension.saveconfig();
          message_box( {title: locale_text('extShortName'), content: locale_text('saveOptions'), icon: "ok" } );
@@ -184,7 +189,7 @@ function display_filter_rules() {
           wstyle: "q-attr-no-title",
           id: d.item('list'),
           columns: [
-            { name: 'url', title: Q.locale_text('colName'), align:'left', fixed: true, width: 398, isHTML: true, renderer : function(record) {return record['name'];} }
+            { name: 'url', title: Q.locale_text('stringName'), align:'left', fixed: true, width: 398, isHTML: true, renderer : function(record) {return record['name'];} }
           ],
           store: store,
           row_onclick : function(row) {

@@ -445,7 +445,7 @@ ui( function( t ) {
       var extension = chrome.extension.getBackgroundPage();
       var columns = [
         { name: 'name', title: Q.locale_text('stringName'), align:'left', width: 280, isHTML: true },
-        { name: 'name', title: '操作', align:'center', width: 80, isHTML: true, renderer : function(record) { return "<button class=\"remove-site\"> Remove </button>"; }, }
+        { name: 'name', title: Q.locale_text('stringOperation'), align:'center', width: 80, isHTML: true, renderer : function(record) { return "<button class=\"remove-site\"> Remove </button>"; }, }
       ];
 
       var store = new Q.Store({

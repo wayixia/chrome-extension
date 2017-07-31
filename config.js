@@ -29,7 +29,7 @@ function user_config_load2(config) {
 
 
 function user_config_tostring() {
-  var config_names = ['save_path', 'date_folder', 'view_type', 'site.items', 'site.last', 'filter.width', 'filter.height'];
+  var config_names = ['save_path', 'date_folder', 'view_type', 'save_lastconfig', 'site.items', 'site.last', 'filter.width', 'filter.height'];
   var config = {};
   for(var i=0; i<config_names.length; i++) {
     var name = config_names[i];
@@ -168,12 +168,12 @@ function filter_rule_set(rules) {
 }
 
 
-function enabled_site() {
-  return user_config_get( "site.enabled" ) != '0';
+function save_lastconfig() {
+  return user_config_get( "save_lastconfig" ) != '0';
 }
 
-function set_enabled_site( enabled ) {
-  user_config_set( "site.enabled", enabled ? '1':'0' );
+function set_save_lastconfig( enabled ) {
+  user_config_set( "save_lastconfig", enabled ? '1':'0' );
 }
 
 
