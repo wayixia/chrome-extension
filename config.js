@@ -16,6 +16,10 @@ function user_config_version_ok() {
 
 function user_config_load(data) {
   var config = JSON.parse(data);
+  user_config_load2( config );
+}
+
+function user_config_load2(config) {
   if(config) {
     for(var name in config) {
       localStorage.setItem(name, config[name]);
@@ -23,8 +27,9 @@ function user_config_load(data) {
   }
 }
 
+
 function user_config_tostring() {
-  var config_names = ['save_path', 'date_folder', 'view_type', 'block_images', 'site.items', 'site.last', 'filter.width', 'filter.height'];
+  var config_names = ['save_path', 'date_folder', 'view_type', 'site.items', 'site.last', 'filter.width', 'filter.height'];
   var config = {};
   for(var i=0; i<config_names.length; i++) {
     var name = config_names[i];

@@ -417,6 +417,7 @@ ui( function(t) {
         extension.add_site( newsite );
         extension.set_last_site( newsite );
         f( newsite );
+        extension.saveconfig();
         dismiss( dlg );
       }
       return false;
@@ -468,6 +469,7 @@ ui( function( t ) {
             if( data.name == extension.last_site().name ) {
               extension.set_last_site( { name : "" } );
             }
+            extension.saveconfig();
           }
         }
       });

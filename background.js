@@ -94,7 +94,7 @@ function ajax( json )
   http_call.onreadystatechange = (function(callee) { return function() {
     if (this.readyState==4) {  // 4 = "loaded"
       if (this.status==200) { // 200 = OK
-        console.log(this.responseText);
+        //console.log(this.responseText);
         try {
           var result = JSON.parse(this.responseText);
           if( json.oncomplete ) {
@@ -487,7 +487,7 @@ chrome.extension.onMessage.addListener( function( o ) {
     ajax( { command: "http://www.wayixia.com/?mod=user&action=status&withalbums=true&inajax=true",
       method: "GET",
       oncomplete : function( r ) {
-        console.log( r );
+        //console.log( r );
         wayixia.nickname = "";
         wayixia.uid = 0;
         wayixia.albums = [];
@@ -510,6 +510,10 @@ chrome.extension.onMessage.addListener( function( o ) {
               }
               wayixia.last_album = {};
             }
+          }
+
+          if( r.data.chrome_plugin ) {
+            user_config_load( r.data.chrome_plugin );
           }
         }
       }
