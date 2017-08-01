@@ -20,6 +20,7 @@ function init_about() {
 
   
   Q.$('donate-with-alipay').onclick = function() {
+    wayixia_track_button_click(this);
     Q.alert({
       title: '[资助]支付宝二维码',
       wstyle: 'w-window q-attr-no-icon',
@@ -58,12 +59,13 @@ function init_setting() {
   // Account buttons
   var wayixia_account_text = "" ;
   if( extension.nickname() != "" ) {
-    wayixia_account_text = locale_text('accountLogout') + " ( " + extension.nickname().toUpperCase() + " )";
+    wayixia_account_text = locale_text('stringAccountLogout') + " ( " + extension.nickname().toUpperCase() + " )";
   } else {
-    wayixia_account_text = locale_text('accountLogin');
+    wayixia_account_text = locale_text('stringAccountLogin');
   }
   Q.$('wayixia_account').innerHTML = wayixia_account_text;  
   Q.$('wayixia_account').onclick = ( function( ext ) { return function() {
+    wayixia_track_button_click(this);
     if( extension.nickname() != "" ) {
       ext.wayixia_logout( function(ok) {
         location.reload(); 
@@ -77,7 +79,7 @@ function init_setting() {
 
   g_option_window = new Q.Dialog({
     width: 706,
-    height: 570,
+    height: 620,
     wstyle: "q-attr-no-icon",
     title: locale_text('extOptions'),
     content: Q.$('layer'),

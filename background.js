@@ -12,7 +12,7 @@ wayixia.nickname = "";
 wayixia.uid = 0;
 wayixia.albums = [];
 wayixia.last_album = {};
-
+wayixia.download_images = [];
 
 
 // check new version for helper
@@ -45,6 +45,10 @@ function last_album() {
 
 function set_last_album( album ) {
   wayixia.last_album = album;
+}
+
+function is_max_screenshot( width, height ) {
+  return ( width * height ) > ( 2000 * 16000 );
 }
 
 
@@ -214,6 +218,12 @@ function on_click_full_screenshot(tab) {
   chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
     if(!res)
       return;
+
+    if( is_max_screenshot( res.full_width, res.full_height ) ) {
+      alert( "Size is too large!" );
+      return;
+    }
+
     var cols = Math.ceil(res.full_width*1.0 / res.page_width);
     var rows = Math.ceil(res.full_height*1.0 / res.page_height);
     var max_pos     = { rows: rows, cols:cols };
@@ -227,7 +237,7 @@ function capture_page_task(tab, max, pos, canvas) {
   console.log('capture page (row='+pos.row+', col='+pos.col);
   chrome.tabs.sendRequest(tab.id, { type : "screenshot-page", row:pos.row, col:pos.col}, function(res) {
     setTimeout(function() {
-      chrome.tabs.captureVisibleTab( null, {format:'jpeg', quality: 30}, function(screenshotUrl) {
+      chrome.tabs.captureVisibleTab( null, {format:'jpeg', quality: 80}, function(screenshotUrl) {
         canvas.screenshots.push({row: pos.row, col: pos.col, data_url: screenshotUrl});
         pos.col++;
         pos.col = pos.col % max.cols; 
@@ -250,7 +260,7 @@ function screenshot_end(tab, canvas) {
   chrome.tabs.sendRequest( tab.id, { type : "screenshot-end" }, function(res) {
     // if size is too large then process with server
     var size = canvas.size;
-    if( ( size.full_width * size.full_width ) > ( 2000 * 16000 ) ) {
+    if( is_max_screenshot( size.full_width, size.full_height ) ) {
       // process with server
     } else {
       create_display_full_screenshot(tab.id, canvas, tab.url); 
@@ -484,40 +494,43 @@ chrome.extension.onMessage.addListener( function( o ) {
   //console.log(o.action);
   switch( o.action ) {
   case "userstatus":
-    ajax( { command: "http://www.wayixia.com/?mod=user&action=status&withalbums=true&inajax=true",
-      method: "GET",
-      oncomplete : function( r ) {
-        //console.log( r );
-        wayixia.nickname = "";
-        wayixia.uid = 0;
-        wayixia.albums = [];
-        if( r.header == 0 && r.data ) {
-          if( r.data.nickname ) {
-            wayixia.nickname = r.data.nickname;
-          }
-          if( r.data.uid ) {
-            wayixia.uid = r.data.uid;
-          }
-          if( r.data.albums ) {
-            wayixia.albums = wayixia.albums.concat( r.data.albums );
-            // Clear old albums
-            var last_album = wayixia.last_album;
-            if( last_album.id && last_album.id > 0 ) {
-              for( var i=0; i < wayixia.albums.length; i++) {
-                if( last_album.id == wayixia.albums[i].id ) {
-                  return;
+    //if( wayixia.nickname == ""  ) {
+      ajax( { command: "http://www.wayixia.com/?mod=user&action=status&withalbums=true&inajax=true",
+        method: "GET",
+        oncomplete : function( r ) {
+          //console.log( r );
+          wayixia.nickname = "";
+          wayixia.uid = 0;
+          wayixia.albums = [];
+          if( r.header == 0 && r.data ) {
+            if( r.data.nickname ) {
+              wayixia.nickname = r.data.nickname;
+            }
+            if( r.data.uid ) {
+              wayixia.uid = r.data.uid;
+            }
+            
+            if( r.data.albums ) {
+              wayixia.albums = wayixia.albums.concat( r.data.albums );
+              // Clear old albums
+              var last_album = wayixia.last_album;
+              if( last_album.id && last_album.id > 0 ) {
+                for( var i=0; i < wayixia.albums.length; i++) {
+                  if( last_album.id == wayixia.albums[i].id ) {
+                    return;
+                  }
                 }
+                wayixia.last_album = {};
               }
-              wayixia.last_album = {};
+            }
+
+            if( r.data.chrome_plugin ) {
+              user_config_load( r.data.chrome_plugin );
             }
           }
-
-          if( r.data.chrome_plugin ) {
-            user_config_load( r.data.chrome_plugin );
-          }
         }
-      }
-    } );    
+      } );
+    //}
     break;
   }
 } );

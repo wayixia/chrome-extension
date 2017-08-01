@@ -187,6 +187,7 @@ function initialize () {
 
   // Initialize gotop button
   Q.$('wayixia-gotop').onclick = function( evt ) {
+    wayixia_track_button_click(this);
     (new Q.Animate({
       tween: 'Cubic',
       ease: 'easyIn',

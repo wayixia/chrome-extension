@@ -1,69 +1,69 @@
 {
   "extName" : {
     "message" : "挖一下",
-    "description": "挖一下"
+    "description": ""
   },
   
   "extShortName" : {
     "message" : "挖一下",
-    "description": "挖一下"
+    "description": ""
   },
 
   "extDescription": {
     "message": "图片批量下载 | 网页截屏",
-    "description": "图片批量下载 | 网页截屏"
+    "description": ""
   },
   
   "extShortDescription": {
     "message": "图片批量下载 | 网页截屏",
-    "description": "图片批量下载 | 网页截屏"
+    "description": ""
   },
- 
+
   "extLogin": {
     "message": "登 录",
     "description": ""
   },
- 
+
   "extAbout": {
     "message": "关于插件",
-    "description": "关于"
+    "description": ""
   },
   
   "extContact": {
     "message": "联系我们",
-    "description": "联系我们"
+    "description": ""
   },
 
   "extVersion" : {
     "message": "版本",
-    "description": "版本"
+    "description": ""
   },
 
   "menuDigImages": {
     "message": "挖一下",
-    "description": "挖一下"
+    "description": ""
   },
 
 
   "menuScreenshot": {
     "message": "当前区域截图",
-    "description": "当前区域截图"
+    "description": ""
   },
 
 
   "menuFullPageScreenshot": {
     "message": "完整网页截图",
-    "description": "完整网页截图"
+    "description": ""
   },
   
   "menuPopupWidth": {
     "message": "150",
-    "description": "150"
+    "description": ""
   },
 
   "menuWarnScreenshot": {
     "message": "PS: 在全屏截屏操作结束之前，请不要做任何操作。",
-    "description": "PS: 在全屏截屏操作结束之前，请不要做任何操作。"
+    "description": ""
   },
   
   "menuScreencapturing": {
@@ -89,17 +89,17 @@
 
   "filterWidth": {
     "message": "宽度",
-    "description": "宽度"
+    "description": ""
   },
   
   "filterHeight": {
     "message": "高度",
-    "description": "高度"
+    "description": ""
   },
   
   "selectAll": {
     "message": "全选",
-    "description": "全选"
+    "description": ""
   },
 
   "haveBlocked": {
@@ -109,32 +109,32 @@
 
   "addBlock": {
     "message": "屏蔽图片",
-    "description": "屏蔽图片"
+    "description": ""
   },
   
   "download": {
     "message": "下载图片",
-    "description": "下载图片"
+    "description": ""
   },
   
   "captureZoom": {
     "message": "截图缩放",
-    "description": "截图缩放"
+    "description": ""
   },
   
   "orignalSize": {
     "message": "原始大小",
-    "description": "原始大小"
+    "description": ""
   },
   
   "saveCapture": {
     "message": "保存截图",
-    "description": "保存截图"
+    "description": ""
   },
 
   "infoAddBlock": {
     "message": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?",
-    "description": "屏蔽的图片将不再显示在采集结果页，确定屏蔽这些图片吗?"
+    "description": ""
   },
  
   "savePath":  {
@@ -161,7 +161,7 @@
 
   "blockImageManage" : {
     "message": "屏蔽图片管理",
-    "description": "屏蔽图片管理"
+    "description": ""
   },
 
   "setting" : {
@@ -171,23 +171,23 @@
 
   "shortcut" : {
     "message": "快捷键",
-    "description": "快捷键"
+    "description": ""
   },
 
 
   "digImage" : {
     "message": "采集网页图片",
-    "description": "采集网页图片"
+    "description": ""
   },
 
   "closeExtensionWindow" : {
     "message": "关闭插件窗口",
-    "description": "关闭插件窗口"
+    "description": ""
   },
 
   "developer" : {
     "message": "开发人员",
-    "description": "开发人员"
+    "description": ""
   },
   
   
@@ -198,7 +198,7 @@
 
   "extHelp": {
     "message" : "帮助",
-    "description" : ""
+    "description": ""
   },
 
   "extHelpFAQ": {
@@ -208,52 +208,50 @@
 
   "extReportABug": {
     "message" : "报告一个错误",
-    "description" : "报告一个错误"
+    "description" : ""
   },
-  
 
   "saveOptions" : {
     "message": "设置保存成功!",
-    "description": "设置保存成功!"
+    "description": ""
   },
- 
+
   "viewTypeSize1" : {
     "message": "小视图",
-    "description": "小视图"
+    "description": ""
   },
   
   "viewTypeSize2" : {
     "message": "中视图",
-    "description": "中视图"
+    "description": ""
   },
 
   "viewTypeSize3" : {
     "message": "大视图",
-    "description": "大视图"
+    "description": ""
   },
 
   "btnSave" : {
     "message": "保 存",
-    "description": "保 存"
+    "description": ""
   },
 
 
   "btnOK" : {
     "message": "确 定",
-    "description": "确 定"
+    "description": ""
   },
   
   "btnUnblock" : {
     "message": "解除屏蔽",
-    "description": "解除屏蔽"
+    "description": ""
   },
   
   "btnClose" : {
     "message": "关 闭",
-    "description": "关 闭"
+    "description": ""
   },
 
-  
   "btnDonate" : {
     "message": "捐赠",
     "description": ""
@@ -261,54 +259,158 @@
 
   "qYes" : {
     "message": " 是 ",
-    "description": " 是 "
+    "description": ""
   },
 
   "qSubmit" : {
-    "message": " 提 交 ",
-    "description": " 提 交 "
+    "message": "",
+    "description": ""
   },
 
   "qNo" : {
     "message": " 否 ",
-    "description": " 否 "
+    "description": ""
   },
 
 
   "qCancel" : {
     "message": " 取消 ",
-    "description": " 取消 "
+    "description": ""
   },
 
-  "stringLoading" : { "message": " 正在加载中... ", "description": "" },
-  "stringChooseAnBugType" : { "message": " 请选择一种错误类型... ", "description": "" },
-  "stringInvalidEmailFormat" : { "message": " 无效的EMail格式 ", "description": "" },
-  "stringErrorType" : { "message": " 类型 ", "description": "" },
-  "stringErrorDescription" : { "message": " 描述 ", "description": "" },
-  "stringEMail" : { "message": " 电子邮件 ", "description": "" },
-  "stringGetNoneImage" : { "message": "没有采集到任何图片", "description": "" },
-  "stringGetUnwantedImage" : { "message": "采集不到我想要的图片", "description": "" },
-  "stringDownloadImageFailed" : { "message": "下载图片失败", "description": "" },
-  "stringScreenshotFailed" : { "message": "截屏失败", "description": "" }, 
-  "stringErrorOther" : {"message": "其它...", "description": "" },
-  "stringDownloadError" : { "message": "下载错误", "description": "" },
-  "stringSelectNone": { "message": "请选择图片", "description": "" },
-  "stringTitle" : { "message" : "标题", "description": "" },
-  "stringAddress" : { "message" : "地址", "description": "" },
-  "stringSize" : { "message" : "大小", "description": "" },
-  "stringName" : { "message" : "名称", "description": "" },
-  "stringNameEmpty" : { "message" : "名称不能为空", "description": "" },
-  "stringNameExists" : { "message" : "名称已经存在", "description": "" },
-  "stringOperation" : { "message" : "操作", "description": "" },
-  "stringMoreBoards": { "message": "更多画板", "description": "" },
-  "stringDigging": { "message": "正在努力地挖图...", "description": "" },
-  "stringDigOk": { "message": "成功挖到了图片!", "description": "" },
-  "stringDigError": { "message": "挖一下，失败!", "description": "" },
-  "stringHadDig": { "message": "图片已经挖过了哦!", "description": "" },
+  "stringLoading" : {
+    "message": " 正在加载中... ", 
+    "description": ""
+  },
+  
+  "stringChooseAnBugType" : {
+    "message": " 请选择一种错误类型... ", 
+    "description": ""
+  },
+  
+  "stringInvalidEmailFormat" : {
+    "message": " 无效的EMail格式 ", 
+    "description": ""
+  },
 
+  "stringErrorType" : {
+    "message": " 类型 ", 
+    "description": ""
+  },
+
+  "stringErrorDescription" : {
+    "message": " 描述 ", 
+    "description": ""
+  },
+
+  "stringEMail" : {
+    "message": " 电子邮件 ", 
+    "description": ""
+  },
+
+  "stringGetNoneImage" : {
+    "message": "没有采集到任何图片", 
+    "description": ""
+  },
+
+  "stringGetUnwantedImage" : {
+    "message": "采集不到我想要的图片", 
+    "description": ""
+  },
+  
+  "stringDownloadImageFailed" : {
+    "message": "下载图片失败", 
+    "description": ""
+  },
+  
+  "stringScreenshotFailed" : {
+    "message": "截屏失败", 
+    "description": ""
+  },
+  
+  "stringErrorOther" : {
+    "message": "其它...", 
+    "description": ""
+  },
+  
+  "stringDownloadError" : {
+    "message": "下载错误", 
+    "description": ""
+  },
+  
+  "stringSelectNone": { 
+    "message": "请选择图片", 
+    "description": ""
+  },
+  
+  "stringTitle" : { 
+    "message" : "标题", 
+    "description": "" 
+  },
+  
+  "stringAddress" : { 
+    "message" : "地址", 
+    "description": ""
+  },
+  
+  "stringSize" : { 
+    "message" : "大小", 
+    "description": "" 
+  },
+  
+  "stringName" : { 
+    "message" : "名称", 
+    "description": "" 
+  },
+  
+  "stringNameEmpty" : { 
+    "message" : "名称不能为空", 
+    "description": "" 
+  },
+  
+  "stringNameExists" : { 
+    "message" : "名称已经存在", 
+    "description": "" 
+  },
+  
+  "stringOperation" : { 
+    "message" : "操作", 
+    "description": ""
+  },
+  
+  "stringMoreBoards": { 
+    "message": "更多画板", 
+    "description": ""
+  },
+  
+  "stringDigging": { 
+    "message": "正在努力地挖图...", 
+    "description": "" 
+  },
+  
+  "stringDigOk": { 
+    "message": "成功挖到了图片!", 
+    "description": "" 
+  },
+  
+  "stringDigError": { 
+    "message": "挖一下，失败!", 
+    "description": ""
+  },
+  
+  "stringHadDig": { 
+    "message": "图片已经挖过了哦!", 
+    "description": "" 
+  },
+  
+  "stringBoardNameEmpty" : {
+    "message" : "画板名称不能为空!",
+    "description": ""
+  },
+  
   "filterRulesEnable" : {
     "message": "开启智能挖图",
-    "description": "开启智能挖图"
+    "description": ""
   },
   
   "filterRulesWarning" : {
@@ -318,7 +420,7 @@
   
   "filterRulesList" : {
     "message": "智能规则列表",
-    "description": "智能规则列表"
+    "description": ""
   }, 
 
   "toolSave" : {
@@ -384,35 +486,32 @@
     "description": ""
   },
 
-  "toolLineSizeSave" : {
+  "toolLineSize" : {
     "message": "线条大小",
     "description": ""
   },
 
-  "account" : {
+  "stringAccount" : {
     "message": "挖一下帐号",
     "description": ""
   },
 
-  "accountAttention" : {
-    "message": "帐号配置将自动云同步",
+  "stringAccountAttention" : {
+    "message": "插件设置将自动云同步",
     "description": ""
   },
 
-  "accountLogin": {
+  "stringAccountLogin": {
     "message": "登 录",
     "description": ""
   },
 
-  "accountLogout": {
+  "stringAccountLogout": {
     "message": "退 出",
     "description": ""
   },
 
-
-
-
-
+ 
   "dummy" : {
     "message": "",
     "description": ""

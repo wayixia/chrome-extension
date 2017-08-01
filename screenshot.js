@@ -24,9 +24,9 @@ function initialize () {
   
   Q.$('wayixia-screenshot-zoomtext').innerText = e_zoom.getValue() + '%';
   Q.$('wayixia-screenshot-zoom100').onclick = function() { e_zoom.setValue(100); }
-  Q.$('wayixia-screenshot-download').onclick = function() {
-    /** track event */
-    wayixia_track_button_click(this);
+
+
+  function get_screenshot() {
     /** merge canvas */
     var tmp_canvas = document.createElement( 'canvas' );
     tmp_canvas.width = Q.$( 'wayixia-canvas' ).width;
@@ -34,8 +34,28 @@ function initialize () {
     var context = tmp_canvas.getContext('2d');
     context.drawImage( Q.$( 'wayixia-canvas' ), 0, 0 );
     context.drawImage( Q.$( 'cache-canvas' ), 0, 0 );
-    extension.download_image( tmp_canvas.toDataURL( 'image/png' ) );
+    return tmp_canvas;
   }
+
+  Q.$('wayixia-screenshot-download').onclick = function() {
+    /** track event */
+    wayixia_track_button_click(this);
+    var extension = chrome.extension.getBackgroundPage();
+    extension.download_image( get_screenshot().toDataURL( 'image/png' ), window, extension.last_site().name );
+  }
+
+
+  Q.$('wayixia-screenshot-download-menu').onclick = function( evt ) {
+    evt = evt || window.event;
+    wayixia_track_button_click(this);
+    event.cancelBubble = true;
+    var extension = chrome.extension.getBackgroundPage();
+    popup_save_menu( Q.$('wayixia-screenshot-download'), evt, function( folder ) {
+      extension.download_image( get_screenshot().toDataURL( 'image/png' ), window, folder.name );
+    } );
+  }
+
+
 
   Q.$('wayixia-screenshot-tocloud').onclick = function(evt) {
     evt = evt || window.event;

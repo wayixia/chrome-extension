@@ -94,6 +94,7 @@ Q.$('wayixia-help').onclick = function(evt) {
 
 if( Q.$('wayixia-donate') ) {
   Q.$('wayixia-donate').onclick = function() {
+    wayixia_track_button_click(this);
     window.open( 'http://www.wayixia.com/chrome/about#donate' );
   }
 }
