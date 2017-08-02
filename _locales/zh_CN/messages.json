@@ -232,13 +232,13 @@
   },
 
   "btnSave" : {
-    "message": "保 存",
+    "message": "保存",
     "description": ""
   },
 
 
   "btnOK" : {
-    "message": "确 定",
+    "message": "确定",
     "description": ""
   },
   
@@ -248,7 +248,7 @@
   },
   
   "btnClose" : {
-    "message": "关 闭",
+    "message": "关闭",
     "description": ""
   },
 
@@ -263,7 +263,7 @@
   },
 
   "qSubmit" : {
-    "message": "",
+    "message": "提交",
     "description": ""
   },
 
@@ -358,6 +358,11 @@
     "description": "" 
   },
   
+  "stringRemove" : {
+    "message" : "删除", 
+    "description": "" 
+  },
+
   "stringName" : { 
     "message" : "名称", 
     "description": "" 

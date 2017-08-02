@@ -357,6 +357,12 @@
     "message" : "Size", 
     "description": "" 
   },
+ 
+  "stringRemove" : {
+    "message" : "Remove", 
+    "description": "" 
+  },
+
   
   "stringName" : { 
     "message" : "Name", 

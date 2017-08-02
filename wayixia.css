@@ -536,7 +536,8 @@ button#wayixia-bugs {
 
 .q-images-box {
   background-color: #F1F1F1;
-  overflow:scroll;
+  overflow-y:scroll;
+  overflow-x:auto;
 }
 
 .q-images-box.size_1 .q-box-item {
