@@ -15,8 +15,12 @@ function user_config_version_ok() {
 }
 
 function user_config_load(data) {
-  var config = JSON.parse(data);
-  user_config_load2( config );
+	try {
+	  var config = JSON.parse(data);
+		user_config_load2( config );
+	} catch( e ) {
+		console.log(e);
+	}
 }
 
 function user_config_load2(config) {
@@ -179,14 +183,21 @@ function set_save_lastconfig( enabled ) {
 
 function sites() {
   var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-  
+	try {
+  	sites = JSON.parse( sites );
+	} catch(e) {
+		return [];
+	}
   return sites;
 }
 
 function last_site() {
   var site = user_config_get( "site.last" ) || "{ name: '' }";
-  return JSON.parse( site );
+	try {
+		return JSON.parse( site );
+	} catch(e) {
+		return  { name: "" };
+	}
 }
 
 function set_last_site( site ) {
@@ -195,8 +206,11 @@ function set_last_site( site ) {
 
 function is_site_exists( site ) {
   var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-
+	try {
+		sites = JSON.parse( sites );
+	} catch( e ) {
+		sites = [];
+	}
   for( var i=0; i < sites.length; i++ ) {
     if( sites[i].name == site.name ) {
       return true;
@@ -208,8 +222,11 @@ function is_site_exists( site ) {
 
 function add_site( site ) {
   var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-
+	try {
+  	sites = JSON.parse( sites );
+  } catch( e ) {
+		sites = [];
+	}
   sites.push( site );
   user_config_set( "site.items", JSON.stringify( sites ) );
 }
@@ -217,8 +234,12 @@ function add_site( site ) {
 
 function remove_site( site ) {
   var sites = user_config_get( 'site.items' ) || "[]";
-  sites = JSON.parse( sites );
-  
+  try {
+  	sites = JSON.parse( sites );
+  } catch( e ) {
+		sites = [];
+	}
+ 
   for( var i=0; i < sites.length; i++ ) {
     if( sites[i].name == site.name ) {
       sites.splice( i, 1 );
