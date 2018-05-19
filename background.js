@@ -48,7 +48,8 @@ function set_last_album( album ) {
 }
 
 function is_max_screenshot( width, height ) {
-  return ( width * height ) > ( 2000 * 16000 );
+  //return ( width * height ) > ( 200 * 160 );
+  return height > 10000;
 }
 
 
@@ -203,15 +204,25 @@ function on_click_open_about() {
 } 
 
 function on_click_screenshot(tab) {
-//  chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
-//    setTimeout(function() {
-      chrome.tabs.captureVisibleTab( null, {format:'png'}, function(screenshotUrl) {  
-        //chrome.tabs.sendRequest(tab.id, { type : "screenshot-end"}, function(res) {
-          create_display_screenshot(tab.id, screenshotUrl, tab.url); 
-        //});
-      });
-//    }, 1000);
-//  })
+  chrome.tabs.captureVisibleTab( null, {format:'png'}, function(screenshotUrl) {  
+    create_display_screenshot(tab.id, screenshotUrl, tab.url); 
+  });
+}
+
+
+// Generate four random hex digits.  
+function S4() {  
+   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);  
+}; 
+
+// Generate a pseudo-GUID by concatenating random hexadecimal.  
+function guid() {  
+   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());  
+};  
+
+
+function copy_canvasinfo( canvas ) {
+  return { guid: canvas.guid, size: canvas.size, table: canvas.table, screenshots: []};
 }
 
 function on_click_full_screenshot(tab) {
@@ -219,35 +230,39 @@ function on_click_full_screenshot(tab) {
     if(!res)
       return;
 
-    if( is_max_screenshot( res.full_width, res.full_height ) ) {
-      alert( "Size is too large!" );
-      return;
-    }
-
     var cols = Math.ceil(res.full_width*1.0 / res.page_width);
     var rows = Math.ceil(res.full_height*1.0 / res.page_height);
-    var max_pos     = { rows: rows, cols:cols };
-    var canvas      = { size: res, table: max_pos, screenshots: []};
+    var max_pos = { rows: rows, cols:cols };
+    var canvas  = { guid: guid(), size: res, table: max_pos, screenshots: []};
     var current_pos = { row: 0, col: 0 };
     capture_page_task(tab, max_pos, current_pos, canvas);
   }); 
 }
+
   
 function capture_page_task(tab, max, pos, canvas) {
   console.log('capture page (row='+pos.row+', col='+pos.col);
   chrome.tabs.sendRequest(tab.id, { type : "screenshot-page", row:pos.row, col:pos.col}, function(res) {
     setTimeout(function() {
-      chrome.tabs.captureVisibleTab( null, {format:'jpeg', quality: 80}, function(screenshotUrl) {
+      chrome.tabs.captureVisibleTab( null, {format:'png'}, function(screenshotUrl) {
         canvas.screenshots.push({row: pos.row, col: pos.col, data_url: screenshotUrl});
         pos.col++;
         pos.col = pos.col % max.cols; 
         if(pos.col == 0) {
           pos.row++;
+	        canvas.row = pos.row;
           if(pos.row % max.rows == 0) {
             screenshot_end(tab, canvas);
             return;
+          } else {
+            if( is_max_screenshot( canvas.size.full_width, canvas.size.full_height ) ) {
+              merge_images_with_client( canvas );
+              canvas = copy_canvasinfo( canvas );
+            }
           }
         }
+
+        // Process with client
         capture_page_task(tab, max, pos, canvas);
       });
     }, 1000);
@@ -262,28 +277,27 @@ function screenshot_end(tab, canvas) {
     var size = canvas.size;
     if( is_max_screenshot( size.full_width, size.full_height ) ) {
       // process with server
+      merge_images_with_client( canvas, function() {
+        // download image
+        download_image( "http://127.0.0.1:8000/" + canvas.guid + ".png", null, "" );
+      } );
     } else {
       create_display_full_screenshot(tab.id, canvas, tab.url); 
     }
   });
 }
 
-function merge_images_with_server( res ) {
-   ajax( { command: "http://www.wayixia.com:10086/merge",
-    method: "POST",
-    oncomplete : function( res ) {
-      try {
-        if( res ) {
-        }
-      } catch(e) {
-        console.log(e);
+function merge_images_with_client( canvas, fn ) {
+  Q.ajaxc( { command: "http://127.0.0.1:8000/merge?rid=" + canvas.row,
+    queue: true,
+    data: canvas,
+    oncomplete: function( xmlhttp ) {
+      if( fn ) {
+        fn();
       }
-    },
-    onerror: function( xmlhttp ) {
-      console.log("Problem retrieving data");
+      //console.log( xmlhttp.responseText );
     }
   } );
-
 }
 
 var cache_display = {};
@@ -383,15 +397,15 @@ function get_save_path( folder ) {
     save_path += folder + "/";
   }
 
-	if(date_folder) {
+  if(date_folder) {
     var date_path = get_date_path();
     if(date_path != "") {
-		  save_path += "/" + date_path + "/";
-	  }
+      save_path += "/" + date_path + "/";
+    }
   }
-	save_path = save_path.replace(/[\\\/]+/g, '/');
+  save_path = save_path.replace(/[\\\/]+/g, '/');
 
-	return save_path;
+  return save_path;
 }
 
 function create_tab( json ) {
@@ -455,15 +469,15 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
   if(item.byExtensionId == chrome.runtime.id) {
     console.log(item.id + ":" + item.state)
     var cfg = download_items[item.id];
-	  var save_path = get_save_path( cfg.folder );
-	  var filename = "";
-	  var re = /data:(.+?);(\w+?),(.+)/;
+    var save_path = get_save_path( cfg.folder );
+    var filename = "";
+    var re = /data:(.+?);(\w+?),(.+)/;
     if(re.test(item.url)) { // data
       filename = (new Date()).valueOf();      
     } else {
       // replace ilegal char
       filename = item.filename.replace(/\.\w+$/, '').replace(/[:*?\"<>|]/, "-") + "-w" + item.id;
-	  }
+    }
 
     var ftype = "";
     if( item.mime != "" ) {
@@ -534,6 +548,7 @@ chrome.extension.onMessage.addListener( function( o ) {
     break;
   }
 } );
+
 
 
 console.log('background.js init');

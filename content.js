@@ -83,12 +83,12 @@ var g_fullscreen_capture = {
   page_height : 0,
 
   start : function() {
-    this.scroll_top  = document.body.scrollTop;
-    this.scroll_left = document.body.scrollLeft;
+    this.scroll_top  = this.body_scroll_top(); //document.body.scrollTop;
+    this.scroll_left = this.body_scroll_left(); //document.body.scrollLeft;
     this.overflow    = document.body.style.overflow;
     document.body.style.overflow='hidden';
-    document.body.scrollTop = 0;
-    document.body.scrollLeft= 0;
+    this.set_body_scroll_top( 0 ); //document.body.scrollTop = 0;
+    this.set_body_scroll_left( 0 );  //document.body.scrollLeft= 0;
     this.page_width  = document.documentElement.clientWidth;
     this.page_height = document.documentElement.clientHeight;
   
@@ -101,15 +101,54 @@ var g_fullscreen_capture = {
   }, 
 
   capture_page : function(row, col) {
-    document.body.scrollTop  = row * this.page_height;
-    document.body.scrollLeft = col * this.page_width;
+    //document.body.scrollTop  = row * this.page_height;
+    //document.body.scrollLeft = col * this.page_width;
+    this.set_body_scroll_top( row * this.page_height );
+    this.set_body_scroll_left( col * this.page_width );
   },
 
   stop : function() {
     document.body.style.overflow = this.overflow;
-    document.body.scrollTop = this.scroll_top;
-    document.body.scrollLeft= this.scroll_left;
+    //document.body.scrollTop = this.scroll_top;
+    //document.body.scrollLeft= this.scroll_left;
+    this.set_body_scroll_top( this.scroll_top );
+    this.set_body_scroll_left( this.scroll_left );
+  },
+
+  body_scroll_top : function() {
+    if( document.documentElement && document.documentElement.scrollTop ) {
+      return document.documentElement.scrollTop;
+    } else {
+      return document.body.scrollTop;
+    }
+  },
+
+  set_body_scroll_top: function( v ) {
+    if( document.documentElement ) {
+      document.documentElement.scrollTop = v; 
+    } else {
+      document.body.scrollTop = v; 
+    }
+  },
+
+
+  body_scroll_left: function() {
+    if( document.documentElement && document.documentElement.scrollLeft ) {
+      return document.documentElement.scrollLeft;
+    } else {
+      return document.body.scrollLeft;
+    }
+  },
+
+
+  set_body_scroll_left: function( v ) {
+    if( document.documentElement ) {
+      document.documentElement.scrollLeft = v; 
+    } else {
+      document.body.scrollLeft = v; 
+    }
   }
+
 };
 
 chrome.extension.sendMessage( { action:"userstatus" } );

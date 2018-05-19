@@ -153,7 +153,7 @@ function ajaxQueue( json, data_handler ) {
   if( run_task ) {
     _run(this)();
   } else {
-    console.log("push a task only");
+    console.log("push a task only -> " + this.tasks.length );
   }
 
   function _run( a ) { return function() {
@@ -163,13 +163,13 @@ function ajaxQueue( json, data_handler ) {
     }
     
     var t = a.tasks[0];
-    newAjax( t , data_handler, function( success ) {
-      var o = a.tasks.shift();
-      Q.printf("[ajax]completed("+(success?"ok":"failed")+") one and remove item -> "+o.command);
+    newAjax( t , data_handler, ( function( aa ) { return function( success ) {
+      var o = aa.tasks.shift();
+      console.log("[ajax]completed("+(success?"ok":"failed")+") one and remove item -> "+o.command + ", size: " + aa.tasks.length );
       if( success || ( !!o.continueError ) ) {
         callee.call();
       }
-    } );
+    } } )( a ) );
   } };
 }
 
