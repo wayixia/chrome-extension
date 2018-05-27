@@ -57,6 +57,16 @@ function init(){
       window.open("http://www.wayixia.com/?mod=user&action=login");
     }
   }
+
+
+  chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
+   function(tabs){
+   
+   }
+  );
+
+
+
   document.body.style.visibility='visible';
 };
 

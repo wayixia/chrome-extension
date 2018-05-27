@@ -154,6 +154,7 @@ var g_fullscreen_capture = {
 chrome.extension.sendMessage( { action:"userstatus" } );
 
 
+
 // listener
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) 
 {
@@ -180,4 +181,19 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
     break;
   }
 });
+
+
+
+//( function(d) { return function() {
+  var e = document.getElementById("wayixia_chrome_extension_identity_label");
+  if( e ) {
+    e.innerHTML = "Extension of Wayixia(id:" + chrome.runtime.id+ ") is installed. Connect OK!";
+    chrome.extension.sendMessage( { action:"assist", port: location.port } );
+  }
+
+  var i = document.getElementById("wayixia_chrome_extension_identity_label_img");
+  if( i ) {
+    i.src = chrome.runtime.getURL("icon48.png");
+  }
+//} } )(document)
 
