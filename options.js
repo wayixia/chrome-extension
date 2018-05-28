@@ -31,6 +31,18 @@ function init_about() {
 }
 
 function init_setting() {
+
+  var t2 = new Q.tabs({
+    action: "click",
+    active: Q.$('tab-1-1'),
+    items: [
+      {tab: Q.$('tab-1-1'), content: Q.$('panel-1-1')},
+      {tab: Q.$('tab-1-2'), content: Q.$('panel-1-2')},
+      {tab: Q.$('tab-1-3'), content: Q.$('panel-1-3')},
+      {tab: Q.$('tab-1-4'), content: Q.$('panel-1-4')},
+    ]  
+  });
+
   var extension = chrome.extension.getBackgroundPage();
   // save path
   Q.$('save_path').value = extension.user_config_get('save_path');
@@ -79,10 +91,10 @@ function init_setting() {
 
   g_option_window = new Q.Dialog({
     width: 706,
-    height: 620,
+    height: 480,
     wstyle: "q-attr-no-icon",
     title: locale_text('extOptions'),
-    content: Q.$('layer'),
+    content: Q.$('layer-options'),
     on_close: function() { window.close(); },
     buttons : [
       { text: locale_text('btnSave'), onclick: function() {
@@ -110,7 +122,7 @@ function init_setting() {
       },
     ]  
   });
-  Q.$('layer').style.visibility = 'visible';
+  Q.$('layer-options').style.visibility = 'visible';
   g_option_window.domodal($GetDesktopWindow());
 
   // block images
