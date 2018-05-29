@@ -13,7 +13,7 @@ wayixia.uid = 0;
 wayixia.albums = [];
 wayixia.last_album = {};
 wayixia.download_images = [];
-wayixia.helper = "";
+wayixia.assistant = "";
 
 
 // check new version for helper
@@ -48,12 +48,16 @@ function set_last_album( album ) {
   wayixia.last_album = album;
 }
 
-function wayixia_assist() {
-  return wayixia.assist;
+function wayixia_assistant() {
+  return wayixia.assistant;
 }
 
-function set_wayixia_assist( port ) {
-  wayixia.assist = "http://127.0.0.1:"+port;
+function set_wayixia_assistant( port ) {
+  if( port != "" ) {
+    wayixia.assistant = "http://127.0.0.1:"+port;
+  } else {
+    wayixia.assistant = "http://127.0.0.1";
+  }
 }
 
 function is_max_screenshot( width, height ) {
@@ -291,7 +295,7 @@ function screenshot_end(tab, canvas) {
       // process with server
       merge_images_with_client( canvas, function() {
         // download image
-        download_image( wayixia_assist() + "/" + canvas.guid + ".png", null, "" );
+        download_image( wayixia_assistant() + "/" + canvas.guid + ".png", null, "" );
       } );
     } else {
       create_display_full_screenshot(tab.id, canvas, tab.url); 
@@ -300,7 +304,7 @@ function screenshot_end(tab, canvas) {
 }
 
 function merge_images_with_client( canvas, fn ) {
-  Q.ajaxc( { command: wayixia_assist() + "/merge?rid=" + canvas.row,
+  Q.ajaxc( { command: wayixia_assistant() + "/merge?rid=" + canvas.row,
     queue: true,
     data: canvas,
     oncomplete: function( xmlhttp ) {
@@ -559,9 +563,10 @@ chrome.extension.onMessage.addListener( function( o ) {
     //}
     break;
   
-  case "assist":
+  case "assistant":
     console.log( o.port );
-    set_wayixia_assist( o.port );
+    set_wayixia_assistant( o.port );
+    focus_or_create_tab(chrome.extension.getURL("options.html") + "#tab-screencapture", function(view) { });
     break;
   }
 } );

@@ -32,18 +32,52 @@ function init_about() {
 
 function init_setting() {
 
+  var tabactive = Q.$(location.hash.replace( /^#/g, "" ) );
+  if( !tabactive ) {
+    tabactive = Q.$('tab-basic');
+  }
+  
   var t2 = new Q.tabs({
     action: "click",
-    active: Q.$('tab-1-1'),
+    active: tabactive,
+    onactive: function( tid ) {
+      var stateObject = {};
+      var newUrl = "#" + tid.id;
+      history.pushState(stateObject,tid.innerText,newUrl);
+    },
     items: [
-      {tab: Q.$('tab-1-1'), content: Q.$('panel-1-1')},
-      {tab: Q.$('tab-1-2'), content: Q.$('panel-1-2')},
-      {tab: Q.$('tab-1-3'), content: Q.$('panel-1-3')},
-      {tab: Q.$('tab-1-4'), content: Q.$('panel-1-4')},
+      {tab: Q.$('tab-basic'), content: Q.$('panel-1-1')},
+      {tab: Q.$('tab-download'), content: Q.$('panel-1-2')},
+      {tab: Q.$('tab-screencapture'), content: Q.$('panel-1-3')},
+      {tab: Q.$('tab-shortcut'), content: Q.$('panel-1-4')},
     ]  
   });
 
   var extension = chrome.extension.getBackgroundPage();
+
+  var assistant_url = extension.wayixia_assistant();
+  if( assistant_url != "" ) {
+    Q.$('wayixia-assistant-ing').style.display = '';
+    Q.ajax( {
+      command: assistant_url,
+      oncomplete: function(xml) {
+        Q.$('wayixia-assistant-ing').style.display = 'none';
+        Q.$('wayixia-assistant-ok').style.display = '';
+        Q.$('wayixia-assistant-error').style.display = 'none';
+      },
+      onerror: function(xml) {
+        Q.$('wayixia-assistant-ing').style.display = 'none';
+        Q.$('wayixia-assistant-ok').style.display = 'none';
+        Q.$('wayixia-assistant-error').style.display = '';
+      } 
+    } );
+  } else {
+    Q.$('wayixia-assistant-ing').style.display = 'none';
+    Q.$('wayixia-assistant-ok').style.display = 'none';
+    Q.$('wayixia-assistant-error').style.display = '';
+  }
+
+
   // save path
   Q.$('save_path').value = extension.user_config_get('save_path');
   new Q.PlaceHolder( {

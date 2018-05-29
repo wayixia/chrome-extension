@@ -92,6 +92,18 @@
 }
 
 
+.q-tabs.v-property .q-tabs-header ul li a,
+.q-tabs.v-property .q-tabs-header ul li a:visited {
+  display: block;
+  text-decoration: none;
+	color: #515151;
+}
+
+
+.q-tabs.v-property .q-tabs-header ul li a:hover,
+.q-tabs.v-property .q-tabs-header ul li.q-selected a {
+	color: #000
+}
 
 
 
@@ -109,6 +121,26 @@
 
 .clearboth {
   clear: both;
+}
+
+
+.wayixia-assistant {
+  text-indent: 20px; 
+  background:#FFF url(images/sprite_ok.png) left center no-repeat;
+}
+
+.wayixia-assistant.ok {
+  background-image: url(images/sprite_ok.png)
+}
+
+.wayixia-assistant.error {
+  background-image: url(images/sprite_error.png)
+}
+
+
+.wayixia-assistant.ing {
+  text-indent: 40px; 
+  background-image:url(images/wing32.gif);
 }
 
 </style>
@@ -147,10 +179,10 @@
 
 <div class="q-tabs-header">
 	<ul>
-		<li id="tab-1-1" href="javascript:;"> 帐号 </li>
-		<li id="tab-1-2" href="javascript:;"> 图片下载 </li>
-		<li id="tab-1-3" href="javascript:;"> 网页截屏 </li>
-		<li id="tab-1-4" href="javascript:;"> 快捷键 </li>
+		<li id="tab-basic"> 基本设置 </li>
+		<li id="tab-download"> 图片下载 </li>
+		<li id="tab-screencapture" href=""> 网页截屏 </li>
+		<li id="tab-shortcut"> 快捷键 </li>
 	</ul>
 </div>
 <div class="q-tabs-body">
@@ -183,7 +215,22 @@
   <br>
 
 </div>
-<div id="panel-1-3" class="q-panel">Tab3 Panel</div>
+
+
+<div id="panel-1-3" class="q-panel">
+  <b> 截屏助手</b>(<font color="#999">支持超长网页截图</font>)<br>
+  <div id="wayixia-assistant-ing" class="wayixia-assistant ing" style="display: none;">
+    正在检查状态...
+  </div>
+  <div id="wayixia-assistant-ok" class="wayixia-assistant ok" style="display: none;">
+    已连接 <a href="#"></a>
+  </div>
+  <div id="wayixia-assistant-error" class="wayixia-assistant error" style="display: none;">
+    未连接 <a href="#help">(?)</a>
+  </div>
+</div>
+
+
 <div id="panel-1-4" class="q-panel">
   <b>__MSG_shortcut__</b><br>
   1. __MSG_digImage__（<font color="#999">Ctrl+Q</font>）<br>
