@@ -13,8 +13,8 @@ wayixia.uid = 0;
 wayixia.albums = [];
 wayixia.last_album = {};
 wayixia.download_images = [];
-wayixia.assistant = "";
-
+wayixia.assistant = "http://127.0.0.1";
+wayixia.maxheight = 10000;
 
 // check new version for helper
 if(user_config_is_new()) {
@@ -62,10 +62,8 @@ function set_wayixia_assistant( port ) {
 
 function is_max_screenshot( width, height ) {
   //return ( width * height ) > ( 200 * 160 );
-  return height > 10000;
+  return height > wayixia.maxheight;
 }
-
-
 
 
 
@@ -242,17 +240,27 @@ function copy_canvasinfo( canvas ) {
 }
 
 function on_click_full_screenshot(tab) {
-  chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
-    if(!res)
-      return;
 
-    var cols = Math.ceil(res.full_width*1.0 / res.page_width);
-    var rows = Math.ceil(res.full_height*1.0 / res.page_height);
-    var max_pos = { rows: rows, cols:cols };
-    var canvas  = { guid: guid(), size: res, table: max_pos, screenshots: []};
-    var current_pos = { row: 0, col: 0 };
-    capture_page_task(tab, max_pos, current_pos, canvas);
-  }); 
+  chrome.tabs.sendRequest(tab.id, { type : "screenshot-ismax", maxheight: wayixia.maxheight }, function(res) {
+    // check max screenshot
+    if( !res.acceptable ) {
+      return;
+    }
+
+    chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
+      if(!res)
+        return;
+
+      var cols = Math.ceil(res.full_width*1.0 / res.page_width);
+      var rows = Math.ceil(res.full_height*1.0 / res.page_height);
+      var max_pos = { rows: rows, cols:cols };
+      var canvas  = { guid: guid(), size: res, table: max_pos, screenshots: []};
+      var current_pos = { row: 0, col: 0 };
+      capture_page_task(tab, max_pos, current_pos, canvas);
+    }); 
+  
+  } ); 
+
 }
 
   

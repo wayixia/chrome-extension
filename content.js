@@ -162,27 +162,40 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
   case "display-all-images": 
     sendResponse(generate_response(get_all_images()));
     break;
+  
   case "display-single-image":
     sendResponse(generate_response([{src: request.src}]));    
     break; 
+
+  case "screenshot-ismax":
+    // Check page size
+    if( document.body.scrollHeight > request.maxheight ) {
+      Q.alert( { wstyle: "q-attr-no-icon", title: "Wayixia.com", content: "page is too large ( " + document.body.scrollWidth + "," + document.body.scrollHeight +" ) " } );  
+      sendResponse({ acceptable: false });
+    } else {
+      sendResponse({ acceptable: true });
+    }
+    break;
+  
   case "screenshot-begin":
     sendResponse(g_fullscreen_capture.start());
     break; 
+  
   case "screenshot-page":
     g_fullscreen_capture.capture_page(request.row, request.col); 
     sendResponse({});
     break; 
+  
   case "screenshot-end":
     g_fullscreen_capture.stop(); 
     sendResponse({});
     break;
+  
   default:
     sendResponse({});
     break;
   }
 });
-
-
 
 //( function(d) { return function() {
   var e = document.getElementById("wayixia_chrome_extension_identity_label");

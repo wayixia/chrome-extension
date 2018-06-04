@@ -26,10 +26,10 @@ function init(){
   
   Q.$('wayixia-full-screenshot').onclick = function() {
     chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
-     function(tabs){
-       show_tips_full_screenshot();
-       extension.on_click_full_screenshot(tabs[0]);
-     }
+      function(tabs) {
+        //  show_tips_full_screenshot();
+          extension.on_click_full_screenshot(tabs[0]);
+      }
     );
     //deactive();
   }
