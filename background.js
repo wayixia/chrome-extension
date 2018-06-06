@@ -60,6 +60,28 @@ function set_wayixia_assistant( port ) {
   }
 }
 
+function wayixia_assistant_isalive( fn ) {
+  var assistant_url =  wayixia_assistant();
+  if( assistant_url != "" ) {
+    Q.ajax( {
+      command: assistant_url,
+      oncomplete: function(xml) {
+        fn( true );
+      },
+      onerror: function(xml) {
+        fn( false );
+      } 
+    } );
+  } else {
+    fn( false );
+  }
+}
+
+function wayixia_screenshot_maxsize()
+{
+  return { height: wayixia.maxheight };
+}
+
 function is_max_screenshot( width, height ) {
   //return ( width * height ) > ( 200 * 160 );
   return height > wayixia.maxheight;
@@ -241,11 +263,11 @@ function copy_canvasinfo( canvas ) {
 
 function on_click_full_screenshot(tab) {
 
-  chrome.tabs.sendRequest(tab.id, { type : "screenshot-ismax", maxheight: wayixia.maxheight }, function(res) {
-    // check max screenshot
-    if( !res.acceptable ) {
-      return;
-    }
+  //chrome.tabs.sendRequest(tab.id, { type : "screenshot-ismax", maxheight: wayixia.maxheight }, function(res) {
+  //  // check max screenshot
+  //  if( !res.acceptable ) {
+  //    return;
+  //  }
 
     chrome.tabs.sendRequest(tab.id, { type : "screenshot-begin"}, function(res) {
       if(!res)
@@ -259,8 +281,7 @@ function on_click_full_screenshot(tab) {
       capture_page_task(tab, max_pos, current_pos, canvas);
     }); 
   
-  } ); 
-
+  //} ); 
 }
 
   

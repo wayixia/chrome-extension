@@ -25,13 +25,24 @@ function init(){
   }
   
   Q.$('wayixia-full-screenshot').onclick = function() {
-    chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
-      function(tabs) {
-        //  show_tips_full_screenshot();
-          extension.on_click_full_screenshot(tabs[0]);
-      }
-    );
-    //deactive();
+    chrome.tabs.query( {'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, function(tabs) { chrome.tabs.sendRequest(tabs[0].id, { type : "bodysize" }, function(res) {
+      if( extension.is_max_screenshot( res.width, res.height )  ) {
+        extension.wayixia_assistant_isalive( function( supported ) {
+          if( supported ) {
+            show_tips_full_screenshot();
+            extension.on_click_full_screenshot(tabs[0]);
+          } else {
+            // tell the page page is too large need install assistant of wayixia
+	          chrome.tabs.sendRequest(tabs[0].id, { type : "screenshot-ismax", maxheight: extension.wayixia_screenshot_maxsize().height }, function(res) {} );
+            deactive();
+          }
+        } );
+      } else {
+        // acceptable body size
+        show_tips_full_screenshot();
+        extension.on_click_full_screenshot(tabs[0]);
+      } 
+    } ); } );
   }
 
   Q.$('wayixia-options').onclick = function() {

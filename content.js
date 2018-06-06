@@ -176,7 +176,11 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
       sendResponse({ acceptable: true });
     }
     break;
-  
+
+  case "bodysize":
+    sendResponse( { width: document.body.scrollWidth, height: document.body.scrollHeight } );
+    break;
+
   case "screenshot-begin":
     sendResponse(g_fullscreen_capture.start());
     break; 
