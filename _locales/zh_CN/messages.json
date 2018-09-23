@@ -516,7 +516,60 @@
     "description": ""
   },
 
+  "optBasic" : {
+    "message": "基 本",
+    "description" : ""
+  },
  
+  "optImageDownload" : {
+    "message": "下 载",
+    "description" : ""
+  },
+ 
+  "optWebCapture" : {
+    "message": "截 屏",
+    "description" : ""
+  },
+ 
+  "optShortcut" : {
+    "message": "快捷键",
+    "description" : ""
+  },
+
+  "stringCaptureAssistant" : {
+    "message": "截屏助手",
+    "description" : ""
+  },
+
+
+  "stringLongPageCapture" : {
+    "message": "支持超长网页截图",
+    "description" : ""
+  },
+
+  "stringChecking" : {
+    "message": "正在检查状态",
+    "description" : ""
+  },
+
+
+  "stringConnected" : {
+    "message": "已连接",
+    "description" : ""
+  },
+
+ 
+  "stringDisconnected" : {
+    "message": "未连接",
+    "description" : ""
+  },
+
+ "stringLongPageTips" : {
+    "message": "当前网页过大，请<a href='http://www.wayixia.com/attachments/assistant' target='_blank'>点击这里</a>下载截屏助手, 网页宽度和高度 ",
+    "description" : ""
+  },
+
+
   "dummy" : {
     "message": "",
     "description": ""

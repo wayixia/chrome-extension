@@ -81,8 +81,12 @@ var g_fullscreen_capture = {
   overflow : '',
   page_width : 0,
   page_height : 0,
+  fixed_elements: [],
 
   start : function() {
+
+    this.fixed_disabled();
+
     this.scroll_top  = this.body_scroll_top(); //document.body.scrollTop;
     this.scroll_left = this.body_scroll_left(); //document.body.scrollLeft;
     this.overflow    = document.body.style.overflow;
@@ -105,6 +109,7 @@ var g_fullscreen_capture = {
     //document.body.scrollLeft = col * this.page_width;
     this.set_body_scroll_top( row * this.page_height );
     this.set_body_scroll_left( col * this.page_width );
+    //this.fixed_disabled();
   },
 
   stop : function() {
@@ -113,6 +118,8 @@ var g_fullscreen_capture = {
     //document.body.scrollLeft= this.scroll_left;
     this.set_body_scroll_top( this.scroll_top );
     this.set_body_scroll_left( this.scroll_left );
+    
+    this.fixed_enabled();
   },
 
   body_scroll_top : function() {
@@ -147,8 +154,24 @@ var g_fullscreen_capture = {
     } else {
       document.body.scrollLeft = v; 
     }
-  }
+  },
 
+
+  fixed_disabled : function() {
+    for( var i=0; i < document.all.length; i++) {
+      var e = document.all[i];
+      if( e.currentStyle.position == "fixed" && !( e.currentStyle.display == "none" || e.currentStyle.visibility == "hidden" )) {
+        e.style.position = "inherit";
+        this.fixed_elements.push( e );
+      }
+    }
+  },
+
+  fixed_enabled: function() {
+    for( var i=0; i < this.fixed_elements.length; i++ ) {
+      this.fixed_elements[i].style.position = "fixed";
+    }
+  }
 };
 
 chrome.extension.sendMessage( { action:"userstatus" } );
@@ -170,7 +193,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
   case "screenshot-ismax":
     // Check page size
     if( document.body.scrollHeight > request.maxheight ) {
-      Q.alert( { wstyle: "q-attr-no-icon", title: "Wayixia.com", content: "page is too large ( " + document.body.scrollWidth + "," + document.body.scrollHeight +" ) " } );  
+      //Q.alert( { wstyle: "q-attr-no-icon", title: "Wayixia.com", content: "<div style='padding: 5px;'>page is too large ( " + document.body.scrollWidth + "," + document.body.scrollHeight +" ), please download caputre assistant from <a href='http://www.wayixia.com/download/assistant'>here</a> </div>" } );  
+      Q.alert( { wstyle: "q-attr-no-icon", title: "Wayixia.com", content: "<div style='padding: 5px;'>" +  locale_text("stringLongPageTips") + " ( " + document.body.scrollWidth + "," + document.body.scrollHeight +" )</div>"} );  
       sendResponse({ acceptable: false });
     } else {
       sendResponse({ acceptable: true });

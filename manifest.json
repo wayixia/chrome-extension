@@ -11,7 +11,7 @@
    },
    "content_scripts": [ 
      {
-      "js": [ "Q.js/Q.debug.js", "content.js" ],
+      "js": [ "Q.js/Q.debug.js", "i18n.js", "content.js" ],
       "css": [ "Q.js/ui.css", "wayixia.css" ],
       "matches": [ "http://*/*", "https://*/*" ],
       "run_at": "document_end"

@@ -517,6 +517,63 @@
     "description": ""
   },
 
+
+  "optBasic" : {
+    "message": "Basic",
+    "description" : ""
+  },
+ 
+  "optImageDownload" : {
+    "message": "Download",
+    "description" : ""
+  },
+ 
+  "optWebCapture" : {
+    "message": "Web Capture",
+    "description" : ""
+  },
+ 
+  "optShortcut" : {
+    "message": "Shortcut",
+    "description" : ""
+  },
+ 
+
+  "stringCaptureAssistant" : {
+    "message": "Capture Assistant",
+    "description" : ""
+  },
+
+
+  "stringLongPageCapture" : {
+    "message": "Support long web page capture",
+    "description" : ""
+  },
+
+  "stringChecking" : {
+    "message": "Checking",
+    "description" : ""
+  },
+
+
+  "stringConnected" : {
+    "message": "Connected",
+    "description" : ""
+  },
+
+ 
+  "stringDisconnected" : {
+    "message": "Disconnected",
+    "description" : ""
+  },
+
+  "stringLongPageTips" : {
+    "message": "This page is too large  please download caputre assistant from <a href='http://www.wayixia.com/attachments/assistant' target='_blank'>here</a>, current page size ",
+    "description" : ""
+  },
+
+  
+
  
   "dummy" : {
     "message": "",
