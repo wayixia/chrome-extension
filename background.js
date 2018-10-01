@@ -204,6 +204,15 @@ function wayixia_logout( fn ) {
 }
 
 
+function wayixia_statics_images( item ) {
+  Q.ajaxc( { command: "http://www.wayixia.com/?mod=statics&action=image&inajax=true",
+    data: item,
+    oncomplete : function( res ) {
+      console.log( res );
+    },
+  } );
+}
+
 
 // create context menu
 var contexts = ["page", "image", "selection","editable","link","video","audio"];
@@ -528,6 +537,7 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
     if( item.mime != "" ) {
        ftype = "." + item.mime.replace(/\w+\//, '');
     }
+    wayixia_statics_images(item);
     suggest({filename: save_path + filename + ftype , conflict_action: 'uniquify',conflictAction: 'uniquify'});
   } else {
     //suggest({conflict_action: 'uniquify',conflictAction: 'uniquify'});

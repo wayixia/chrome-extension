@@ -26,6 +26,12 @@ function init(){
   
   Q.$('wayixia-full-screenshot').onclick = function() {
     chrome.tabs.query( {'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, function(tabs) { chrome.tabs.sendRequest(tabs[0].id, { type : "bodysize" }, function(res) {
+      // not support contentscript
+      if( !res ) {
+        extension.on_click_full_screenshot(tabs[0]);
+        return;
+      }
+
       if( extension.is_max_screenshot( res.width, res.height )  ) {
         extension.wayixia_assistant_isalive( function( supported ) {
           if( supported ) {
