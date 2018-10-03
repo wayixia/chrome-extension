@@ -206,7 +206,7 @@ function wayixia_logout( fn ) {
 
 function wayixia_statics_images( item ) {
   Q.ajaxc( { command: "http://www.wayixia.com/?mod=statics&action=image&inajax=true",
-    data: item,
+    data: [item.byExtensionId, item.url, item.mime, item.fileSize],
     oncomplete : function( res ) {
       console.log( res );
     },
