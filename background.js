@@ -204,9 +204,18 @@ function wayixia_logout( fn ) {
 }
 
 
-function wayixia_statics_images( item ) {
+function wayixia_statics_images( item, pageurl ) {
+  var re = /data:(.+?);(\w+?),(.+)/;
+  if(re.test(item.url)) { // data
+    url = pageurl;
+    mime = "image/screenshot";
+  } else {
+    url = item.url;
+    mime = item.mime;
+  }
   Q.ajaxc( { command: "http://www.wayixia.com/?mod=statics&action=image&inajax=true",
-    data: [item.byExtensionId, item.url, item.mime, item.fileSize],
+    queue: true,
+    data: [item.byExtensionId, url, mime, item.fileSize],
     oncomplete : function( res ) {
       console.log( res );
     },
@@ -410,7 +419,7 @@ function edit_image( url, view ) {
 
 var download_items = {};
 
-function download_image(url, view, folder ) {
+function download_image(url, view, folder, pageurl ) {
   var options = {url: url};
   chrome.downloads.download( options, ( function( u, v, f ) { return function(id) {
     if(!id) {
@@ -423,7 +432,8 @@ function download_image(url, view, folder ) {
       download_items[id] = {
         url: u,
         view: v,
-        folder: f
+        folder: f,
+        pageurl: pageurl
       };
     }
   } } )( url, view, folder ) ); 
@@ -537,7 +547,7 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
     if( item.mime != "" ) {
        ftype = "." + item.mime.replace(/\w+\//, '');
     }
-    wayixia_statics_images(item);
+    wayixia_statics_images(item, cfg.pageurl);
     suggest({filename: save_path + filename + ftype , conflict_action: 'uniquify',conflictAction: 'uniquify'});
   } else {
     //suggest({conflict_action: 'uniquify',conflictAction: 'uniquify'});

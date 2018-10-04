@@ -9,6 +9,7 @@ var content_load_ok = false;
 var g_screenshot_zoom = 100;
 var g_screenshot_dialog = null;
 var g_canvas_editor = null;
+var g_pageurl = null;
 
 function initialize () {
   var extension = chrome.extension.getBackgroundPage();
@@ -41,7 +42,7 @@ function initialize () {
     /** track event */
     wayixia_track_button_click(this);
     var extension = chrome.extension.getBackgroundPage();
-    extension.download_image( get_screenshot().toDataURL( 'image/png' ), window, extension.last_site().name );
+    extension.download_image( get_screenshot().toDataURL( 'image/png' ), window, extension.last_site().name, g_pageurl );
   }
 
 
@@ -51,7 +52,7 @@ function initialize () {
     event.cancelBubble = true;
     var extension = chrome.extension.getBackgroundPage();
     popup_save_menu( Q.$('wayixia-screenshot-download'), evt, function( folder ) {
-      extension.download_image( get_screenshot().toDataURL( 'image/png' ), window, folder.name );
+      extension.download_image( get_screenshot().toDataURL( 'image/png' ), window, folder.name, g_pageurl );
     } );
   }
 
@@ -929,6 +930,7 @@ function display_screenshot(tab_id, image_data, url) {
   wayixia_track_event("display_screenshot", "from_menu");  
   wayixia_source_tab_id = tab_id;
   wayixia_request_data.data.pageUrl = url;
+  g_pageurl = url;
   drag_screen_images_begin();
   var wayixia_canvas = Q.$('wayixia-canvas');
   
