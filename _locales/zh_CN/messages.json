@@ -565,7 +565,7 @@
   },
 
  "stringLongPageTips" : {
-    "message": "当前网页过大，请<a href='http://www.wayixia.com/attachments/assistant' target='_blank'>点击这里</a>下载截屏助手, 网页宽度和高度 ",
+    "message": "当前网页过大，请<a href='http://www.wayixia.com/chrome/install' target='_blank'>点击这里</a>下载截屏助手, 网页宽度和高度 ",
     "description" : ""
   },
 
