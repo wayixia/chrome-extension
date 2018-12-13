@@ -540,7 +540,7 @@
  
 
   "stringCaptureAssistant" : {
-    "message": "Capture Assistant",
+    "message": "Assistant",
     "description" : ""
   },
 
@@ -567,8 +567,13 @@
     "description" : ""
   },
 
+  "stringAssistantHelp": {
+    "message": "Get wayixia assistant and connect to chrome extension.",
+    "description" : ""
+  },
+
   "stringLongPageTips" : {
-    "message": "This page is too large  please download caputre assistant from <a href='http://www.wayixia.com/chrome/install' target='_blank'>here</a>, current page size ",
+    "message": "This page is too large  please download caputre assistant from <a href='http://www.wayixia.com/chrome/install' target='_blank'><u>here</u></a>, current page size ",
     "description" : ""
   },
 
